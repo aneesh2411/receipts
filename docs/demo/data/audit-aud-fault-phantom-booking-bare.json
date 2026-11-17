@@ -1,0 +1,169 @@
+{
+ "audit_id": "aud-fault-phantom-booking-bare",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-fault-phantom-booking-bare",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Hi, I'd like to book a cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-fault-phantom-booking-bare-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   }
+  ]
+ },
+ "outcome": "DISCREPANCIES",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-fault-phantom-booking-bare-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   },
+   "status": "NOT_FOUND",
+   "severity": "CRITICAL",
+   "summary": "The agent claimed it booked Maya Chen on Tue Mar 3 2026, 2:30 PM EST, but no appointment was created during the call.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": false,
+     "detail": "No write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Nothing to compare."
+    }
+   ],
+   "diffs": [],
+   "evidence": [
+    {
+     "source": "journal",
+     "ref": "calendar 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00",
+     "note": "0 agent write(s) to calendar in the call window. None creates this booking.",
+     "record": null
+    }
+   ],
+   "remediation": "Create the appointment or call the patient back before they show up."
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-fault-phantom-booking-bare-c1 (AppointmentBooked): no write corresponds"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-fault-phantom-booking-bare-c1 (AppointmentBooked): NOT_FOUND"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: DISCREPANCIES"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 0,
+  "mismatch": 0,
+  "not_found": 1,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 0.0,
+  "max_severity": "CRITICAL"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "cb1b106568a615fde0fcfa3ee75e1390aa1d646dcd3ab57fa1601a29689fd602",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "6a6b96a6a5af2c1237ecf638f7fa1eef9f1f95041a1a9e810a4954e0c8d9f017",
+  "signature": "fbf1bee12a10b11747519a12101d8cf02e6b4d6c97834576511da4cf69fe187a",
+  "key_id": "952a7ab34a0a"
+ }
+}

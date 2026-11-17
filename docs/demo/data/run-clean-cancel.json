@@ -1,0 +1,178 @@
+{
+ "audit_id": "aud-clean-cancel",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-clean-cancel",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Please cancel my appointment on Tuesday, March 3 at 10:00 AM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "Your appointment on Tuesday, March 3 at 10:00 AM is now cancelled.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-clean-cancel-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Your appointment on Tuesday, March 3 at 10:00 AM is now cancelled.",
+    "type": "Cancelled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T10:00:00-05:00"
+   }
+  ]
+ },
+ "outcome": "CLEAN",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-clean-cancel-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Your appointment on Tuesday, March 3 at 10:00 AM is now cancelled.",
+    "type": "Cancelled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T10:00:00-05:00"
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Appointment for Maya Chen on Tue Mar 3 2026, 10:00 AM EST was cancelled as claimed (apt_0001).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "start",
+     "claimed": "Tue Mar 3 2026, 10:00 AM EST",
+     "actual": "Tue Mar 3 2026, 10:00 AM EST",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "calendar",
+     "ref": "apt_0001",
+     "note": "Released by the agent during the call (journal #7; net: updated)",
+     "record": {
+      "id": "apt_0001",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-03T15:00:00+00:00",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "cancelled"
+     }
+    }
+   ],
+   "remediation": null
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-clean-cancel-c1 (Cancelled): exact match -> apt_0001"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-clean-cancel-c1 (Cancelled): VERIFIED"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: CLEAN"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 1,
+  "mismatch": 0,
+  "not_found": 0,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 1.0,
+  "max_severity": "INFO"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "d30307b2a927b80bce25bb048d9dabfada1c16f52296415f8c0c4268d32e75fb",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "f5c97bf8cf75868a51b380bf170defa43f52e4b975967205abd340d4fc96c500",
+  "signature": "df40255ad7148efd5aa7c62ced14ebbbc695d50a5e83cc9342c548ef0a778b43",
+  "key_id": "952a7ab34a0a"
+ }
+}

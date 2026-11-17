@@ -1,0 +1,302 @@
+{
+ "audit_id": "aud-edge-daylight-saving",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-edge-daylight-saving",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Hi, I'd like to book a cleaning with Dr. Patel on Monday, March 9 at 9:00 AM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "Okay, I've got you down with Dr. Patel on Monday, March 9 at 9:00 AM. I've sent a confirmation text to the number on file.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-edge-daylight-saving-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Okay, I've got you down with Dr. Patel on Monday, March 9 at 9:00 AM. I've sent a confirmation text to the number on file.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-09T09:00:00-04:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   },
+   {
+    "claim_id": "call-edge-daylight-saving-c2",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Okay, I've got you down with Dr. Patel on Monday, March 9 at 9:00 AM. I've sent a confirmation text to the number on file.",
+    "type": "ConfirmationSent",
+    "channel": "sms",
+    "to": "+15550101001",
+    "about_start": "2026-03-09T09:00:00-04:00"
+   }
+  ]
+ },
+ "outcome": "CLEAN",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-edge-daylight-saving-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Okay, I've got you down with Dr. Patel on Monday, March 9 at 9:00 AM. I've sent a confirmation text to the number on file.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-09T09:00:00-04:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Booking for Maya Chen on Mon Mar 9 2026, 9:00 AM EDT exists exactly as claimed (apt_0001).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "patient",
+     "claimed": "Maya Chen (+15550101001)",
+     "actual": "Maya Chen (+15550101001)",
+     "match": true
+    },
+    {
+     "field": "start",
+     "claimed": "Mon Mar 9 2026, 9:00 AM EDT",
+     "actual": "Mon Mar 9 2026, 9:00 AM EDT",
+     "match": true
+    },
+    {
+     "field": "provider",
+     "claimed": "Dr. Patel",
+     "actual": "Dr. Patel",
+     "match": true
+    },
+    {
+     "field": "duration",
+     "claimed": "30 min",
+     "actual": "30 min",
+     "match": true
+    },
+    {
+     "field": "reason",
+     "claimed": "cleaning",
+     "actual": "cleaning",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "calendar",
+     "ref": "apt_0001",
+     "note": "Appointment written by the agent during the call (journal #6; net: created)",
+     "record": {
+      "id": "apt_0001",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-09T13:00:00+00:00",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "booked"
+     }
+    }
+   ],
+   "remediation": null
+  },
+  {
+   "claim": {
+    "claim_id": "call-edge-daylight-saving-c2",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Okay, I've got you down with Dr. Patel on Monday, March 9 at 9:00 AM. I've sent a confirmation text to the number on file.",
+    "type": "ConfirmationSent",
+    "channel": "sms",
+    "to": "+15550101001",
+    "about_start": "2026-03-09T09:00:00-04:00"
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Confirmation was sent to +15550101001 as claimed (msg_0001).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "recipient",
+     "claimed": "+15550101001",
+     "actual": "+15550101001",
+     "match": true
+    },
+    {
+     "field": "channel",
+     "claimed": "sms",
+     "actual": "sms",
+     "match": true
+    },
+    {
+     "field": "delivery",
+     "claimed": "sent",
+     "actual": "sent",
+     "match": true
+    },
+    {
+     "field": "stated_time",
+     "claimed": "Mon Mar 9 2026, 9:00 AM EDT",
+     "actual": "Mon Mar 9 2026, 9:00 AM EDT",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "messages",
+     "ref": "msg_0001",
+     "note": "Message logged during the call (journal #7; net: created)",
+     "record": {
+      "id": "msg_0001",
+      "recipient": "+15550101001",
+      "channel": "sms",
+      "body": "Brightside Dental: your appointment with Dr. Patel is confirmed for Monday, March 9 at 9:00 AM.",
+      "status": "sent",
+      "sent_at": "2026-03-02T14:05:08+00:00"
+     }
+    }
+   ],
+   "remediation": null
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-edge-daylight-saving-c1 (AppointmentBooked): exact match -> apt_0001"
+  },
+  {
+   "seq": 7,
+   "stage": "reconcile",
+   "message": "call-edge-daylight-saving-c2 (ConfirmationSent): exact match -> msg_0001"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "call-edge-daylight-saving-c1 (AppointmentBooked): VERIFIED"
+  },
+  {
+   "seq": 9,
+   "stage": "verdict",
+   "message": "call-edge-daylight-saving-c2 (ConfirmationSent): VERIFIED"
+  },
+  {
+   "seq": 10,
+   "stage": "verdict",
+   "message": "Outcome: CLEAN"
+  }
+ ],
+ "stats": {
+  "claims": 2,
+  "verified": 2,
+  "mismatch": 0,
+  "not_found": 0,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 1.0,
+  "max_severity": "INFO"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "82f52fd50ca29dedec874272b8bb133699fc715a66eb168af3e2ffe6a93796ef",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "8eab9f52ca322b6ec1ccaea274ba9e02ee8c520c0404b7d108a29cefe8e0f832",
+  "signature": "15f87b7d90019342d6964ee4c194210df18e2b82c479e3c2916982c0f942192b",
+  "key_id": "952a7ab34a0a"
+ }
+}

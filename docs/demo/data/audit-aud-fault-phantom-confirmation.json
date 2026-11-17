@@ -1,0 +1,270 @@
+{
+ "audit_id": "aud-fault-phantom-confirmation",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-fault-phantom-confirmation",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Hi, I'd like to book a cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-fault-phantom-confirmation-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   },
+   {
+    "claim_id": "call-fault-phantom-confirmation-c2",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "type": "ConfirmationSent",
+    "channel": "sms",
+    "to": "+15550101001",
+    "about_start": "2026-03-03T14:30:00-05:00"
+   }
+  ]
+ },
+ "outcome": "DISCREPANCIES",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-fault-phantom-confirmation-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Booking for Maya Chen on Tue Mar 3 2026, 2:30 PM EST exists exactly as claimed (apt_0001).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "patient",
+     "claimed": "Maya Chen (+15550101001)",
+     "actual": "Maya Chen (+15550101001)",
+     "match": true
+    },
+    {
+     "field": "start",
+     "claimed": "Tue Mar 3 2026, 2:30 PM EST",
+     "actual": "Tue Mar 3 2026, 2:30 PM EST",
+     "match": true
+    },
+    {
+     "field": "provider",
+     "claimed": "Dr. Patel",
+     "actual": "Dr. Patel",
+     "match": true
+    },
+    {
+     "field": "duration",
+     "claimed": "30 min",
+     "actual": "30 min",
+     "match": true
+    },
+    {
+     "field": "reason",
+     "claimed": "cleaning",
+     "actual": "cleaning",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "calendar",
+     "ref": "apt_0001",
+     "note": "Appointment written by the agent during the call (journal #6; net: created)",
+     "record": {
+      "id": "apt_0001",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-03T19:30:00+00:00",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "booked"
+     }
+    }
+   ],
+   "remediation": null
+  },
+  {
+   "claim": {
+    "claim_id": "call-fault-phantom-confirmation-c2",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "type": "ConfirmationSent",
+    "channel": "sms",
+    "to": "+15550101001",
+    "about_start": "2026-03-03T14:30:00-05:00"
+   },
+   "status": "NOT_FOUND",
+   "severity": "MEDIUM",
+   "summary": "The agent claimed it sent an SMS confirmation to +15550101001, but the message log shows nothing sent during the call.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": false,
+     "detail": "No write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Nothing to compare."
+    }
+   ],
+   "diffs": [],
+   "evidence": [
+    {
+     "source": "journal",
+     "ref": "messages 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00",
+     "note": "0 agent write(s) to messages in the call window. None is this confirmation.",
+     "record": null
+    }
+   ],
+   "remediation": "Send the confirmation the caller was promised."
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-fault-phantom-confirmation-c1 (AppointmentBooked): exact match -> apt_0001"
+  },
+  {
+   "seq": 7,
+   "stage": "reconcile",
+   "message": "call-fault-phantom-confirmation-c2 (ConfirmationSent): no write corresponds"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "call-fault-phantom-confirmation-c1 (AppointmentBooked): VERIFIED"
+  },
+  {
+   "seq": 9,
+   "stage": "verdict",
+   "message": "call-fault-phantom-confirmation-c2 (ConfirmationSent): NOT_FOUND"
+  },
+  {
+   "seq": 10,
+   "stage": "verdict",
+   "message": "Outcome: DISCREPANCIES"
+  }
+ ],
+ "stats": {
+  "claims": 2,
+  "verified": 1,
+  "mismatch": 0,
+  "not_found": 1,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 0.5,
+  "max_severity": "MEDIUM"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "d70482475db4ce51ca21b3ca2c16d2e619038efcc5a17d7cbbec8f776e86bce7",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "e362a7c7755c5abed225f48197d90cc3a5361778dd2377f4633ce9d0ce697567",
+  "signature": "73c8af2059c53a038698ac1a6cb6b7585b6c52aa0e606c5643b6e1832322e838",
+  "key_id": "952a7ab34a0a"
+ }
+}

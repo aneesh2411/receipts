@@ -1,0 +1,208 @@
+{
+ "audit_id": "aud-fault-zombie-reschedule",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-fault-zombie-reschedule",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "I need to move my appointment from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "I've moved your appointment from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-fault-zombie-reschedule-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've moved your appointment from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "type": "Rescheduled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "old_start": "2026-03-03T10:00:00-05:00",
+    "new_start": "2026-03-05T11:00:00-05:00",
+    "provider": "Dr. Patel"
+   }
+  ]
+ },
+ "outcome": "DISCREPANCIES",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-fault-zombie-reschedule-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've moved your appointment from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "type": "Rescheduled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "old_start": "2026-03-03T10:00:00-05:00",
+    "new_start": "2026-03-05T11:00:00-05:00",
+    "provider": "Dr. Patel"
+   },
+   "status": "MISMATCH",
+   "severity": "HIGH",
+   "summary": "The calendar changed, but not the way the caller was told. old_slot_released: claimed released, actual still booked (apt_0001).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": false,
+     "detail": "Failed: old_slot_released."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "new_start",
+     "claimed": "Thu Mar 5 2026, 11:00 AM EST",
+     "actual": "Thu Mar 5 2026, 11:00 AM EST",
+     "match": true
+    },
+    {
+     "field": "old_slot_released",
+     "claimed": "released",
+     "actual": "still booked (apt_0001)",
+     "match": false
+    },
+    {
+     "field": "provider",
+     "claimed": "Dr. Patel",
+     "actual": "Dr. Patel",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "calendar",
+     "ref": "apt_0002",
+     "note": "Changed by the agent during the call (journal #7; net: created)",
+     "record": {
+      "id": "apt_0002",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-05T16:00:00+00:00",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "booked"
+     }
+    },
+    {
+     "source": "calendar",
+     "ref": "apt_0001",
+     "note": "Original appointment is still booked (current state)",
+     "record": {
+      "id": "apt_0001",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-03T15:00:00Z",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "booked"
+     }
+    }
+   ],
+   "remediation": "Reconcile the calendar with what the caller was told: one appointment, at the promised time, and the old slot released."
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-fault-zombie-reschedule-c1 (Rescheduled): exact match -> apt_0002"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-fault-zombie-reschedule-c1 (Rescheduled): MISMATCH"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: DISCREPANCIES"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 0,
+  "mismatch": 1,
+  "not_found": 0,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 0.0,
+  "max_severity": "HIGH"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "f20d25ed351afa300bcf5c9252cc9964c8b580691677b7851b01ecaf97203778",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "c5cb994db9c4a28d1c84156a9e2c3da02c217c10e25cbc342cee68fdd1ada3d8",
+  "signature": "5b2fb3aab5273939192536bb57c1df6cf71b7d80d4a1b96137b60a811bc79c45",
+  "key_id": "952a7ab34a0a"
+ }
+}

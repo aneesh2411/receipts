@@ -1,0 +1,185 @@
+{
+ "audit_id": "aud-gap-garbled-handoff",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-gap-garbled-handoff",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "I also have a billing question about my last invoice. Can someone help with that?",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-gap-garbled-handoff-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "type": "HandoffCreated",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "summary": "Caller needs help with a billing question about my last invoice",
+    "priority": "normal"
+   }
+  ]
+ },
+ "outcome": "CLEAN",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-gap-garbled-handoff-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "type": "HandoffCreated",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "summary": "Caller needs help with a billing question about my last invoice",
+    "priority": "normal"
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Handoff ticket exists as claimed (tkt_0001, priority normal).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "patient",
+     "claimed": "Maya Chen (+15550101001)",
+     "actual": "Maya Chen (+15550101001)",
+     "match": true
+    },
+    {
+     "field": "priority",
+     "claimed": "normal",
+     "actual": "normal",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "tickets",
+     "ref": "tkt_0001",
+     "note": "Ticket created during the call. The summary is free text and is not compared (journal #6; net: created)",
+     "record": {
+      "id": "tkt_0001",
+      "patient_id": "pat_0001",
+      "summary": "Caller asked about parking validation",
+      "priority": "normal",
+      "status": "open",
+      "created_at": "2026-03-02T14:05:08+00:00"
+     }
+    }
+   ],
+   "remediation": null
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-gap-garbled-handoff-c1 (HandoffCreated): exact match -> tkt_0001"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-gap-garbled-handoff-c1 (HandoffCreated): VERIFIED"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: CLEAN"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 1,
+  "mismatch": 0,
+  "not_found": 0,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 1.0,
+  "max_severity": "INFO"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "c617536c6e89831f0121adb6df03a08f1584ba184dd601b0f96316622e107850",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "848e107bba524e3a1a01e04f1676ffb3f8c4b19f790b8d8a3154bc5c3dcf5090",
+  "signature": "bd78e2c574fb1842c08078c7b2c2f48779dc37f10c4ccff9aa04a20e31e09b1e",
+  "key_id": "952a7ab34a0a"
+ }
+}

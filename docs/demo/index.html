@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receipts | demo</title>
+<style>
+  :root {
+    --desk: #14161a; --panel: #1c1f26; --line: #2c313c; --ink: #e8e6df; --dim: #8b919e;
+    --paper: #f6f1e4; --paper-ink: #1d1b16; --paper-dim: #6f6a5c; --paper-line: #d9d0b8;
+    --ok: #1f9d55; --warn: #c77800; --bad: #d03b3b; --unk: #8a52c7; --accent: #4f8cff;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--desk); color: var(--ink); font: 15px/1.5 var(--sans); }
+  header { position: sticky; top: 0; z-index: 5; background: rgba(20,22,26,.94);
+    backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); padding: 12px 16px; }
+  .bar { max-width: 1180px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 10px;
+    align-items: center; }
+  .brand { font: 700 18px var(--mono); letter-spacing: .14em; margin-right: 6px; }
+  .brand small { display: block; font: 400 11px var(--sans); letter-spacing: .02em;
+    color: var(--dim); }
+  select, button { font: 14px var(--sans); color: var(--ink); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; min-height: 38px; }
+  select { flex: 1 1 240px; min-width: 0; }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff;
+    font-weight: 600; }
+  button:focus-visible, select:focus-visible { outline: 2px solid var(--accent);
+    outline-offset: 2px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 16px; }
+  .story { color: var(--dim); margin: 4px 0 14px; }
+  .story b { color: var(--ink); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+  .colhead { font: 600 11px var(--mono); letter-spacing: .16em; color: var(--dim);
+    text-transform: uppercase; padding: 6px 0 10px; border-bottom: 1px solid var(--line);
+    margin-bottom: 12px; }
+  .row { display: contents; }
+  .cell { padding: 5px 0; min-width: 0; }
+  .row.enter .cell > * { animation: rise .35s ease-out both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+  .turn { max-width: 92%; padding: 9px 13px; border-radius: 14px; background: var(--panel);
+    border: 1px solid var(--line); }
+  .turn.agent { border-color: #33486e; background: #1a2333; }
+  .turn .who { font: 600 10px var(--mono); letter-spacing: .14em; color: var(--dim);
+    text-transform: uppercase; display: block; }
+  .claim { border: 1px dashed var(--accent); border-radius: 10px; padding: 10px 12px;
+    background: rgba(79,140,255,.07); }
+  .claim .tag { font: 600 10px var(--mono); letter-spacing: .14em; color: var(--accent);
+    text-transform: uppercase; }
+  .claim .said { margin: 4px 0 0; font-style: italic; }
+  .claim .src { color: var(--dim); font-size: 12px; margin-top: 4px; }
+  .checking { color: var(--dim); font: 13px var(--mono); padding: 10px 0; }
+  .checking::after { content: ""; animation: dots 1s steps(4) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; }
+    75% { content: "..."; } }
+  .receipt { position: relative; background: var(--paper); color: var(--paper-ink);
+    font: 13px/1.45 var(--mono); padding: 14px 14px 16px; border-radius: 3px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.35); overflow: hidden; }
+  .receipt::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 12px;
+    background: radial-gradient(circle at 6px 0, transparent 6px, var(--paper) 6.5px) 0 0/12px 12px; }
+  .receipt h3 { margin: 0 0 6px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+  .receipt p { margin: 6px 0; font-family: var(--sans); font-size: 14px; }
+  .receipt .fix { color: var(--paper-dim); font-size: 13px; }
+  .receipt table { width: 100%; border-collapse: collapse; margin: 8px 0; table-layout: fixed; }
+  .receipt th { text-align: left; font-size: 10px; letter-spacing: .1em; color: var(--paper-dim);
+    text-transform: uppercase; padding: 3px 4px; border-bottom: 1px dashed var(--paper-line); }
+  .receipt td { padding: 4px; vertical-align: top; overflow-wrap: anywhere;
+    border-bottom: 1px dashed var(--paper-line); }
+  .receipt tr.diff td { background: rgba(208,59,59,.12); }
+  .receipt tr.diff td:last-child { color: var(--bad); font-weight: 700; }
+  .receipt td:first-child, .receipt th:first-child { width: 24%; }
+  .receipt td:last-child, .receipt th:last-child { width: 15%; }
+  .ev { color: var(--paper-dim); font-size: 12px; margin: 3px 0; overflow-wrap: anywhere; }
+  .stamp { display: inline-block; font: 800 12px var(--mono); letter-spacing: .14em;
+    padding: 4px 9px; border: 2.5px solid currentColor; border-radius: 4px;
+    transform: rotate(-3deg); margin: 2px 0 6px; animation: thud .28s ease-out both; }
+  @keyframes thud { from { opacity: 0; transform: rotate(-3deg) scale(1.9); } }
+  .VERIFIED { color: var(--ok); } .MISMATCH { color: var(--warn); }
+  .NOT_FOUND { color: var(--bad); } .UNVERIFIABLE { color: var(--unk); }
+  .sev { float: right; font: 700 10px var(--mono); letter-spacing: .1em; padding: 2px 6px;
+    border-radius: 3px; background: var(--paper-line); color: var(--paper-ink); }
+  .sev.HIGH, .sev.CRITICAL { background: var(--bad); color: #fff; }
+  .sev.MEDIUM { background: var(--warn); color: #fff; }
+  .silence { color: var(--dim); font-style: italic; padding: 10px 0; }
+  .divider { grid-column: 1 / -1; font: 600 11px var(--mono); letter-spacing: .16em;
+    color: var(--dim); text-transform: uppercase; border-top: 1px solid var(--line);
+    margin-top: 14px; padding-top: 10px; }
+  .final { grid-column: 1 / -1; margin-top: 14px; padding: 14px 16px; border-radius: 10px;
+    background: var(--panel); border: 1px solid var(--line); }
+  .final .big { font: 800 20px var(--mono); letter-spacing: .1em; }
+  .final .CLEAN { color: var(--ok); } .final .DISCREPANCIES { color: var(--bad); }
+  .final .INCONCLUSIVE { color: var(--unk); }
+  .final .meta { color: var(--dim); font-size: 13px; overflow-wrap: anywhere; }
+  .final a { color: var(--accent); }
+  .err { color: var(--bad); padding: 12px 0; }
+  .mobile-label { display: none; }
+  @media (max-width: 760px) {
+    .cols { grid-template-columns: 1fr; }
+    .colhead { display: none; }
+    .cell:empty { display: none; }
+    .mobile-label { display: block; font: 600 10px var(--mono); letter-spacing: .14em;
+      color: var(--dim); text-transform: uppercase; margin: 6px 0 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">RECEIPTS<small>every claim needs a receipt</small></div>
+    <span style="color: var(--dim); font-size: 12px;">static demo: calls pre-audited by the same code that runs the API (<a href="https://github.com/aneesh2411/receipts" style="color: var(--accent);">source</a>)</span>
+    <select id="scenario" aria-label="Scenario"></select>
+    <button id="play" class="primary">Play</button>
+    <button id="step">Step</button>
+    <button id="end">Skip to end</button>
+  </div>
+</header>
+<main>
+  <p class="story" id="story">Pick a call. Watch the agent make its claims on the left. Watch the
+    auditor check each one against the system of record on the right.</p>
+  <div class="cols" id="cols" aria-live="polite">
+    <div class="colhead">The call: what the agent said</div>
+    <div class="colhead">The record: what actually happened</div>
+  </div>
+  <div class="err" id="err" role="alert"></div>
+</main>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const STAMP = { VERIFIED: "RECEIPT FOUND", MISMATCH: "RECEIPT DOES NOT MATCH",
+  NOT_FOUND: "NO RECEIPT", UNVERIFIABLE: "COULD NOT CHECK" };
+const GROUPS = { edge: "Edge cases", fault: "Agent faults", clean: "Honest calls",
+  gap: "Known gaps (auditor misses these)" };
+let queue = [], timer = null, playing = false, apiKey = null;
+
+// Every string from the server is untrusted: build DOM with textContent only.
+function h(tag, cls, text) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  if (text !== undefined && text !== null) el.textContent = text;
+  return el;
+}
+
+async function api(path, method = "GET") {
+  // Static demo: the responses of the live API, baked by scripts/export_demo.py.
+  let file;
+  if (path === "/demo/scenarios") {
+    file = "data/scenarios.json";
+  } else if (path.startsWith("/demo/scenarios/")) {
+    file = "data/run-" + path.split("/")[3] + ".json";
+  } else if (path.startsWith("/audit/")) {
+    file = "data/audit-" + path.split("/")[2] + ".json";
+  } else {
+    throw new Error("the static demo only serves baked calls: " + path);
+  }
+  const res = await fetch(encodeURI(file));
+  if (!res.ok) throw new Error("missing baked demo data: " + file);
+  return await res.json();
+}
+
+function row(left, right, labels) {
+  const r = h("div", "row enter");
+  const a = h("div", "cell"), b = h("div", "cell");
+  if (left) { if (labels) a.append(h("span", "mobile-label", labels[0])); a.append(left); }
+  if (right) { if (labels) b.append(h("span", "mobile-label", labels[1])); b.append(right); }
+  r.append(a, b);
+  return { el: r, right: b };
+}
+
+function turnEl(t) {
+  const el = h("div", "turn " + t.speaker);
+  el.append(h("span", "who", t.speaker), h("span", "", t.text));
+  return el;
+}
+
+function claimEl(v) {
+  const c = v.claim, el = h("div", "claim");
+  el.append(h("div", "tag", "Claim: " + c.type));
+  if (c.utterance) el.append(h("p", "said", "“" + c.utterance + "”"));
+  el.append(h("div", "src", c.source === "transcript"
+    ? "Said to the caller. Never logged by the agent. Recovered from the transcript."
+    : "Logged by the agent as a structured claim."));
+  return el;
+}
+
+function receiptEl(title, status, severity, summary, diffs, evidence, fix) {
+  const el = h("div", "receipt");
+  el.append(h("span", "sev " + severity, severity), h("h3", "", title));
+  if (status) el.append(h("div", "stamp " + status, STAMP[status]));
+  el.append(h("p", "", summary));
+  if (diffs && diffs.length) {
+    const table = h("table"), head = h("tr");
+    ["Field", "Agent claimed", "System of record", ""].forEach((x) => head.append(h("th", "", x)));
+    table.append(head);
+    diffs.forEach((d) => {
+      const tr = h("tr", d.match ? "" : "diff");
+      tr.append(h("td", "", d.field), h("td", "", d.claimed), h("td", "", d.actual),
+        h("td", "", d.match ? "ok" : "DIFF"));
+      table.append(tr);
+    });
+    el.append(table);
+  }
+  (evidence || []).forEach((e) => el.append(h("div", "ev", e.source + " " + e.ref + ": " + e.note)));
+  if (fix) el.append(h("p", "fix", "Fix: " + fix));
+  return el;
+}
+
+function buildQueue(report) {
+  const q = [], byTurn = {};
+  report.verdicts.forEach((v) => (byTurn[v.claim.turn_index] ||= []).push(v));
+  report.call.transcript.forEach((t) => {
+    q.push({ kind: "turn", t });
+    (byTurn[t.index] || []).forEach((v) => q.push({ kind: "claim", v }));
+  });
+  if (report.findings.length) q.push({ kind: "divider", text: "Beyond the claims" });
+  report.findings.forEach((f) => q.push({ kind: "finding", f }));
+  q.push({ kind: "final", report });
+  return q;
+}
+
+function render(item, instant) {
+  const cols = $("cols");
+  if (item.kind === "turn") {
+    cols.append(row(turnEl(item.t), null).el);
+  } else if (item.kind === "claim") {
+    const v = item.v;
+    const receipt = () => receiptEl("System of record", v.status, v.severity, v.summary,
+      v.diffs, v.evidence, v.remediation);
+    const r = row(claimEl(v), instant ? receipt() : h("div", "checking", "checking the record"),
+      ["The agent claimed", "The record shows"]);
+    cols.append(r.el);
+    if (!instant) setTimeout(() => r.right.lastChild.replaceWith(receipt()), 750);
+  } else if (item.kind === "divider") {
+    cols.append(h("div", "divider", item.text));
+  } else if (item.kind === "finding") {
+    const f = item.f;
+    cols.append(row(h("div", "silence", "The agent said nothing about this."),
+      receiptEl(f.kind.replace("_", " ") + ": " + f.code, null, f.severity, f.summary, null,
+        f.evidence, f.remediation), ["The agent claimed", "The record shows"]).el);
+  } else {
+    const rep = item.report, s = rep.stats, el = h("div", "final");
+    el.append(h("div", "big " + rep.outcome, rep.outcome));
+    const trust = s.trust_score === null ? "n/a" : Math.round(s.trust_score * 100) + "%";
+    el.append(h("div", "", `${s.claims} claims: ${s.verified} verified, ${s.mismatch} mismatch, `
+      + `${s.not_found} not found, ${s.unverifiable} unverifiable. ${s.findings} finding(s) `
+      + `beyond the claims. Claim trust ${trust}.`));
+    const meta = h("div", "meta", `Audit ${rep.audit_id} sealed sha256:`
+      + `${rep.seal ? rep.seal.chain_hash.slice(0, 24) : "unsealed"}… `);
+    const link = h("a", "", "Full report (Markdown)");
+    link.href = `data/report-${rep.audit_id}.md`;
+    link.target = "_blank"; link.rel = "noopener";
+    meta.append(link);
+    el.append(meta);
+    cols.append(el);
+  }
+  if (!instant) window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+
+function stop() { playing = false; clearTimeout(timer); $("play").textContent = "Play"; }
+
+function tick() {
+  if (!queue.length) return stop();
+  const item = queue.shift();
+  render(item, false);
+  if (!queue.length) return stop();
+  if (playing) timer = setTimeout(tick, item.kind === "claim" ? 2300 : 950);
+}
+
+function reset() {
+  stop();
+  [...$("cols").children].slice(2).forEach((n) => n.remove());
+  $("err").textContent = "";
+}
+
+async function load(run) {
+  reset();
+  try {
+    const report = await run();
+    queue = buildQueue(report);
+    playing = true; $("play").textContent = "Pause";
+    tick();
+  } catch (e) { $("err").textContent = "Could not load: " + e.message; }
+}
+
+function runSelected() {
+  const opt = $("scenario").selectedOptions[0];
+  if (!opt) return;
+  $("story").replaceChildren(h("b", "", opt.dataset.title + ". "), opt.dataset.story);
+  load(() => api(`/demo/scenarios/${encodeURIComponent(opt.value)}/run`, "POST"));
+}
+
+$("play").onclick = () => {
+  if (playing) return stop();
+  if (!queue.length) return runSelected();
+  playing = true; $("play").textContent = "Pause"; tick();
+};
+$("step").onclick = () => { stop(); if (queue.length) render(queue.shift(), false); else runSelected(); };
+$("end").onclick = () => { stop(); while (queue.length) render(queue.shift(), true); };
+$("scenario").onchange = runSelected;
+
+(async function init() {
+  const audit = new URLSearchParams(location.search).get("audit");
+  try {
+    const scenarios = await api("/demo/scenarios");
+    const sel = $("scenario");
+    Object.entries(GROUPS).forEach(([key, label]) => {
+      const group = document.createElement("optgroup");
+      group.label = label;
+      scenarios.filter((s) => s.group === key).forEach((s) => {
+        const o = h("option", "", s.title);
+        o.value = s.id; o.dataset.title = s.title; o.dataset.story = s.story;
+        group.append(o);
+      });
+      if (group.children.length) sel.append(group);
+    });
+    sel.value = "edge-three-lies";
+  } catch (e) { $("err").textContent = "Scenarios unavailable: " + e.message; }
+  if (audit) load(() => api(`/audit/${encodeURIComponent(audit)}/report`));
+})();
+</script>
+</body>
+</html>

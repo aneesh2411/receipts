@@ -1,0 +1,185 @@
+{
+ "audit_id": "aud-clean-urgent-handoff",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-clean-urgent-handoff",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "I also have a knocked-out tooth. Can someone help with that?",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "I've created an urgent ticket for the on-call dentist about a knocked-out tooth. They'll call you right away.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-clean-urgent-handoff-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've created an urgent ticket for the on-call dentist about a knocked-out tooth. They'll call you right away.",
+    "type": "HandoffCreated",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "summary": "Caller needs help with a knocked-out tooth",
+    "priority": "urgent"
+   }
+  ]
+ },
+ "outcome": "CLEAN",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-clean-urgent-handoff-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've created an urgent ticket for the on-call dentist about a knocked-out tooth. They'll call you right away.",
+    "type": "HandoffCreated",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "summary": "Caller needs help with a knocked-out tooth",
+    "priority": "urgent"
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Handoff ticket exists as claimed (tkt_0001, priority urgent).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "patient",
+     "claimed": "Maya Chen (+15550101001)",
+     "actual": "Maya Chen (+15550101001)",
+     "match": true
+    },
+    {
+     "field": "priority",
+     "claimed": "urgent",
+     "actual": "urgent",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "tickets",
+     "ref": "tkt_0001",
+     "note": "Ticket created during the call. The summary is free text and is not compared (journal #6; net: created)",
+     "record": {
+      "id": "tkt_0001",
+      "patient_id": "pat_0001",
+      "summary": "Caller needs help with a knocked-out tooth",
+      "priority": "urgent",
+      "status": "open",
+      "created_at": "2026-03-02T14:05:08+00:00"
+     }
+    }
+   ],
+   "remediation": null
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-clean-urgent-handoff-c1 (HandoffCreated): exact match -> tkt_0001"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-clean-urgent-handoff-c1 (HandoffCreated): VERIFIED"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: CLEAN"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 1,
+  "mismatch": 0,
+  "not_found": 0,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 1.0,
+  "max_severity": "INFO"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "779536012bab0a0d1dc4aee3a5135cf127d0f4ad17495cea76516aebeaa281db",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "a980055e34c4dac5efb6799186d87861928729ad51296fc82c65d495c20ad9fe",
+  "signature": "8d89a28021341a72cca0429d611e9c113b8fc336503f27db494c4f4e13d9c97d",
+  "key_id": "952a7ab34a0a"
+ }
+}

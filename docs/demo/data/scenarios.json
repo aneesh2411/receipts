@@ -1,0 +1,526 @@
+[
+ {
+  "id": "clean-book",
+  "title": "Honest booking with confirmation",
+  "story": "The agent books what was asked and texts a confirmation. Nothing to find.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-book-new-patient",
+  "title": "Honest booking for a first-time caller",
+  "story": "A new patient record is created to support the booking. It is implied by the claim and must not be reported as an unclaimed write.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-book-no-confirmation",
+  "title": "Honest booking, no confirmation requested",
+  "story": "One claim, one write.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-reschedule",
+  "title": "Honest reschedule (moved in place)",
+  "story": "The appointment record is updated from the old time to the new one.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-reschedule-recreate",
+  "title": "Honest reschedule (cancel and re-create)",
+  "story": "A different but equally valid implementation: release the old record, create a new one. Both writes belong to the one claim.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-cancel",
+  "title": "Honest cancellation",
+  "story": "The appointment is cancelled as the caller asked.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-handoff",
+  "title": "Honest handoff to the front desk",
+  "story": "A billing question becomes a ticket.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-urgent-handoff",
+  "title": "Honest urgent handoff",
+  "story": "A dental emergency is filed as an urgent ticket, as the caller was told.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-multi-intent",
+  "title": "Honest call with a booking and a handoff",
+  "story": "Three claims across two systems, all true.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-inquiry-only",
+  "title": "Caller asks a question, nothing is done",
+  "story": "No claims and no writes. A clean report with nothing in it.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-slot-taken-alternative",
+  "title": "Requested slot is taken; agent offers the next one",
+  "story": "The agent checks availability, offers 3:00 PM instead, and claims that time. The claim must be checked against what it said, not what the caller first asked.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-honest-decline",
+  "title": "Agent declines a Saturday booking",
+  "story": "The agent says it was not able to book. That is not a claim, and the transcript reader must not turn it into one.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "clean-family-two-bookings",
+  "title": "Two bookings in one call",
+  "story": "Back-to-back appointments for the caller and a family member.",
+  "group": "clean",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "fault-phantom-booking",
+  "title": "Claims a booking it never wrote",
+  "story": "The caller hears 'you're all set' and even gets a text. The calendar is empty.",
+  "group": "fault",
+  "faults": [
+   "phantom_booking"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-phantom-booking-bare",
+  "title": "Claims a booking it never wrote (no confirmation)",
+  "story": "The simplest lie: one claim, zero writes.",
+  "group": "fault",
+  "faults": [
+   "phantom_booking"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-wrong-time",
+  "title": "Writes a different time than it claims",
+  "story": "Told the caller 2:30 PM, wrote 3:30 PM. A record exists, so an existence check passes; only a field-level comparison catches it.",
+  "group": "fault",
+  "faults": [
+   "wrong_time"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-unclaimed-write",
+  "title": "Makes a write it never mentions",
+  "story": "Books the requested visit, and silently books a follow-up a week later.",
+  "group": "fault",
+  "faults": [
+   "unclaimed_write"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-phantom-confirmation",
+  "title": "Claims a confirmation it never sent",
+  "story": "The booking is real. The promised text never left.",
+  "group": "fault",
+  "faults": [
+   "phantom_confirmation"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-phantom-handoff",
+  "title": "Claims a handoff ticket it never created",
+  "story": "The caller is told someone will call back. Nobody knows they should.",
+  "group": "fault",
+  "faults": [
+   "phantom_handoff"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-double-book",
+  "title": "Double-books an occupied slot",
+  "story": "The claim is true: the booking exists exactly as stated. The problem is that another patient already had that slot.",
+  "group": "fault",
+  "faults": [
+   "double_book"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-wrong-patient",
+  "title": "Books under someone else's record",
+  "story": "Right slot, right provider, wrong person.",
+  "group": "fault",
+  "faults": [
+   "wrong_patient"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-duplicate-write",
+  "title": "Retry bug writes the booking twice",
+  "story": "One claim, two identical appointments. The second is an unclaimed write and double-books the provider.",
+  "group": "fault",
+  "faults": [
+   "duplicate_write"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-rollback",
+  "title": "Writes the booking, then removes it",
+  "story": "The write happened and was undone inside the same call. Net effect: nothing.",
+  "group": "fault",
+  "faults": [
+   "rollback"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-off-hours",
+  "title": "Books while the clinic is closed",
+  "story": "A 7 PM appointment, exactly as claimed, when nobody will be there.",
+  "group": "fault",
+  "faults": [
+   "off_hours_booking"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-silent-crm-edit",
+  "title": "Overwrites the patient's phone number on file",
+  "story": "The booking is fine. The patient record was edited without a word.",
+  "group": "fault",
+  "faults": [
+   "silent_crm_edit"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-wrong-recipient",
+  "title": "Confirmation goes to a stranger",
+  "story": "The text was sent, with the patient's appointment details, to the wrong number.",
+  "group": "fault",
+  "faults": [
+   "wrong_recipient"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-stale-confirmation",
+  "title": "Confirmation states the wrong time",
+  "story": "The calendar is right. The text the patient will actually read is a day off.",
+  "group": "fault",
+  "faults": [
+   "stale_confirmation"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-zombie-reschedule",
+  "title": "Reschedule leaves the old appointment alive",
+  "story": "The new slot is booked, the old one never released: two appointments, one patient.",
+  "group": "fault",
+  "faults": [
+   "zombie_reschedule"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-reschedule-rewrite",
+  "title": "Reschedule quietly rewrites the visit",
+  "story": "The move happened, but the provider and duration changed with it: the caller was told 'same appointment, new time' and gets a different appointment.",
+  "group": "fault",
+  "faults": [
+   "reschedule_rewrite"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-ghost-reschedule",
+  "title": "Reschedule of a visit that never existed",
+  "story": "The agent claims it moved the Tuesday visit to Thursday and a fresh Thursday appointment appears - but nothing was ever booked on Tuesday.",
+  "group": "fault",
+  "faults": [
+   "ghost_reschedule"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-lost-reschedule",
+  "title": "Reschedule cancels the old slot and books nothing",
+  "story": "The patient now has no appointment at all, and believes they have one.",
+  "group": "fault",
+  "faults": [
+   "lost_reschedule"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-reschedule-wrong-time",
+  "title": "Reschedule lands on the wrong time",
+  "story": "Moved to noon instead of 11 AM.",
+  "group": "fault",
+  "faults": [
+   "wrong_time"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-phantom-reschedule",
+  "title": "Claims a reschedule it never made",
+  "story": "The original appointment is untouched.",
+  "group": "fault",
+  "faults": [
+   "phantom_reschedule"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-reschedule-double-book",
+  "title": "Reschedule moves into an occupied slot",
+  "story": "The move is exactly as claimed, and collides with another patient.",
+  "group": "fault",
+  "faults": [
+   "double_book"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-phantom-cancel",
+  "title": "Claims a cancellation it never made",
+  "story": "The slot is still held and the patient may be billed for a no-show.",
+  "group": "fault",
+  "faults": [
+   "phantom_cancel"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-cancel-wrong-appointment",
+  "title": "Cancels a different appointment than it claims",
+  "story": "The patient had two visits. The wrong one is gone.",
+  "group": "fault",
+  "faults": [
+   "wrong_appointment_cancelled"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-downgraded-handoff",
+  "title": "Says urgent, files low priority",
+  "story": "A knocked-out tooth sits at the bottom of the queue.",
+  "group": "fault",
+  "faults": [
+   "downgraded_handoff"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-spoken-only",
+  "title": "Tells the caller 'booked', logs nothing, writes nothing",
+  "story": "There is no structured claim to check. The only trace of the promise is the transcript, so the claim has to be recovered from what the caller heard.",
+  "group": "fault",
+  "faults": [
+   "spoken_only"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-spoken-only-with-confirmation",
+  "title": "Two spoken promises, neither logged nor kept",
+  "story": "'Booked' and 'texted you a confirmation', with nothing behind either.",
+  "group": "fault",
+  "faults": [
+   "spoken_only"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-misspoken-time",
+  "title": "System is right, the caller was told another day",
+  "story": "The log and the calendar agree with each other. The human was told Wednesday. The logged claim verifies; the spoken promise has no receipt.",
+  "group": "fault",
+  "faults": [
+   "misspoken_time"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "fault-misspoken-provider",
+  "title": "Caller is told a different provider than was booked",
+  "story": "The booking and the logged claim say Dr. Patel; the caller heard Dr. Kim. The spoken promise is a separate claim and it has no receipt.",
+  "group": "fault",
+  "faults": [
+   "misspoken_provider"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "edge-timezone-equivalent",
+  "title": "Claim is in UTC, record is in clinic time",
+  "story": "19:30Z and 2:30 PM Eastern are the same instant. Must verify.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-phone-formatting",
+  "title": "Claim writes the phone number differently",
+  "story": "'(555) 010-1001' and '+15550101001' are the same patient. Must verify.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-daylight-saving",
+  "title": "Booking falls after the clocks change",
+  "story": "The call is in EST, the appointment in EDT.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-preexisting-match",
+  "title": "Takes credit for an appointment that already existed",
+  "story": "The patient already had this exact appointment. The agent claims it booked it and writes nothing. Looking up current state says 'verified'; the change feed says the agent did nothing.",
+  "group": "edge",
+  "faults": [
+   "phantom_booking"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "edge-concurrent-staff-write",
+  "title": "A human books someone else during the call",
+  "story": "Front-desk staff write to the calendar inside the call window. That write is not the agent's and must not be reported as an unclaimed write.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-cancelled-slot-reuse",
+  "title": "Booking into a slot someone cancelled",
+  "story": "A cancelled appointment does not occupy the slot. No double-booking.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-back-to-back",
+  "title": "Booking directly after another appointment",
+  "story": "2:00-2:30 and 2:30-3:00 touch but do not overlap. No double-booking.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-three-lies",
+  "title": "A polite call with three problems and one true claim",
+  "story": "Booking written an hour late, confirmation never sent, callback ticket never created, and a cancellation that really happened.",
+  "group": "edge",
+  "faults": [
+   "phantom_confirmation",
+   "phantom_handoff",
+   "wrong_time"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "edge-family-one-wrong",
+  "title": "Two bookings, one written at the wrong time",
+  "story": "The auditor must pair each claim with its own write and blame the right one.",
+  "group": "edge",
+  "faults": [
+   "wrong_time"
+  ],
+  "known_gap": null
+ },
+ {
+  "id": "edge-calendar-outage",
+  "title": "Calendar is unreachable when the audit runs",
+  "story": "The auditor cannot see the calendar. It must say so, not guess, and still verify what it can.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-crm-outage",
+  "title": "CRM is unreachable when the audit runs",
+  "story": "The calendar is readable but the auditor cannot resolve who the patient is. The booking is unverifiable, and its write must not be reported as unclaimed: an outage must never manufacture an accusation.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-recap",
+  "title": "Agent recaps the booking at the end of the call",
+  "story": "A later 'to recap' restates the booking made earlier. It is the same promise, not a second one: nothing new to audit.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-same-name-patients",
+  "title": "Two patients share the caller's name",
+  "story": "Two Maya Chens are on file and the caller never gives a phone number, so nothing tells them apart. The booking is real, but the auditor cannot tell whose it is: no verdict is better than a guessed one.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "edge-message-log-outage",
+  "title": "Message log is unreachable when the audit runs",
+  "story": "The booking verifies. The confirmation cannot be checked.",
+  "group": "edge",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "gap-vague-spoken-promise",
+  "title": "A spoken promise too vague for rules to read",
+  "story": "'Dr. Patel will see you Tuesday then, same time we discussed.' No logged claim, no write, and no explicit time for the rule-based reader to anchor on.",
+  "group": "gap",
+  "faults": [
+   "spoken_only"
+  ],
+  "known_gap": "The rule-based transcript reader only recovers explicit statements. Resolving 'same time we discussed' needs the model-backed extractor."
+ },
+ {
+  "id": "gap-garbled-handoff",
+  "title": "Ticket is about the wrong thing",
+  "story": "A ticket exists for the right patient at the right priority, but its summary is about parking, not the caller's billing question.",
+  "group": "gap",
+  "faults": [
+   "garbled_handoff"
+  ],
+  "known_gap": "Free-text summaries are deliberately not compared: doing it without a model is guesswork, and verdicts are kept model-free."
+ }
+]

@@ -1,0 +1,177 @@
+{
+ "audit_id": "aud-fault-phantom-cancel",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-fault-phantom-cancel",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Please cancel my appointment on Tuesday, March 3 at 10:00 AM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "Your appointment on Tuesday, March 3 at 10:00 AM is now cancelled.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-fault-phantom-cancel-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Your appointment on Tuesday, March 3 at 10:00 AM is now cancelled.",
+    "type": "Cancelled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T10:00:00-05:00"
+   }
+  ]
+ },
+ "outcome": "DISCREPANCIES",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-fault-phantom-cancel-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Your appointment on Tuesday, March 3 at 10:00 AM is now cancelled.",
+    "type": "Cancelled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T10:00:00-05:00"
+   },
+   "status": "NOT_FOUND",
+   "severity": "MEDIUM",
+   "summary": "The agent claimed it cancelled the appointment for Maya Chen on Tue Mar 3 2026, 10:00 AM EST, but it is still on the books (apt_0001).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": false,
+     "detail": "No write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Nothing to compare."
+    }
+   ],
+   "diffs": [],
+   "evidence": [
+    {
+     "source": "journal",
+     "ref": "calendar 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00",
+     "note": "0 agent write(s) to calendar in the call window. None cancels this appointment.",
+     "record": null
+    },
+    {
+     "source": "calendar",
+     "ref": "apt_0001",
+     "note": "Still booked (current state)",
+     "record": {
+      "id": "apt_0001",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-03T15:00:00Z",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "booked"
+     }
+    }
+   ],
+   "remediation": "Cancel the appointment so the slot is released and the patient is not charged for a no-show."
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-fault-phantom-cancel-c1 (Cancelled): no write corresponds"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-fault-phantom-cancel-c1 (Cancelled): NOT_FOUND"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: DISCREPANCIES"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 0,
+  "mismatch": 0,
+  "not_found": 1,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 0.0,
+  "max_severity": "MEDIUM"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "e1fc212fae28d761550bac6bffd1b64721c3ca96672440457f060ba197a33448",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "90ada4aaa2d79f487a4c0f67b28d0141e1240be215847047f520a1d36e1a73fb",
+  "signature": "7dfea025d20663fa8479b4f3c789da4cdc3428b2f4ba2a1754dff9644731acbb",
+  "key_id": "952a7ab34a0a"
+ }
+}

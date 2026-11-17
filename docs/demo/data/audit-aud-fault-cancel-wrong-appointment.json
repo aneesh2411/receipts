@@ -1,0 +1,178 @@
+{
+ "audit_id": "aud-fault-cancel-wrong-appointment",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-fault-cancel-wrong-appointment",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Please cancel my appointment on Tuesday, March 3 at 10:00 AM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "I've cancelled your appointment on Tuesday, March 3 at 10:00 AM.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-fault-cancel-wrong-appointment-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've cancelled your appointment on Tuesday, March 3 at 10:00 AM.",
+    "type": "Cancelled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T10:00:00-05:00"
+   }
+  ]
+ },
+ "outcome": "DISCREPANCIES",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-fault-cancel-wrong-appointment-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've cancelled your appointment on Tuesday, March 3 at 10:00 AM.",
+    "type": "Cancelled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T10:00:00-05:00"
+   },
+   "status": "MISMATCH",
+   "severity": "CRITICAL",
+   "summary": "The agent cancelled a different appointment (apt_0002) than it claimed. start: claimed Tue Mar 3 2026, 10:00 AM EST, actual Tue Mar 10 2026, 3:00 PM EDT.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": false,
+     "detail": "Differs on: start."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "start",
+     "claimed": "Tue Mar 3 2026, 10:00 AM EST",
+     "actual": "Tue Mar 10 2026, 3:00 PM EDT",
+     "match": false
+    }
+   ],
+   "evidence": [
+    {
+     "source": "calendar",
+     "ref": "apt_0002",
+     "note": "Released by the agent during the call (journal #8; net: updated)",
+     "record": {
+      "id": "apt_0002",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Kim",
+      "start": "2026-03-10T19:00:00+00:00",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "cancelled"
+     }
+    }
+   ],
+   "remediation": "Restore the wrongly cancelled appointment and cancel the intended one."
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-fault-cancel-wrong-appointment-c1 (Cancelled): partial match -> apt_0002"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-fault-cancel-wrong-appointment-c1 (Cancelled): MISMATCH"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: DISCREPANCIES"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 0,
+  "mismatch": 1,
+  "not_found": 0,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 0.0,
+  "max_severity": "CRITICAL"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "64bca6655b6414014641642bba201eb68c233ef1c12e31ac5523bce6bf17378d",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "44fc9680b38ecc534d4a5633aabf3663e10fd9f7287a421766c8ef0c3accd8d2",
+  "signature": "589617a3dfb8cae0237292878bab472be0f32e290fcbb9a22601114ad8be0363",
+  "key_id": "952a7ab34a0a"
+ }
+}

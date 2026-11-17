@@ -1,0 +1,65 @@
+# Audit report `aud-edge-calendar-outage`
+
+**Outcome: INCONCLUSIVE**
+
+- Call: `call-edge-calendar-outage` | Agent: `agent:receptionist` | Caller: Maya Chen
+- Window: 2026-03-02T09:05:00-05:00 to 2026-03-02T09:05:16-05:00
+- Claims: 2 | verified 1, mismatch 0, not found 0, unverifiable 1
+- Findings beyond claims: 0 | Claim trust score: 100% | Highest severity: `MEDIUM`
+- Audited by `receipts/0.1.0` at 2026-03-02T09:06:16-05:00
+
+## Claims
+
+### 1. AppointmentBooked (logged claim): COULD NOT CHECK
+
+- **Status:** `UNVERIFIABLE` | **Severity:** `MEDIUM`
+- **Finding:** Could not be checked: calendar could not be read. No verdict is better than a guessed one.
+- **What the caller heard (turn 2):** "Okay, I've got you down with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file."
+- **Fix:** Re-run the audit when the system of record is reachable.
+
+Checks:
+- `existence`: n/a. calendar could not be read
+
+### 2. ConfirmationSent (logged claim): RECEIPT FOUND
+
+- **Status:** `VERIFIED` | **Severity:** `INFO`
+- **Finding:** Confirmation was sent to +15550101001 as claimed (msg_0001).
+- **What the caller heard (turn 2):** "Okay, I've got you down with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file."
+
+| Field | Agent claimed | System of record | Match |
+|---|---|---|---|
+| recipient | +15550101001 | +15550101001 | yes |
+| channel | sms | sms | yes |
+| delivery | sent | sent | yes |
+| stated_time | Tue Mar 3 2026, 2:30 PM EST | Tue Mar 3 2026, 2:30 PM EST | yes |
+
+Checks:
+- `existence`: pass. A write by the agent during the call corresponds to this claim.
+- `exactness`: pass. All fields match.
+- `side_effects`: n/a. Not applicable.
+
+Evidence:
+- `messages` `msg_0001`: Message logged during the call (journal #7; net: created)
+
+## Findings beyond claims
+
+None. Every write the agent made is accounted for by a claim.
+
+## Audit trail
+
+1. `evidence` calendar: UNAVAILABLE (calendar adapter is unavailable). Will not guess.
+2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
+3. `evidence` messages: 1 journal row(s) by agent:receptionist in the call window
+4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+5. `claims` 2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent
+6. `reconcile` call-edge-calendar-outage-c2 (ConfirmationSent): exact match -> msg_0001
+7. `verdict` call-edge-calendar-outage-c1 (AppointmentBooked): UNVERIFIABLE
+8. `verdict` call-edge-calendar-outage-c2 (ConfirmationSent): VERIFIED
+9. `reconcile` calendar: unclaimed-write check skipped, a claim that may own these writes could not be verified
+10. `verdict` Outcome: INCONCLUSIVE
+
+## Seal
+
+- content `fead4341ea7c33bdc0c585e913f970d988cde124fa90e833259d2b70dd33663f`
+- chain `1abc347665d3d0b3ef2008ce742683e4cb8f7ae3139a2ffb9c46a981a82dffea` (prev `0000000000000000...`)
+- signed (key `952a7ab34a0a`)

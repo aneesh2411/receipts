@@ -1,0 +1,205 @@
+{
+ "audit_id": "aud-fault-spoken-only-with-confirmation",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-fault-spoken-only-with-confirmation",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Hi, I'd like to book a cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "Done. I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": []
+ },
+ "outcome": "DISCREPANCIES",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-fault-spoken-only-with-confirmation-t1",
+    "turn_index": 2,
+    "source": "transcript",
+    "utterance": "I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": null,
+    "reason": null
+   },
+   "status": "NOT_FOUND",
+   "severity": "CRITICAL",
+   "summary": "The agent claimed it booked Maya Chen on Tue Mar 3 2026, 2:30 PM EST, but no appointment was created during the call.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": false,
+     "detail": "No write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Nothing to compare."
+    }
+   ],
+   "diffs": [],
+   "evidence": [
+    {
+     "source": "journal",
+     "ref": "calendar 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00",
+     "note": "0 agent write(s) to calendar in the call window. None creates this booking.",
+     "record": null
+    }
+   ],
+   "remediation": "Create the appointment or call the patient back before they show up."
+  },
+  {
+   "claim": {
+    "claim_id": "call-fault-spoken-only-with-confirmation-t2",
+    "turn_index": 2,
+    "source": "transcript",
+    "utterance": "I've sent a confirmation text to the number on file.",
+    "type": "ConfirmationSent",
+    "channel": "sms",
+    "to": "+15550101001",
+    "about_start": "2026-03-03T14:30:00-05:00"
+   },
+   "status": "NOT_FOUND",
+   "severity": "MEDIUM",
+   "summary": "The agent claimed it sent an SMS confirmation to +15550101001, but the message log shows nothing sent during the call.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": false,
+     "detail": "No write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Nothing to compare."
+    }
+   ],
+   "diffs": [],
+   "evidence": [
+    {
+     "source": "journal",
+     "ref": "messages 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00",
+     "note": "0 agent write(s) to messages in the call window. None is this confirmation.",
+     "record": null
+    }
+   ],
+   "remediation": "Send the confirmation the caller was promised."
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "0 structured claim(s); 2 recovered from the transcript, 2 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-fault-spoken-only-with-confirmation-t1 (AppointmentBooked): no write corresponds"
+  },
+  {
+   "seq": 7,
+   "stage": "reconcile",
+   "message": "call-fault-spoken-only-with-confirmation-t2 (ConfirmationSent): no write corresponds"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "call-fault-spoken-only-with-confirmation-t1 (AppointmentBooked): NOT_FOUND"
+  },
+  {
+   "seq": 9,
+   "stage": "verdict",
+   "message": "call-fault-spoken-only-with-confirmation-t2 (ConfirmationSent): NOT_FOUND"
+  },
+  {
+   "seq": 10,
+   "stage": "verdict",
+   "message": "Outcome: DISCREPANCIES"
+  }
+ ],
+ "stats": {
+  "claims": 2,
+  "verified": 0,
+  "mismatch": 0,
+  "not_found": 2,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 0.0,
+  "max_severity": "CRITICAL"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "88c2d1a616273fdaaa598b818ddb2cbeb0a4c16040efb466d1d390a86e7b4ced",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "cf624027fcf36d1b256e72fa276dcec370b33f952a994f048858c57fa5772e41",
+  "signature": "66d81875f9b95e2304b45ae1829e76174d2a8c444edace044258f8630c89d226",
+  "key_id": "952a7ab34a0a"
+ }
+}

@@ -1,0 +1,208 @@
+{
+ "audit_id": "aud-clean-reschedule-recreate",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-clean-reschedule-recreate",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "I need to move my appointment from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "All done. Your visit is rescheduled from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-clean-reschedule-recreate-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "All done. Your visit is rescheduled from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "type": "Rescheduled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "old_start": "2026-03-03T10:00:00-05:00",
+    "new_start": "2026-03-05T11:00:00-05:00",
+    "provider": "Dr. Patel"
+   }
+  ]
+ },
+ "outcome": "CLEAN",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-clean-reschedule-recreate-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "All done. Your visit is rescheduled from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "type": "Rescheduled",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "old_start": "2026-03-03T10:00:00-05:00",
+    "new_start": "2026-03-05T11:00:00-05:00",
+    "provider": "Dr. Patel"
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Appointment for Maya Chen from Tue Mar 3 2026, 10:00 AM EST to Thu Mar 5 2026, 11:00 AM EST was moved exactly as claimed.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": true,
+     "detail": "Side effects are as claimed."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "new_start",
+     "claimed": "Thu Mar 5 2026, 11:00 AM EST",
+     "actual": "Thu Mar 5 2026, 11:00 AM EST",
+     "match": true
+    },
+    {
+     "field": "old_slot_released",
+     "claimed": "released",
+     "actual": "released",
+     "match": true
+    },
+    {
+     "field": "provider",
+     "claimed": "Dr. Patel",
+     "actual": "Dr. Patel",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "calendar",
+     "ref": "apt_0002",
+     "note": "Changed by the agent during the call (journal #8; net: created)",
+     "record": {
+      "id": "apt_0002",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-05T16:00:00+00:00",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "booked"
+     }
+    },
+    {
+     "source": "calendar",
+     "ref": "apt_0001",
+     "note": "Changed by the agent during the call (journal #7; net: updated)",
+     "record": {
+      "id": "apt_0001",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-03T15:00:00+00:00",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "cancelled"
+     }
+    }
+   ],
+   "remediation": null
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 2 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-clean-reschedule-recreate-c1 (Rescheduled): exact match -> apt_0002, apt_0001"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-clean-reschedule-recreate-c1 (Rescheduled): VERIFIED"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: CLEAN"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 1,
+  "mismatch": 0,
+  "not_found": 0,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 1.0,
+  "max_severity": "INFO"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "00e2698b224e61c1d3c1c18ecd69300edfaa0a7984a6118d11d4cbe3550ff0c1",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "a81c5450e3fb8cd5f5db01633a33c4abe0b86aa0279b6312795cc559dc1f3180",
+  "signature": "b7d750c356670532c3597cff76fd180f34425d4845d6ec147c2dead85161211c",
+  "key_id": "952a7ab34a0a"
+ }
+}

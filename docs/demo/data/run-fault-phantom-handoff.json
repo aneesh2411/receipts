@@ -1,0 +1,165 @@
+{
+ "audit_id": "aud-fault-phantom-handoff",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-fault-phantom-handoff",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "I also have a billing question about my last invoice. Can someone help with that?",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-fault-phantom-handoff-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "type": "HandoffCreated",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "summary": "Caller needs help with a billing question about my last invoice",
+    "priority": "normal"
+   }
+  ]
+ },
+ "outcome": "DISCREPANCIES",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-fault-phantom-handoff-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "type": "HandoffCreated",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "summary": "Caller needs help with a billing question about my last invoice",
+    "priority": "normal"
+   },
+   "status": "NOT_FOUND",
+   "severity": "HIGH",
+   "summary": "The agent claimed it created a handoff ticket, but no ticket was created during the call. Nobody is going to call this person back.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": false,
+     "detail": "No write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Nothing to compare."
+    }
+   ],
+   "diffs": [],
+   "evidence": [
+    {
+     "source": "journal",
+     "ref": "tickets 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00",
+     "note": "0 agent write(s) to tickets in the call window. None is this handoff.",
+     "record": null
+    }
+   ],
+   "remediation": "Create the ticket now and have a human follow up with the caller."
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-fault-phantom-handoff-c1 (HandoffCreated): no write corresponds"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-fault-phantom-handoff-c1 (HandoffCreated): NOT_FOUND"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "Outcome: DISCREPANCIES"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 0,
+  "mismatch": 0,
+  "not_found": 1,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 0.0,
+  "max_severity": "HIGH"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "c6b14221eb2d40cbfd61d7ccf550798eeba9af6a056a3745a24f1165acd58edb",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "f76d7ca0460f607da85450009520a8751e36d12b680ab0120f8b73c90e796257",
+  "signature": "92c66c317b4e1353f06f1c11e3b3051fd638ded438ad8bc1c11300e1ada44453",
+  "key_id": "952a7ab34a0a"
+ }
+}

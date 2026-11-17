@@ -63,7 +63,11 @@ receipts eval
 receipts serve
 ```
 
-`receipts serve` opens the replay view at http://127.0.0.1:8000/ : pick a call, watch the
+Try it without installing anything: **https://aneesh2411.github.io/receipts/demo/** - the
+same replay view, backed by baked responses exported from the auditor
+(`scripts/export_demo.py`).
+
+`receipts serve` opens the live replay view at http://127.0.0.1:8000/ : pick a call, watch the
 agent make each claim on the left and the auditor stamp it on the right.
 
 ```bash

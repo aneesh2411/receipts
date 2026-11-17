@@ -1,0 +1,157 @@
+{
+ "audit_id": "aud-edge-same-name-patients",
+ "auditor": "receipts/0.1.0",
+ "created_at": "2026-03-02T09:06:16-05:00",
+ "call": {
+  "call_id": "call-edge-same-name-patients",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": null
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:16-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Hi, I'd like to book a cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "Done. I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:16-05:00"
+   }
+  ],
+  "claims": [
+   {
+    "claim_id": "call-edge-same-name-patients-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Done. I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": null
+    },
+    "start": "2026-03-03T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   }
+  ]
+ },
+ "outcome": "INCONCLUSIVE",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-edge-same-name-patients-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "Done. I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM.",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": null
+    },
+    "start": "2026-03-03T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   },
+   "status": "UNVERIFIABLE",
+   "severity": "HIGH",
+   "summary": "Could not be checked: 'Maya Chen' matches 2 patient records and no phone number disambiguates them. A guess here could clear a booking made for the wrong person.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": null,
+     "detail": "'Maya Chen' matches 2 patient records and no phone number disambiguates them"
+    }
+   ],
+   "diffs": [],
+   "evidence": [],
+   "remediation": "Disambiguate the patient (confirm the phone number on file) and re-run the audit."
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "call-edge-same-name-patients-c1 (AppointmentBooked): exact match -> apt_0001"
+  },
+  {
+   "seq": 7,
+   "stage": "verdict",
+   "message": "call-edge-same-name-patients-c1 (AppointmentBooked): UNVERIFIABLE"
+  },
+  {
+   "seq": 8,
+   "stage": "reconcile",
+   "message": "calendar: unclaimed-write check skipped, a claim that may own these writes could not be verified"
+  },
+  {
+   "seq": 9,
+   "stage": "verdict",
+   "message": "Outcome: INCONCLUSIVE"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 0,
+  "mismatch": 0,
+  "not_found": 0,
+  "unverifiable": 1,
+  "findings": 0,
+  "trust_score": null,
+  "max_severity": "HIGH"
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "5ce382930d441d37ae2b35349569e262b6c0fdabc11c8353f9981b3a79aaa585",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "332ab6928db2800461a035f2a2c236d49f3bb5937eb14638c44882dad255edf6",
+  "signature": "287d27a4aa34917731ef5a1563cd4d63597eac8de5371effd900797e6f70e8ed",
+  "key_id": "952a7ab34a0a"
+ }
+}
