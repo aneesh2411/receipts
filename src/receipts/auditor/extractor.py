@@ -30,7 +30,7 @@ from receipts.models import (
     HandoffCreated,
     Rescheduled,
 )
-from receipts.util import ClinicConfig, find_times
+from receipts.util import ClinicConfig, find_times, norm_text
 
 
 class ClaimExtractor(Protocol):
@@ -207,8 +207,16 @@ class LLMClaimExtractor:
 # ----------------------- merging spoken and structured --------------------- #
 
 
+def _provider_clash(a: Claim, b: Claim) -> bool:
+    """Both state a provider and they disagree."""
+    pa, pb = getattr(a, "provider", None), getattr(b, "provider", None)
+    return pa is not None and pb is not None and norm_text(pa) != norm_text(pb)
+
+
 def _same_promise(spoken: Claim, logged: Claim) -> bool:
     """Do a spoken claim and a structured claim describe the same commitment?"""
+    if _provider_clash(spoken, logged):
+        return False  # told one provider, logged another: two different promises
     if isinstance(spoken, AppointmentBooked) and isinstance(logged, AppointmentBooked):
         return spoken.start == logged.start
     if isinstance(spoken, Rescheduled) and isinstance(logged, Rescheduled):
@@ -216,6 +224,27 @@ def _same_promise(spoken: Claim, logged: Claim) -> bool:
     if isinstance(spoken, Cancelled) and isinstance(logged, Cancelled):
         return spoken.start == logged.start
     return spoken.type == logged.type  # confirmations / handoffs: one per logged claim
+
+
+def _fully_equal(spoken: Claim, logged: Claim) -> bool:
+    """Same commitment, every shared detail identical, regardless of turn."""
+    pa, pb = getattr(spoken, "provider", None), getattr(logged, "provider", None)
+    if pa is None or pb is None:
+        return False
+    return _same_promise(spoken, logged)
+
+
+def _spoken_key(claim: Claim) -> tuple | None:
+    """Identity of a spoken promise, for dropping recaps of an earlier spoken claim."""
+    if isinstance(claim, AppointmentBooked):
+        return ("AppointmentBooked", claim.start, norm_text(claim.provider or ""))
+    if isinstance(claim, Rescheduled):
+        return ("Rescheduled", claim.old_start, claim.new_start)
+    if isinstance(claim, Cancelled):
+        return ("Cancelled", claim.start)
+    if isinstance(claim, ConfirmationSent):
+        return ("ConfirmationSent", claim.channel, norm_text(claim.to), claim.about_start)
+    return None  # handoffs are free-text; never deduped
 
 
 def merge_claims(structured: Sequence[Claim], spoken: Sequence[Claim]) -> tuple[Claim, ...]:
@@ -227,14 +256,25 @@ def merge_claims(structured: Sequence[Claim], spoken: Sequence[Claim]) -> tuple[
     """
     used: set[str] = set()
     extra: list[Claim] = []
+    seen_spoken: set[tuple] = set()
     for claim in spoken:
+        # A recap restates an earlier promise. Dropping it is safe only because a
+        # recap adds no new commitment: every field that identifies the promise
+        # is identical to the earlier statement.
+        key = _spoken_key(claim)
+        if key is not None:
+            if key in seen_spoken:
+                continue
+            seen_spoken.add(key)
         partner = next(
             (
                 s
                 for s in structured
                 if s.claim_id not in used
-                and s.turn_index == claim.turn_index
-                and _same_promise(claim, s)
+                and (
+                    (s.turn_index == claim.turn_index and _same_promise(claim, s))
+                    or _fully_equal(claim, s)
+                )
             ),
             None,
         )

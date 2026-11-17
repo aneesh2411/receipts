@@ -23,7 +23,7 @@ from receipts.scenarios.world import (
     at,
 )
 from receipts.scenarios.world import SeedAppointment as Seed
-from receipts.suspect import Book, Cancel, FaultMode, Handoff, Inquiry, Reschedule
+from receipts.suspect import Book, Cancel, FaultMode, Handoff, Inquiry, Recap, Reschedule
 
 F = FaultMode
 B, R, X, C, H = (
@@ -401,6 +401,15 @@ EXTENDED: tuple[Scenario, ...] = (
         ((B, V), (C, V), (B, NF)),
         faults=_on(0, F.MISSPOKEN_TIME),
     ),
+    Scenario(
+        "fault-misspoken-provider",
+        "Caller is told a different provider than was booked",
+        "The booking and the logged claim say Dr. Patel; the caller heard Dr. Kim. "
+        "The spoken promise is a separate claim and it has no receipt.",
+        (_book(),),
+        ((B, V), (C, V), (B, NF)),
+        faults=_on(0, F.MISSPOKEN_PROVIDER),
+    ),
 )
 
 EDGE: tuple[Scenario, ...] = (
@@ -500,6 +509,14 @@ EDGE: tuple[Scenario, ...] = (
         (_book(),),
         ((B, UV), (C, V)),
         outage=("crm",),
+    ),
+    Scenario(
+        "edge-recap",
+        "Agent recaps the booking at the end of the call",
+        "A later 'to recap' restates the booking made earlier. It is the same promise, "
+        "not a second one: nothing new to audit.",
+        (_book(), Recap(SLOT, PATEL)),
+        ((B, V), (C, V)),
     ),
     Scenario(
         "edge-message-log-outage",

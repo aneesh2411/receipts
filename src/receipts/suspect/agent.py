@@ -99,12 +99,20 @@ class Handoff:
 
 
 @dataclass(frozen=True)
+class Recap:
+    """The agent restates an earlier booking in a later turn."""
+
+    start: datetime
+    provider: str
+
+
+@dataclass(frozen=True)
 class Inquiry:
     question: str
     answer: str
 
 
-Step = Book | Reschedule | Cancel | Handoff | Inquiry
+Step = Book | Reschedule | Cancel | Handoff | Recap | Inquiry
 
 
 @dataclass(frozen=True)
@@ -165,6 +173,7 @@ class _Call:
             Reschedule: (self._reschedule, RESCHEDULE_FAULTS),
             Cancel: (self._cancel, CANCEL_FAULTS),
             Handoff: (self._handoff, HANDOFF_FAULTS),
+            Recap: (self._recap, frozenset()),
             Inquiry: (self._inquiry, frozenset()),
         }
         for index, step in enumerate(steps):
@@ -292,7 +301,12 @@ class _Call:
             self.a.sor.crm.update_patient(patient.id, phone="+15550109999")
 
         said_start = start + timedelta(days=1) if _F.MISSPOKEN_TIME in modes else start
-        line = n.booked(step.reason, step.provider, said_start)
+        said_provider = step.provider
+        if _F.MISSPOKEN_PROVIDER in modes:
+            said_provider = next(
+                p for p in ("Dr. Kim", "Dr. Osei", "Dr. Patel") if p != step.provider
+            )
+        line = n.booked(step.reason, said_provider, said_start)
         if step.confirm:
             line = f"{line} {n.confirmation_sent()}"
 
@@ -453,6 +467,9 @@ class _Call:
             )
         )
         self._say("agent", line)
+
+    def _recap(self, step: Recap, modes: frozenset[FaultMode]) -> None:
+        self._say("agent", self.a.narrator.recap(step.provider, step.start))
 
     def _inquiry(self, step: Inquiry, modes: frozenset[FaultMode]) -> None:
         self._say("caller", step.question)

@@ -56,6 +56,7 @@ BOOK_TRUTH: dict[FaultMode | None, Truth] = {
     F.SILENT_CRM_EDIT: (((B, V), (C, V)), (UNCLAIMED,)),
     F.SPOKEN_ONLY: (((B, NF), (C, NF)), ()),
     F.MISSPOKEN_TIME: (((B, V), (C, V), (B, NF)), ()),
+    F.MISSPOKEN_PROVIDER: (((B, V), (C, V), (B, NF)), ()),
     F.WRONG_RECIPIENT: (((B, V), (C, MM)), ()),
     F.STALE_CONFIRMATION: (((B, V), (C, MM)), ()),
 }

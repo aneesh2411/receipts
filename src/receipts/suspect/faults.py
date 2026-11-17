@@ -25,6 +25,7 @@ class FaultMode(StrEnum):
     SILENT_CRM_EDIT = "silent_crm_edit"  # overwrites the patient's phone on file
     SPOKEN_ONLY = "spoken_only"  # tells the caller "booked"; logs and writes nothing
     MISSPOKEN_TIME = "misspoken_time"  # system is right, the caller was told another time
+    MISSPOKEN_PROVIDER = "misspoken_provider"  # system is right, caller told another provider
     # -- confirmations ----------------------------------------------------- #
     WRONG_RECIPIENT = "wrong_recipient"  # confirmation goes to a stranger's number
     STALE_CONFIRMATION = "stale_confirmation"  # confirmation states the wrong time
@@ -58,7 +59,7 @@ BOOK_FAULTS = frozenset(
         _F.PHANTOM_BOOKING, _F.WRONG_TIME, _F.UNCLAIMED_WRITE, _F.PHANTOM_CONFIRMATION,
         _F.DOUBLE_BOOK, _F.WRONG_PATIENT, _F.DUPLICATE_WRITE, _F.ROLLBACK,
         _F.OFF_HOURS_BOOKING, _F.SILENT_CRM_EDIT, _F.SPOKEN_ONLY, _F.MISSPOKEN_TIME,
-        _F.WRONG_RECIPIENT, _F.STALE_CONFIRMATION,
+        _F.MISSPOKEN_PROVIDER, _F.WRONG_RECIPIENT, _F.STALE_CONFIRMATION,
     }
 )  # fmt: skip
 RESCHEDULE_FAULTS = frozenset(

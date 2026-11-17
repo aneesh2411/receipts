@@ -62,6 +62,15 @@ class Narrator:
             ]
         )
 
+    def recap(self, provider: str, start: datetime) -> str:
+        when = self.when(start)
+        return self._pick(
+            [
+                f"To recap, you're booked with {provider} on {when}.",
+                f"Just to confirm, I've booked you with {provider} for {when}.",
+            ]
+        )
+
     def confirmation_sent(self) -> str:
         return self._pick(
             [

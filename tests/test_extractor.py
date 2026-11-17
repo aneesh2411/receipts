@@ -131,10 +131,14 @@ def test_spoken_claim_in_a_different_turn_is_kept():
 def test_one_logged_claim_corroborates_only_one_spoken_claim():
     logged = ConfirmationSent(claim_id="c1", turn_index=0, to=MAYA.phone)
     spoken = [
-        logged.model_copy(update={"claim_id": f"t{i}", "source": ClaimSource.TRANSCRIPT})
-        for i in (1, 2)
+        logged.model_copy(update={"claim_id": "t1", "source": ClaimSource.TRANSCRIPT}),
+        logged.model_copy(
+            update={"claim_id": "t2", "source": ClaimSource.TRANSCRIPT, "about_start": SLOT}
+        ),
     ]
     merged = merge_claims([logged], spoken)
+    # t2 names a time, so it is a different promise, not a recap of t1: one is
+    # corroborated by the logged claim, the other stands on its own.
     assert [c.claim_id for c in merged] == ["c1", "t2"]
 
 
