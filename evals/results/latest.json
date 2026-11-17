@@ -1,0 +1,470 @@
+{
+  "golden": {
+    "label": "Receipts",
+    "calls": 52,
+    "claim_level": {
+      "tp": 28,
+      "fp": 0,
+      "fn": 2,
+      "tn": 56,
+      "precision": 1.0,
+      "recall": 0.9333,
+      "f1": 0.9655
+    },
+    "claim_status_accuracy": 0.9767,
+    "finding_level": {
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "call_accuracy": 0.9615,
+    "call_strict_accuracy": 0.9615,
+    "failures": [
+      {
+        "scenario": "gap-vague-spoken-promise",
+        "problems": [
+          "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim"
+        ]
+      },
+      {
+        "scenario": "gap-garbled-handoff",
+        "problems": [
+          "HandoffCreated[0]: expected MISMATCH, got VERIFIED"
+        ]
+      }
+    ]
+  },
+  "baseline_naive_existence_check": {
+    "label": "Naive existence check",
+    "calls": 52,
+    "claim_level": {
+      "tp": 20,
+      "fp": 0,
+      "fn": 10,
+      "tn": 56,
+      "precision": 1.0,
+      "recall": 0.6667,
+      "f1": 0.8
+    },
+    "claim_status_accuracy": 0.7907,
+    "finding_level": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 7,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "call_accuracy": 0.7115,
+    "call_strict_accuracy": 0.5577,
+    "failures": [
+      {
+        "scenario": "fault-wrong-time",
+        "problems": [
+          "AppointmentBooked[0]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "fault-unclaimed-write",
+        "problems": [
+          "UNCLAIMED_WRITE: expected 1, got 0"
+        ]
+      },
+      {
+        "scenario": "fault-double-book",
+        "problems": [
+          "POLICY_VIOLATION: expected 1, got 0"
+        ]
+      },
+      {
+        "scenario": "fault-wrong-patient",
+        "problems": [
+          "AppointmentBooked[0]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "fault-duplicate-write",
+        "problems": [
+          "UNCLAIMED_WRITE: expected 1, got 0",
+          "POLICY_VIOLATION: expected 1, got 0"
+        ]
+      },
+      {
+        "scenario": "fault-off-hours",
+        "problems": [
+          "POLICY_VIOLATION: expected 1, got 0"
+        ]
+      },
+      {
+        "scenario": "fault-silent-crm-edit",
+        "problems": [
+          "UNCLAIMED_WRITE: expected 1, got 0"
+        ]
+      },
+      {
+        "scenario": "fault-wrong-recipient",
+        "problems": [
+          "ConfirmationSent[0]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "fault-stale-confirmation",
+        "problems": [
+          "ConfirmationSent[0]: expected MISMATCH, got VERIFIED"
+        ]
+      },
+      {
+        "scenario": "fault-zombie-reschedule",
+        "problems": [
+          "Rescheduled[0]: expected MISMATCH, got VERIFIED"
+        ]
+      },
+      {
+        "scenario": "fault-lost-reschedule",
+        "problems": [
+          "Rescheduled[0]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "fault-reschedule-wrong-time",
+        "problems": [
+          "Rescheduled[0]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "fault-reschedule-double-book",
+        "problems": [
+          "POLICY_VIOLATION: expected 1, got 0"
+        ]
+      },
+      {
+        "scenario": "fault-cancel-wrong-appointment",
+        "problems": [
+          "Cancelled[0]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "fault-downgraded-handoff",
+        "problems": [
+          "HandoffCreated[0]: expected MISMATCH, got VERIFIED"
+        ]
+      },
+      {
+        "scenario": "fault-spoken-only",
+        "problems": [
+          "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim"
+        ]
+      },
+      {
+        "scenario": "fault-spoken-only-with-confirmation",
+        "problems": [
+          "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim",
+          "ConfirmationSent[0]: expected NOT_FOUND, auditor saw no claim"
+        ]
+      },
+      {
+        "scenario": "fault-misspoken-time",
+        "problems": [
+          "AppointmentBooked[1]: expected NOT_FOUND, auditor saw no claim"
+        ]
+      },
+      {
+        "scenario": "edge-preexisting-match",
+        "problems": [
+          "AppointmentBooked[0]: expected NOT_FOUND, got VERIFIED"
+        ]
+      },
+      {
+        "scenario": "edge-three-lies",
+        "problems": [
+          "AppointmentBooked[0]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "edge-family-one-wrong",
+        "problems": [
+          "AppointmentBooked[1]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "gap-vague-spoken-promise",
+        "problems": [
+          "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim"
+        ]
+      },
+      {
+        "scenario": "gap-garbled-handoff",
+        "problems": [
+          "HandoffCreated[0]: expected MISMATCH, got VERIFIED"
+        ]
+      }
+    ]
+  },
+  "ablations": [
+    {
+      "label": "Receipts without the transcript reader",
+      "calls": 52,
+      "claim_level": {
+        "tp": 24,
+        "fp": 0,
+        "fn": 6,
+        "tn": 56,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8889
+      },
+      "claim_status_accuracy": 0.9302,
+      "finding_level": {
+        "tp": 7,
+        "fp": 0,
+        "fn": 0,
+        "tn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "call_accuracy": 0.9038,
+      "call_strict_accuracy": 0.9038,
+      "failures": [
+        {
+          "scenario": "fault-spoken-only",
+          "problems": [
+            "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim"
+          ]
+        },
+        {
+          "scenario": "fault-spoken-only-with-confirmation",
+          "problems": [
+            "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim",
+            "ConfirmationSent[0]: expected NOT_FOUND, auditor saw no claim"
+          ]
+        },
+        {
+          "scenario": "fault-misspoken-time",
+          "problems": [
+            "AppointmentBooked[1]: expected NOT_FOUND, auditor saw no claim"
+          ]
+        },
+        {
+          "scenario": "gap-vague-spoken-promise",
+          "problems": [
+            "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim"
+          ]
+        },
+        {
+          "scenario": "gap-garbled-handoff",
+          "problems": [
+            "HandoffCreated[0]: expected MISMATCH, got VERIFIED"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Receipts without policy checks",
+      "calls": 52,
+      "claim_level": {
+        "tp": 28,
+        "fp": 0,
+        "fn": 2,
+        "tn": 56,
+        "precision": 1.0,
+        "recall": 0.9333,
+        "f1": 0.9655
+      },
+      "claim_status_accuracy": 0.9767,
+      "finding_level": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 4,
+        "tn": 0,
+        "precision": 1.0,
+        "recall": 0.4286,
+        "f1": 0.6
+      },
+      "call_accuracy": 0.9038,
+      "call_strict_accuracy": 0.8846,
+      "failures": [
+        {
+          "scenario": "fault-double-book",
+          "problems": [
+            "POLICY_VIOLATION: expected 1, got 0"
+          ]
+        },
+        {
+          "scenario": "fault-duplicate-write",
+          "problems": [
+            "POLICY_VIOLATION: expected 1, got 0"
+          ]
+        },
+        {
+          "scenario": "fault-off-hours",
+          "problems": [
+            "POLICY_VIOLATION: expected 1, got 0"
+          ]
+        },
+        {
+          "scenario": "fault-reschedule-double-book",
+          "problems": [
+            "POLICY_VIOLATION: expected 1, got 0"
+          ]
+        },
+        {
+          "scenario": "gap-vague-spoken-promise",
+          "problems": [
+            "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim"
+          ]
+        },
+        {
+          "scenario": "gap-garbled-handoff",
+          "problems": [
+            "HandoffCreated[0]: expected MISMATCH, got VERIFIED"
+          ]
+        }
+      ]
+    }
+  ],
+  "fuzz": {
+    "label": "Receipts on 500 fuzzed calls",
+    "calls": 500,
+    "claim_level": {
+      "tp": 357,
+      "fp": 0,
+      "fn": 0,
+      "tn": 375,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "claim_status_accuracy": 1.0,
+    "finding_level": {
+      "tp": 87,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "call_accuracy": 1.0,
+    "call_strict_accuracy": 1.0,
+    "failures": [],
+    "seed": 7
+  },
+  "by_fault_mode": [
+    {
+      "fault": "phantom_booking",
+      "scenarios": 3,
+      "fully_correct": 3
+    },
+    {
+      "fault": "wrong_time",
+      "scenarios": 4,
+      "fully_correct": 4
+    },
+    {
+      "fault": "unclaimed_write",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "phantom_confirmation",
+      "scenarios": 2,
+      "fully_correct": 2
+    },
+    {
+      "fault": "phantom_handoff",
+      "scenarios": 2,
+      "fully_correct": 2
+    },
+    {
+      "fault": "double_book",
+      "scenarios": 2,
+      "fully_correct": 2
+    },
+    {
+      "fault": "wrong_patient",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "duplicate_write",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "rollback",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "off_hours_booking",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "silent_crm_edit",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "spoken_only",
+      "scenarios": 3,
+      "fully_correct": 2
+    },
+    {
+      "fault": "misspoken_time",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "wrong_recipient",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "stale_confirmation",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "phantom_reschedule",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "zombie_reschedule",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "lost_reschedule",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "phantom_cancel",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "wrong_appointment_cancelled",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "downgraded_handoff",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "garbled_handoff",
+      "scenarios": 1,
+      "fully_correct": 0
+    }
+  ]
+}
