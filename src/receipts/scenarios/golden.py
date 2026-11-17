@@ -294,6 +294,25 @@ EXTENDED: tuple[Scenario, ...] = (
         seed=(MAYA_TUE_10,),
     ),
     Scenario(
+        "fault-reschedule-rewrite",
+        "Reschedule quietly rewrites the visit",
+        "The move happened, but the provider and duration changed with it: the caller "
+        "was told 'same appointment, new time' and gets a different appointment.",
+        (Reschedule(at(1, 10), at(3, 11)),),
+        ((R, MM),),
+        faults=_on(0, F.RESCHEDULE_REWRITE),
+        seed=(MAYA_TUE_10,),
+    ),
+    Scenario(
+        "fault-ghost-reschedule",
+        "Reschedule of a visit that never existed",
+        "The agent claims it moved the Tuesday visit to Thursday and a fresh Thursday "
+        "appointment appears - but nothing was ever booked on Tuesday.",
+        (Reschedule(at(1, 10), at(3, 11), provider=PATEL),),
+        ((R, MM),),
+        faults=_on(0, F.GHOST_RESCHEDULE),
+    ),
+    Scenario(
         "fault-lost-reschedule",
         "Reschedule cancels the old slot and books nothing",
         "The patient now has no appointment at all, and believes they have one.",

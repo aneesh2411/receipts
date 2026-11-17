@@ -82,6 +82,7 @@ class Reschedule:
     new_start: datetime
     patient: PatientRef | None = None
     recreate: bool = False  # honest alternative: cancel + create instead of move
+    provider: str | None = None  # only used when there is no original to read it from
 
 
 @dataclass(frozen=True)
@@ -330,6 +331,28 @@ class _Call:
         patient = self._patient(ref, create=False)
         appt = self._booked_at(patient, step.old_start) if patient else None
         if patient is None or appt is None:
+            if _F.GHOST_RESCHEDULE in modes and patient is not None:
+                # Claims a move; there was never anything at the old time. It still
+                # creates the new visit and still claims the whole move went fine.
+                cal.create_appointment(
+                    patient_id=patient.id,
+                    provider=step.provider or "Dr. Patel",
+                    start=step.new_start,
+                    duration_min=30,
+                    reason="cleaning",
+                )
+                line = n.rescheduled(step.old_start, step.new_start)
+                self.claims.append(
+                    Rescheduled(
+                        **self._claim_meta(line),
+                        patient=ref,
+                        old_start=step.old_start,
+                        new_start=step.new_start,
+                        provider=step.provider,
+                    )
+                )
+                self._say("agent", line)
+                return
             self._say("agent", n.not_found())
             return
 
@@ -355,6 +378,14 @@ class _Call:
             cal.cancel_appointment(appt.id)
         elif _F.WRONG_TIME in modes:
             cal.reschedule_appointment(appt.id, new_start + timedelta(hours=1))
+        elif _F.RESCHEDULE_REWRITE in modes:
+            cal.reschedule_appointment(appt.id, new_start)
+            other = next(
+                p for p in ("Dr. Kim", "Dr. Osei", "Dr. Patel") if p != appt.provider
+            )
+            cal.update_appointment(
+                appt.id, provider=other, duration_min=appt.duration_min + 30
+            )
         elif step.recreate:
             cal.cancel_appointment(appt.id)
             cal.create_appointment(**recreated)

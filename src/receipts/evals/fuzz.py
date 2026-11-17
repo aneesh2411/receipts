@@ -66,6 +66,8 @@ RESCHEDULE_TRUTH: dict[FaultMode | None, Truth] = {
     F.LOST_RESCHEDULE: (((R, MM),), ()),
     F.WRONG_TIME: (((R, MM),), ()),
     F.DOUBLE_BOOK: (((R, V),), (POLICY,)),
+    F.RESCHEDULE_REWRITE: (((R, MM),), ()),
+    F.GHOST_RESCHEDULE: (((R, MM),), ()),
 }
 CANCEL_TRUTH: dict[FaultMode | None, Truth] = {
     None: (((X, V),), ()),
@@ -117,8 +119,14 @@ def generate(n: int, seed: int = 0) -> list[Scenario]:
         elif kind == "reschedule":
             mode = rng.choice(list(RESCHEDULE_TRUTH))
             truth = RESCHEDULE_TRUTH[mode]
-            step = Reschedule(slot, elsewhere, recreate=mode is None and rng.random() < 0.5)
-            seeds.append(SeedAppointment(caller, provider, slot))
+            step = Reschedule(
+                slot,
+                elsewhere,
+                recreate=mode is None and rng.random() < 0.5,
+                provider=provider,
+            )
+            if mode is not F.GHOST_RESCHEDULE:
+                seeds.append(SeedAppointment(caller, provider, slot))
             if mode is F.DOUBLE_BOOK:
                 seeds.append(SeedAppointment(other, provider, elsewhere))
         elif kind == "cancel":

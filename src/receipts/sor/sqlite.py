@@ -251,6 +251,22 @@ class _Calendar(_Adapter):
             )
         return self._require(appointment_id)
 
+    _EDITABLE = frozenset({"patient_id", "provider", "duration_min", "reason"})
+
+    def update_appointment(self, appointment_id: str, **fields: Any) -> Appointment:
+        unknown = set(fields) - self._EDITABLE
+        if unknown:
+            raise ValueError(f"cannot edit appointment fields: {sorted(unknown)}")
+        self._require(appointment_id)
+        if fields:
+            columns = ", ".join(f"{name} = ?" for name in fields)
+            with self._tx() as conn:
+                conn.execute(
+                    f"UPDATE appointments SET {columns} WHERE id = ?",
+                    (*fields.values(), appointment_id),
+                )
+        return self._require(appointment_id)
+
     def cancel_appointment(self, appointment_id: str) -> Appointment:
         self._require(appointment_id)
         with self._tx() as conn:

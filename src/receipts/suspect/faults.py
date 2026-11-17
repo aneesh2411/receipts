@@ -30,6 +30,8 @@ class FaultMode(StrEnum):
     STALE_CONFIRMATION = "stale_confirmation"  # confirmation states the wrong time
     # -- reschedule / cancel ----------------------------------------------- #
     PHANTOM_RESCHEDULE = "phantom_reschedule"  # claims a move it never made
+    RESCHEDULE_REWRITE = "reschedule_rewrite"  # moves in place, quietly rewrites the rest
+    GHOST_RESCHEDULE = "ghost_reschedule"  # claims a move of a visit that never existed
     ZOMBIE_RESCHEDULE = "zombie_reschedule"  # creates the new slot, leaves the old one
     LOST_RESCHEDULE = "lost_reschedule"  # cancels the old slot, never creates the new one
     PHANTOM_CANCEL = "phantom_cancel"  # claims a cancellation it never made
@@ -60,7 +62,10 @@ BOOK_FAULTS = frozenset(
     }
 )  # fmt: skip
 RESCHEDULE_FAULTS = frozenset(
-    {_F.PHANTOM_RESCHEDULE, _F.ZOMBIE_RESCHEDULE, _F.LOST_RESCHEDULE, _F.WRONG_TIME, _F.DOUBLE_BOOK}
+    {
+        _F.PHANTOM_RESCHEDULE, _F.ZOMBIE_RESCHEDULE, _F.LOST_RESCHEDULE, _F.WRONG_TIME,
+        _F.DOUBLE_BOOK, _F.RESCHEDULE_REWRITE, _F.GHOST_RESCHEDULE,
+    }
 )
 CANCEL_FAULTS = frozenset({_F.PHANTOM_CANCEL, _F.WRONG_APPOINTMENT_CANCELLED})
 HANDOFF_FAULTS = frozenset({_F.PHANTOM_HANDOFF, _F.DOWNGRADED_HANDOFF, _F.GARBLED_HANDOFF})

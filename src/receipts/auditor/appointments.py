@@ -271,9 +271,51 @@ def judge_rescheduled(claim: Rescheduled, match: Match | None, ctx: AuditContext
                     match=True,
                 )
             )
+            # A move is only a move. Anything else rewritten along the way - the
+            # patient, the provider, the duration - is a change nobody claimed.
+            rewritten: list[FieldDiff] = []
+            if before.patient_id != new.patient_id:
+                rewritten.append(
+                    FieldDiff(
+                        field="rewrite_patient",
+                        claimed="unchanged",
+                        actual=f"now {ctx.patient_label(new.patient_id)}",
+                        match=False,
+                    )
+                )
+            if not _same(before.provider, new.provider):
+                rewritten.append(
+                    FieldDiff(
+                        field="rewrite_provider",
+                        claimed="unchanged",
+                        actual=f"now {new.provider}",
+                        match=False,
+                    )
+                )
+            if before.duration_min != new.duration_min:
+                rewritten.append(
+                    FieldDiff(
+                        field="rewrite_duration",
+                        claimed="unchanged",
+                        actual=f"now {new.duration_min} min",
+                        match=False,
+                    )
+                )
+            diffs.extend(rewritten)
         else:
             zombies = [a for a in ctx.booked_at(ids, claim.old_start) if a.id != new.id]
             released = old_nc is not None or not zombies
+            if old_nc is None and not zombies:
+                # The claimed original was never on the books at all: this is a
+                # fresh booking dressed up as a reschedule, not a move.
+                diffs.append(
+                    FieldDiff(
+                        field="old_appointment",
+                        claimed=ctx.show(claim.old_start),
+                        actual="nothing was ever booked then",
+                        match=False,
+                    )
+                )
             evidence += [
                 _state_evidence(a, "Original appointment is still booked") for a in zombies
             ]
@@ -297,13 +339,19 @@ def judge_rescheduled(claim: Rescheduled, match: Match | None, ctx: AuditContext
             "new_start": Severity.CRITICAL,
             "old_start": Severity.HIGH,
             "old_slot_released": Severity.HIGH,
+            "old_appointment": Severity.HIGH,
             "provider": Severity.MEDIUM,
+            "rewrite_patient": Severity.CRITICAL,
+            "rewrite_provider": Severity.MEDIUM,
+            "rewrite_duration": Severity.LOW,
         },
         verified=f"Appointment for {move} was moved exactly as claimed.",
         mismatch="The calendar changed, but not the way the caller was told.",
         remediation="Reconcile the calendar with what the caller was told: one appointment, at "
         "the promised time, and the old slot released.",
-        side_effect_fields=frozenset({"old_slot_released"}),
+        side_effect_fields=frozenset(
+            {"old_slot_released", "rewrite_patient", "rewrite_provider", "rewrite_duration"}
+        ),
     )
 
 
