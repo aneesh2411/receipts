@@ -141,3 +141,105 @@ def test_change_feed_survives_cache_reload(tmp_path):
     assert change.op == "update"
     assert change.before["status"] == "booked"
     assert change.after["status"] == "cancelled"
+
+
+# ----------------------- golden set through the adapter -------------------- #
+
+from receipts.scenarios.world import OSEI  # noqa: E402
+
+GCAL_CALENDARS = {PATEL: "cal-patel", KIM: "cal-kim", OSEI: "cal-osei"}
+
+
+class _HybridStore:
+    """SqliteStore for CRM/messages/tickets; Google Calendar for the calendar.
+
+    The fake service stamps created/updated from whichever session clock is
+    installed; sessions run sequentially, so installing the clock at session
+    creation keeps timestamps honest.
+    """
+
+    def __init__(self) -> None:
+        from receipts.sor import SqliteStore
+
+        self._sqlite = SqliteStore()
+        self._service = FakeCalendarService(lambda: CALL_START)
+        self._cache = SnapshotCache()
+
+    def session(self, actor: str, clock):
+        from receipts.sor.base import SystemOfRecord
+
+        self._service._clock = clock
+        base = self._sqlite.session(actor, clock)
+        calendar = GoogleCalendarAdapter(
+            self._service, GCAL_CALENDARS, actor=actor, clock=clock, cache=self._cache
+        )
+        return SystemOfRecord(
+            calendar=calendar, crm=base.crm, messages=base.messages, tickets=base.tickets
+        )
+
+    def sync(self) -> None:
+        GoogleCalendarReader(self._service, GCAL_CALENDARS, cache=self._cache).sync()
+
+    def close(self) -> None:
+        self._sqlite.close()
+
+
+def _hybrid_report(scenario):
+    from receipts.scenarios import audit_call, build_world, run_suspect
+
+    store = _HybridStore()
+    world = build_world(scenario, store=store)
+    try:
+        store.sync()  # snapshot the pre-call world for before-images
+        result = run_suspect(scenario, world)
+        return audit_call(scenario, world, result)
+    finally:
+        store.close()
+
+
+def _signature(report):
+    return (
+        [(v.claim.type, v.status) for v in report.verdicts],
+        sorted(f.code for f in report.findings),
+    )
+
+
+# The Google Calendar API cannot distinguish "deleted" from "cancelled": a
+# deleted event only stays visible in the sync feed as a cancelled tombstone.
+# So a create-then-delete inside the call window (F.ROLLBACK) reads as
+# create-then-cancel, and the auditor reports the write the agent never
+# claimed. Through SQLite's journal a delete is a real delete and collapses
+# to nothing. This is the one backend-visible delta in the golden set; it is
+# pinned exactly so any *other* delta fails loudly.
+KNOWN_DELTAS = {
+    "fault-rollback": (
+        [("AppointmentBooked", "NOT_FOUND"), ("ConfirmationSent", "VERIFIED")],
+        ["unclaimed_appointment_created"],
+    ),
+}
+
+
+def test_golden_set_verdicts_match_through_google_calendar():
+    """The golden set, audited against Google Calendar instead of SQLite.
+
+    Verdicts and findings must be identical - the auditor is typed against
+    reader protocols, so swapping the calendar backend cannot change an
+    outcome. The single exception is F.ROLLBACK (see KNOWN_DELTAS above),
+    a documented limitation of the Google API itself.
+    """
+    from receipts.scenarios import GOLDEN, run_scenario
+
+    mismatches = []
+    for scenario in GOLDEN:
+        baseline = _signature(run_scenario(scenario).report)
+        hybrid = _signature(_hybrid_report(scenario))
+        if scenario.id in KNOWN_DELTAS:
+            want_claims, want_findings = KNOWN_DELTAS[scenario.id]
+            got_claims = [(t, s.value) for t, s in hybrid[0]]
+            if got_claims != want_claims or hybrid[1] != want_findings:
+                mismatches.append((scenario.id, KNOWN_DELTAS[scenario.id], hybrid))
+        elif hybrid != baseline:
+            mismatches.append((scenario.id, baseline, hybrid))
+    assert not mismatches, "\n".join(
+        f"{sid}:\n  expected {base}\n  got      {hyb}" for sid, base, hyb in mismatches
+    )

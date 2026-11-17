@@ -36,7 +36,12 @@ fail to reproduce, and the eval still passes.
 ## Next: touch reality (v0.3)
 
 1. **One real adapter**: Google Calendar reader with a snapshot cache for before-images.
-   Re-run the golden set through it.
+   Re-run the golden set through it. **Done** ([#10](https://github.com/aneesh2411/receipts/issues/10)):
+   `sor/google_calendar.py` implements sync-token change feeds with snapshot
+   before-images and actor attribution, and the golden set replays through it
+   with identical verdicts and findings - except `fault-rollback`, pinned as a
+   known delta: the API cannot distinguish a delete from a cancellation, so a
+   create-then-delete inside the call window reads as create-then-cancel.
 2. **Live-model transcript reader, measured.** Real, messy transcripts. Precision tracked
    separately from recall. A model that invents claims is worse than one that misses them.
 3. **Overlapping calls.** Decide and test attribution when one agent identity handles two
