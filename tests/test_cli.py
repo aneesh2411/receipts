@@ -72,3 +72,14 @@ def test_eval_fails_the_build_on_an_unexpected_regression(monkeypatch, capsys):
     assert main(["eval", "--fuzz", "20"]) == 1
     out = capsys.readouterr().out
     assert "UNEXPECTED" in out and "FAIL" in out
+
+
+def test_public_bind_without_a_key_is_refused():
+    from receipts.cli import unsafe_bind_reason
+
+    assert unsafe_bind_reason("0.0.0.0", None) is not None
+    assert "RECEIPTS_API_KEY" in unsafe_bind_reason("0.0.0.0", None)
+    assert unsafe_bind_reason("0.0.0.0", "secret") is None
+    assert unsafe_bind_reason("127.0.0.1", None) is None
+    assert unsafe_bind_reason("localhost", None) is None
+    assert unsafe_bind_reason("::1", None) is None

@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import hmac
 import logging
+import threading
 import os
 import uuid
 from collections import defaultdict
@@ -114,6 +115,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     app.state.store = AuditStore(settings.db_path)
     app.state.sor = SqliteStore(settings.sor_path)
+    app.state.stage_lock = threading.Lock()
     app.state.sealer = Sealer(settings.signing_key)
     llm = llm_from_env()
     extractor: ClaimExtractor | None = LLMClaimExtractor(llm) if llm else None
@@ -173,6 +175,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/audit", status_code=201, dependencies=guarded)
     def audit(req: AuditRequest) -> JSONResponse:
         if req.call is not None:
+            existing = store().get_call(req.call.call_id)
+            if existing is not None and existing != req.call:
+                raise HTTPException(
+                    409,
+                    f"call {req.call.call_id} already exists with different contents; "
+                    "audit the stored call by id instead",
+                )
             store().save_call(req.call)
             call = req.call
         else:
@@ -294,10 +303,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if settings.sor_path != ":memory:":
             raise HTTPException(409, "staging is only allowed on an in-memory system of record")
         scenario = _scenario(scenario_id)
-        fresh = SqliteStore()
-        result = run_suspect(scenario, build_world(scenario, fresh))
-        old, app.state.sor = app.state.sor, fresh
-        old.close()
+        # Serialize swaps: two concurrent stagings must not interleave a store
+        # half-swap or leak one of the stores.
+        with app.state.stage_lock:
+            fresh = SqliteStore()
+            result = run_suspect(scenario, build_world(scenario, fresh))
+            old, app.state.sor = app.state.sor, fresh
+            old.close()
         return _ok(result.call.model_dump(mode="json"), 201)
 
     @app.get("/", include_in_schema=False)

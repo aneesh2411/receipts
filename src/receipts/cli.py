@@ -214,11 +214,28 @@ def cmd_eval(args: argparse.Namespace, console: Console) -> int:
 # ------------------------------ serve / verify ----------------------------- #
 
 
+LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
+
+
+def unsafe_bind_reason(host: str, api_key: str | None) -> str | None:
+    """Why serving this way would expose an unauthenticated API, or None if safe."""
+    if host in LOOPBACK_HOSTS or api_key:
+        return None
+    return (
+        f"binding to {host} exposes the API to the network but RECEIPTS_API_KEY is "
+        "not set, so every endpoint - including writes - would be open. Set "
+        "RECEIPTS_API_KEY or serve on 127.0.0.1."
+    )
+
+
 def cmd_serve(args: argparse.Namespace, console: Console) -> int:  # pragma: no cover
     import uvicorn
 
     from receipts.api import create_app
 
+    if reason := unsafe_bind_reason(args.host, os.environ.get("RECEIPTS_API_KEY") or None):
+        console.print(f"[red]Refusing to serve.[/red] {reason}")
+        return 2
     console.print(f"Replay view: http://{args.host}:{args.port}/   API docs: /docs")
     uvicorn.run(create_app(), host=args.host, port=args.port, log_level="info")
     return 0

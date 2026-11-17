@@ -75,6 +75,25 @@ def test_duplicate_and_missing_resources(client):
     assert "not found" in _error(client.post("/demo/scenarios/nope/run"), 404)
 
 
+def test_conflicting_inline_call_is_rejected_identical_is_idempotent(client):
+    call = _call_json()
+    _data(client.post("/calls", json=call), 201)
+    # Same call again, inline: idempotent, audits fine.
+    report = _data(client.post("/audit", json={"call": call}), 201)
+    assert report["audit_id"]
+    # Same id but different contents: a conflict, not a silent overwrite.
+    tampered = {**call, "caller": {**call["caller"], "name": "Not Maya Chen"}}
+    assert "different contents" in _error(client.post("/audit", json={"call": tampered}), 409)
+
+
+def test_stage_swap_is_serialized(client):
+    # The lock exists and two staged scenarios land cleanly one after another.
+    assert hasattr(client.app.state, "stage_lock")
+    first = _data(client.post("/demo/scenarios/clean-book/stage"), 201)
+    second = _data(client.post("/demo/scenarios/fault-wrong-time/stage"), 201)
+    assert first["call_id"] != second["call_id"]
+
+
 def test_invalid_requests_are_rejected_with_a_clear_message(client):
     call = _call_json()
     assert "exactly one" in _error(client.post("/audit", json={}), 422)
