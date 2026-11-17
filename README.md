@@ -108,18 +108,18 @@ detects any edit.
 
 ## Does it work
 
-`receipts eval` scores the auditor on 52 hand-labelled scenarios and 500 fuzzed calls, next
+`receipts eval` scores the auditor on 57 hand-labelled scenarios and 500 fuzzed calls, next
 to a naive "does a matching record exist" baseline.
 
-Golden set, 52 calls:
+Golden set, 57 calls:
 
 | Metric | Receipts | Naive lookup |
 |---|---|---|
-| False claims caught (recall) | 93.3% | 66.7% |
+| False claims caught (recall) | 94.1% | 58.8% |
 | False accusations (1 - precision) | 0% | 0% |
-| Exact verdict | 97.7% | 79.1% |
+| Exact verdict | 97.9% | 76.6% |
 | Unclaimed writes and policy (recall) | 100% | 0% |
-| Calls fully correct | 96.2% | 55.8% |
+| Calls fully correct | 96.5% | 52.6% |
 
 Fuzzed, 500 calls: 100% on every metric.
 
@@ -131,7 +131,8 @@ suspect is simulated.
 Full tables: [docs/EVAL_REPORT.md](docs/EVAL_REPORT.md).
 
 These numbers describe the dataset, not the world. A review after the build found failure
-shapes the dataset does not contain; see Limits below.
+shapes the dataset did not contain; all nine are fixed and their shapes now live in the
+dataset. See Limits below.
 
 ## How it works
 
@@ -162,7 +163,7 @@ plans: [docs/ROADMAP.md](docs/ROADMAP.md).
 ## The suspect
 
 A simulated dental receptionist that takes scripted calls, writes to the system of record
-and emits claims. Honest by default. 22 fault modes, forced per step or drawn at tunable
+and emits claims. Honest by default. 25 fault modes, forced per step or drawn at tunable
 seeded rates:
 
 | Area | Fault modes |
@@ -228,10 +229,10 @@ Google Calendar. It is a stub, not an implementation.
 
 ## Limits
 
-- **Open correctness issues.** An independent review found six call shapes that produce a
-  wrong verdict (five false `VERIFIED`, one false accusation). They are reproduced and
-  listed in [docs/FAILURE_ANALYSIS.md](docs/FAILURE_ANALYSIS.md) section 4, and not yet
-  fixed. Fixing them is the first roadmap item.
+- **v0.2 review findings: fixed.** An independent review found nine weaknesses (six wrong
+  verdicts, one false accusation, two scoring bugs). All are fixed, and every shape now
+  lives in the golden set and fuzzer. See
+  [docs/FAILURE_ANALYSIS.md](docs/FAILURE_ANALYSIS.md) section 4.
 - The suspect is simulated. Real transcripts are messier than seeded templates.
 - Attribution relies on the agent writing under its own identity.
 - Free-text ticket summaries are not compared.

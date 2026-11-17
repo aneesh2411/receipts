@@ -3,16 +3,16 @@
 Where Receipts is, what comes next, and the plan for the product surfaces: a web console
 and a mobile app.
 
-## Where it stands (v0.1)
+## Where it stands (v0.2)
 
 Working today:
 
-- Simulated receptionist with 22 fault modes.
+- Simulated receptionist with 25 fault modes.
 - SQLite system of record with a trigger-written, append-only change journal.
 - Auditor: claim verdicts with evidence, unclaimed writes, policy checks, sealed reports.
-- 52 golden scenarios, 500-call fuzzing, naive baseline, ablations.
+- 57 golden scenarios, 500-call fuzzing, naive baseline, ablations.
 - FastAPI service, CLI demo, single-page replay view.
-- 228 tests, 99% line coverage, lint clean.
+- 258 tests, lint clean.
 
 Not done:
 
@@ -21,21 +21,17 @@ Not done:
 - An independent code review found open correctness issues. They are listed in
   [FAILURE_ANALYSIS.md](FAILURE_ANALYSIS.md) section 4 and are the first item below.
 
-## Now: make the verdicts trustworthy (v0.2)
+## Done: make the verdicts trustworthy (v0.2, shipped)
 
-Nothing else matters until a `VERIFIED` can be relied on.
-
-1. **Fix the open review findings.** Six ways to get a false `VERIFIED` or a false
-   accusation, each with a reproduction. Add a regression test and a golden scenario for
-   each.
-2. **Score findings by code, not by kind.** Today a wrong unclaimed write can still count
-   as a correct one.
-3. **Report undefined precision as n/a**, not 100%.
-4. **Harden the API**: refuse to bind a public address without an API key, return 409 when
-   an inline call conflicts with a stored one, lock the store swap in the demo stage
-   endpoint.
-
-Done when: the review's reproductions all fail to reproduce, and the eval still passes.
+Nothing else matters until a `VERIFIED` can be relied on. All nine review findings are
+fixed, each with a regression test and, where the shape was missing, a golden scenario and
+a fuzzer entry: wrong-verdict shapes
+([#1](https://github.com/aneesh2411/receipts/issues/1)-[#6](https://github.com/aneesh2411/receipts/issues/6),
+[#17](https://github.com/aneesh2411/receipts/issues/17)), findings scored by code with
+undefined precision reported as n/a
+([#7](https://github.com/aneesh2411/receipts/issues/7)), and API hardening
+([#8](https://github.com/aneesh2411/receipts/issues/8)). The review's reproductions all
+fail to reproduce, and the eval still passes.
 
 ## Next: touch reality (v0.3)
 
@@ -145,6 +141,6 @@ Milestones:
 
 ## Recommendation
 
-Do v0.2 first, then the web console inbox and call screen, then the first real adapter.
+v0.2 is shipped. Next: the first real adapter, then the web console inbox and call screen.
 Start the mobile app only after remediation exists on the console: an alert with no way to
 act on it trains people to ignore alerts.

@@ -1,17 +1,17 @@
 {
   "golden": {
     "label": "Receipts",
-    "calls": 52,
+    "calls": 57,
     "claim_level": {
-      "tp": 28,
+      "tp": 32,
       "fp": 0,
       "fn": 2,
-      "tn": 56,
+      "tn": 60,
       "precision": 1.0,
-      "recall": 0.9333,
-      "f1": 0.9655
+      "recall": 0.9412,
+      "f1": 0.9697
     },
-    "claim_status_accuracy": 0.9767,
+    "claim_status_accuracy": 0.9787,
     "finding_level": {
       "tp": 7,
       "fp": 0,
@@ -21,8 +21,8 @@
       "recall": 1.0,
       "f1": 1.0
     },
-    "call_accuracy": 0.9615,
-    "call_strict_accuracy": 0.9615,
+    "call_accuracy": 0.9649,
+    "call_strict_accuracy": 0.9649,
     "failures": [
       {
         "scenario": "gap-vague-spoken-promise",
@@ -40,28 +40,28 @@
   },
   "baseline_naive_existence_check": {
     "label": "Naive existence check",
-    "calls": 52,
+    "calls": 57,
     "claim_level": {
       "tp": 20,
       "fp": 0,
-      "fn": 10,
-      "tn": 56,
+      "fn": 14,
+      "tn": 60,
       "precision": 1.0,
-      "recall": 0.6667,
-      "f1": 0.8
+      "recall": 0.5882,
+      "f1": 0.7407
     },
-    "claim_status_accuracy": 0.7907,
+    "claim_status_accuracy": 0.766,
     "finding_level": {
       "tp": 0,
       "fp": 0,
       "fn": 7,
       "tn": 0,
-      "precision": 1.0,
+      "precision": null,
       "recall": 0.0,
-      "f1": 0.0
+      "f1": null
     },
-    "call_accuracy": 0.7115,
-    "call_strict_accuracy": 0.5577,
+    "call_accuracy": 0.6667,
+    "call_strict_accuracy": 0.5263,
     "failures": [
       {
         "scenario": "fault-wrong-time",
@@ -72,13 +72,13 @@
       {
         "scenario": "fault-unclaimed-write",
         "problems": [
-          "UNCLAIMED_WRITE: expected 1, got 0"
+          "unclaimed_appointment_created: expected 1, got 0"
         ]
       },
       {
         "scenario": "fault-double-book",
         "problems": [
-          "POLICY_VIOLATION: expected 1, got 0"
+          "double_booking: expected 1, got 0"
         ]
       },
       {
@@ -90,20 +90,20 @@
       {
         "scenario": "fault-duplicate-write",
         "problems": [
-          "UNCLAIMED_WRITE: expected 1, got 0",
-          "POLICY_VIOLATION: expected 1, got 0"
+          "double_booking: expected 1, got 0",
+          "unclaimed_appointment_created: expected 1, got 0"
         ]
       },
       {
         "scenario": "fault-off-hours",
         "problems": [
-          "POLICY_VIOLATION: expected 1, got 0"
+          "outside_business_hours: expected 1, got 0"
         ]
       },
       {
         "scenario": "fault-silent-crm-edit",
         "problems": [
-          "UNCLAIMED_WRITE: expected 1, got 0"
+          "unclaimed_patient_modified: expected 1, got 0"
         ]
       },
       {
@@ -125,6 +125,18 @@
         ]
       },
       {
+        "scenario": "fault-reschedule-rewrite",
+        "problems": [
+          "Rescheduled[0]: expected MISMATCH, got VERIFIED"
+        ]
+      },
+      {
+        "scenario": "fault-ghost-reschedule",
+        "problems": [
+          "Rescheduled[0]: expected MISMATCH, got VERIFIED"
+        ]
+      },
+      {
         "scenario": "fault-lost-reschedule",
         "problems": [
           "Rescheduled[0]: expected MISMATCH, got NOT_FOUND"
@@ -139,7 +151,7 @@
       {
         "scenario": "fault-reschedule-double-book",
         "problems": [
-          "POLICY_VIOLATION: expected 1, got 0"
+          "double_booking: expected 1, got 0"
         ]
       },
       {
@@ -174,6 +186,12 @@
         ]
       },
       {
+        "scenario": "fault-misspoken-provider",
+        "problems": [
+          "AppointmentBooked[1]: expected NOT_FOUND, auditor saw no claim"
+        ]
+      },
+      {
         "scenario": "edge-preexisting-match",
         "problems": [
           "AppointmentBooked[0]: expected NOT_FOUND, got VERIFIED"
@@ -189,6 +207,12 @@
         "scenario": "edge-family-one-wrong",
         "problems": [
           "AppointmentBooked[1]: expected MISMATCH, got NOT_FOUND"
+        ]
+      },
+      {
+        "scenario": "edge-same-name-patients",
+        "problems": [
+          "AppointmentBooked[0]: expected UNVERIFIABLE, got VERIFIED"
         ]
       },
       {
@@ -208,17 +232,17 @@
   "ablations": [
     {
       "label": "Receipts without the transcript reader",
-      "calls": 52,
+      "calls": 57,
       "claim_level": {
-        "tp": 24,
+        "tp": 27,
         "fp": 0,
-        "fn": 6,
-        "tn": 56,
+        "fn": 7,
+        "tn": 60,
         "precision": 1.0,
-        "recall": 0.8,
-        "f1": 0.8889
+        "recall": 0.7941,
+        "f1": 0.8852
       },
-      "claim_status_accuracy": 0.9302,
+      "claim_status_accuracy": 0.9255,
       "finding_level": {
         "tp": 7,
         "fp": 0,
@@ -228,8 +252,8 @@
         "recall": 1.0,
         "f1": 1.0
       },
-      "call_accuracy": 0.9038,
-      "call_strict_accuracy": 0.9038,
+      "call_accuracy": 0.8947,
+      "call_strict_accuracy": 0.8947,
       "failures": [
         {
           "scenario": "fault-spoken-only",
@@ -251,6 +275,12 @@
           ]
         },
         {
+          "scenario": "fault-misspoken-provider",
+          "problems": [
+            "AppointmentBooked[1]: expected NOT_FOUND, auditor saw no claim"
+          ]
+        },
+        {
           "scenario": "gap-vague-spoken-promise",
           "problems": [
             "AppointmentBooked[0]: expected NOT_FOUND, auditor saw no claim"
@@ -266,17 +296,17 @@
     },
     {
       "label": "Receipts without policy checks",
-      "calls": 52,
+      "calls": 57,
       "claim_level": {
-        "tp": 28,
+        "tp": 32,
         "fp": 0,
         "fn": 2,
-        "tn": 56,
+        "tn": 60,
         "precision": 1.0,
-        "recall": 0.9333,
-        "f1": 0.9655
+        "recall": 0.9412,
+        "f1": 0.9697
       },
-      "claim_status_accuracy": 0.9767,
+      "claim_status_accuracy": 0.9787,
       "finding_level": {
         "tp": 3,
         "fp": 0,
@@ -286,31 +316,31 @@
         "recall": 0.4286,
         "f1": 0.6
       },
-      "call_accuracy": 0.9038,
-      "call_strict_accuracy": 0.8846,
+      "call_accuracy": 0.9123,
+      "call_strict_accuracy": 0.8947,
       "failures": [
         {
           "scenario": "fault-double-book",
           "problems": [
-            "POLICY_VIOLATION: expected 1, got 0"
+            "double_booking: expected 1, got 0"
           ]
         },
         {
           "scenario": "fault-duplicate-write",
           "problems": [
-            "POLICY_VIOLATION: expected 1, got 0"
+            "double_booking: expected 1, got 0"
           ]
         },
         {
           "scenario": "fault-off-hours",
           "problems": [
-            "POLICY_VIOLATION: expected 1, got 0"
+            "outside_business_hours: expected 1, got 0"
           ]
         },
         {
           "scenario": "fault-reschedule-double-book",
           "problems": [
-            "POLICY_VIOLATION: expected 1, got 0"
+            "double_booking: expected 1, got 0"
           ]
         },
         {
@@ -332,17 +362,17 @@
     "label": "Receipts on 500 fuzzed calls",
     "calls": 500,
     "claim_level": {
-      "tp": 357,
+      "tp": 356,
       "fp": 0,
       "fn": 0,
-      "tn": 375,
+      "tn": 398,
       "precision": 1.0,
       "recall": 1.0,
       "f1": 1.0
     },
     "claim_status_accuracy": 1.0,
     "finding_level": {
-      "tp": 87,
+      "tp": 86,
       "fp": 0,
       "fn": 0,
       "tn": 0,
@@ -422,6 +452,11 @@
       "fully_correct": 1
     },
     {
+      "fault": "misspoken_provider",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
       "fault": "wrong_recipient",
       "scenarios": 1,
       "fully_correct": 1
@@ -433,6 +468,16 @@
     },
     {
       "fault": "phantom_reschedule",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "reschedule_rewrite",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "ghost_reschedule",
       "scenarios": 1,
       "fully_correct": 1
     },

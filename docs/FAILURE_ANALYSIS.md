@@ -9,7 +9,7 @@ receipts eval --report docs/EVAL_REPORT.md --json evals/results/latest.json
 
 ## 1. Results in one screen
 
-Golden set: 52 hand-labelled calls, 86 claims, 7 findings beyond claims.
+Golden set: 57 hand-labelled calls, 94 claims, 7 findings beyond claims.
 
 | Metric | Receipts | Naive lookup |
 |---|---|---|
@@ -103,54 +103,81 @@ first report linked to genesis. Removing the oldest audit left a chain that veri
 
 **Fix.** Verification starts from the genesis hash.
 
-## 4. Open findings from independent review (not yet fixed)
+## 4. Findings from independent review (all fixed in v0.2)
 
 After the build, a separate reviewer was asked to construct calls that make the auditor
-return a wrong verdict. It reproduced the following by running code. **None are fixed in
-this commit.** The golden set and the fuzzer do not contain these shapes, which is why the
-headline numbers did not catch them. Until they are fixed, treat a `VERIFIED` as "no
-discrepancy found in the shapes the dataset covers", not as proof.
+return a wrong verdict. It reproduced the following by running code. The golden set and
+the fuzzer did not contain these shapes, which is why the headline numbers did not catch
+them. **All nine are fixed in v0.2**; each fix added the shape to the golden set, the
+fuzzer, and the regression suite, so the dataset now covers what the review found.
 
 False `VERIFIED`:
 
-1. **Duplicate claim ids.** Two claims sharing one `claim_id` both verify against a single
-   write. Call records do not yet enforce unique ids.
+1. **Duplicate claim ids.** Two claims sharing one `claim_id` both verified against a
+   single write. Fixed: call records with duplicate claim ids are rejected at ingest.
+   ([#1](https://github.com/aneesh2411/receipts/issues/1),
+   [PR #11](https://github.com/aneesh2411/receipts/pull/11))
 2. **Reschedule that also rewrites the record.** An in-place move that also reassigns the
-   patient, provider or duration verifies, because only the times are compared.
-3. **Reschedule of an appointment that never existed.** "Moved from A to B" verifies when
-   nothing was ever booked at A and a fresh appointment was created at B.
-4. **Spoken detail that differs from the log.** The caller is told one provider, the log
-   says another. The spoken claim is merged away because only the time is compared.
+   patient, provider or duration verified, because only the times were compared. Fixed:
+   the reschedule judge checks every identifying field of the original.
+   ([#2](https://github.com/aneesh2411/receipts/issues/2),
+   [PR #12](https://github.com/aneesh2411/receipts/pull/12))
+3. **Reschedule of an appointment that never existed.** "Moved from A to B" verified when
+   nothing was ever booked at A and a fresh appointment was created at B. Fixed: a
+   reschedule whose original cannot be found is a mismatch, not a soft miss.
+   ([#3](https://github.com/aneesh2411/receipts/issues/3),
+   [PR #12](https://github.com/aneesh2411/receipts/pull/12))
+4. **Spoken detail that differs from the log.** The caller was told one provider, the log
+   said another, and the spoken claim was merged away because only the time was compared.
+   Fixed: spoken and logged claims that disagree are audited as separate promises.
+   ([#4](https://github.com/aneesh2411/receipts/issues/4),
+   [PR #13](https://github.com/aneesh2411/receipts/pull/13))
 5. **Two patients with the same name.** With no usable phone number, a booking for the
-   other person of that name verifies.
+   other person of that name verified. Fixed: an ambiguous patient reference is
+   `UNVERIFIABLE`, never `VERIFIED` - a guess could clear a booking made for the wrong
+   person. ([#5](https://github.com/aneesh2411/receipts/issues/5),
+   [PR #14](https://github.com/aneesh2411/receipts/pull/14))
 
 False accusation:
 
-6. **Recaps.** "To recap, you're booked for Tuesday" in a later turn is read as a second
-   booking claim with no write behind it, and reported `NOT_FOUND`.
+6. **Recaps.** "To recap, you're booked for Tuesday" in a later turn was read as a second
+   booking claim with no write behind it, and reported `NOT_FOUND`. Fixed: recaps
+   corroborate the original claim when every identifying field matches, and repeated
+   spoken claims dedupe. ([#6](https://github.com/aneesh2411/receipts/issues/6),
+   [PR #13](https://github.com/aneesh2411/receipts/pull/13))
 
 Weaker than they should be:
 
-7. **Claim order affects attribution.** Matching is greedy in claim order, so an earlier
-   claim can take a write that belongs to a later, more specific one.
-8. **Findings are scored by kind only.** A wrong unclaimed write can be counted as a
-   correct one. Undefined precision is reported as 100%.
-9. **API**: no authentication unless a key is set, an inline call that conflicts with a
-   stored one is not rejected, and the demo stage endpoint swaps the store without a lock.
+7. **Claim order affected attribution.** Matching was greedy in claim order, so an earlier
+   vague claim could take a write that belonged to a later, more specific one. Fixed:
+   within each strictness pass the most specific claims match first.
+   ([#17](https://github.com/aneesh2411/receipts/issues/17),
+   [PR #18](https://github.com/aneesh2411/receipts/pull/18))
+8. **Findings were scored by kind only.** A wrong unclaimed write could be counted as a
+   correct one, and undefined precision was reported as 100%. Fixed: findings are scored
+   as a multiset of codes, and undefined precision or recall is reported as `n/a`.
+   ([#7](https://github.com/aneesh2411/receipts/issues/7),
+   [PR #15](https://github.com/aneesh2411/receipts/pull/15))
+9. **API**: no authentication unless a key was set, an inline call that conflicted with a
+   stored one was not rejected, and the demo stage endpoint swapped the store without a
+   lock. Fixed: the CLI refuses a public bind without `RECEIPTS_API_KEY`, conflicting
+   inline calls get a 409, and stage swaps are serialized.
+   ([#8](https://github.com/aneesh2411/receipts/issues/8),
+   [PR #16](https://github.com/aneesh2411/receipts/pull/16))
 
 No SQL injection, cross-site scripting or error-detail leaks were found.
 
 **Lesson.** Every one of items 1 to 6 is a case the author did not think to write a
 scenario for. Hand-written labels and a fuzzer built by the same person share that
 person's blind spots. An adversarial pass by someone else found more in a few minutes
-than 552 self-authored cases did. That pass should be a standing part of the eval.
-
-Fixing these is the first item in [ROADMAP.md](ROADMAP.md).
+than 552 self-authored cases did. That pass should be a standing part of the eval: after
+each fix, the shape joins the golden set and the fuzzer so the next reviewer starts from
+a harder target.
 
 ## 5. What the baseline and ablations show
 
 The naive baseline looks up current state and asks whether something matching the claim
-exists. It fails 23 of 52 calls. The pattern:
+exists. It fails 27 of 57 calls under strict scoring (19 on the headline "does this call need attention" decision). The pattern:
 
 - **It reports the wrong verdict for partial failures.** Wrong time, wrong patient and wrong
   recipient all come back `NOT_FOUND`: it can see that the claimed record is absent, not
