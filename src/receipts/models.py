@@ -193,6 +193,15 @@ class CallRecord(Frozen):
             raise ValueError("ended_at must not be before started_at")
         return self
 
+    @model_validator(mode="after")
+    def _claim_ids_are_unique(self) -> CallRecord:
+        seen: set[str] = set()
+        for claim in self.claims:
+            if claim.claim_id in seen:
+                raise ValueError(f"duplicate claim_id {claim.claim_id!r}")
+            seen.add(claim.claim_id)
+        return self
+
 
 # --------------------------------------------------------------------------- #
 # Verdicts: what the auditor concluded
