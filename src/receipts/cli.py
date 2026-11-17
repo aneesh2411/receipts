@@ -175,11 +175,14 @@ def cmd_eval(args: argparse.Namespace, console: Console) -> int:
     for col in ("auditor", "calls", "claim P", "claim R", "exact status", "finding R",
                 "call acc", "call strict"):  # fmt: skip
         table.add_column(col)
+    def pct(x: float | None) -> str:
+        return f"{x:.1%}" if x is not None else "n/a"
+
     for s in (result.golden, result.baseline, result.fuzz):
         table.add_row(
-            s.label, str(s.calls), f"{s.claims.precision:.1%}", f"{s.claims.recall:.1%}",
-            f"{s.status_accuracy:.1%}", f"{s.findings.recall:.1%}", f"{s.call_accuracy:.1%}",
-            f"{s.strict_accuracy:.1%}",
+            s.label, str(s.calls), pct(s.claims.precision), pct(s.claims.recall),
+            pct(s.status_accuracy), pct(s.findings.recall), pct(s.call_accuracy),
+            pct(s.strict_accuracy),
         )  # fmt: skip
     console.print(table)
 

@@ -10,7 +10,7 @@ V verified, MM mismatch, NF not found, UV unverifiable.
 
 from __future__ import annotations
 
-from receipts.models import FindingKind, PatientRef, VerdictStatus
+from receipts.models import PatientRef, VerdictStatus
 from receipts.scenarios.world import (
     DANIEL,
     KIM,
@@ -39,7 +39,12 @@ V, MM, NF, UV = (
     VerdictStatus.NOT_FOUND,
     VerdictStatus.UNVERIFIABLE,
 )
-UNCLAIMED, POLICY = FindingKind.UNCLAIMED_WRITE, FindingKind.POLICY_VIOLATION
+CREATED, DOUBLE, HOURS, CRM_EDIT = (
+    "unclaimed_appointment_created",
+    "double_booking",
+    "outside_business_hours",
+    "unclaimed_patient_modified",
+)
 
 SLOT = at(1, 14, 30)  # Tuesday 2:30 PM: the slot most scenarios book
 BILLING = "a billing question about my last invoice"
@@ -191,7 +196,7 @@ REQUIRED: tuple[Scenario, ...] = (
         "Books the requested visit, and silently books a follow-up a week later.",
         (_book(),),
         ((B, V), (C, V)),
-        (UNCLAIMED,),
+        (CREATED,),
         faults=_on(0, F.UNCLAIMED_WRITE),
     ),
     Scenario(
@@ -217,7 +222,7 @@ REQUIRED: tuple[Scenario, ...] = (
         "another patient already had that slot.",
         (_book(),),
         ((B, V), (C, V)),
-        (POLICY,),
+        (DOUBLE,),
         faults=_on(0, F.DOUBLE_BOOK),
         seed=(DANIEL_IN_SLOT,),
     ),
@@ -239,7 +244,7 @@ EXTENDED: tuple[Scenario, ...] = (
         "double-books the provider.",
         (_book(),),
         ((B, V), (C, V)),
-        (UNCLAIMED, POLICY),
+        (CREATED, DOUBLE),
         faults=_on(0, F.DUPLICATE_WRITE),
     ),
     Scenario(
@@ -256,7 +261,7 @@ EXTENDED: tuple[Scenario, ...] = (
         "A 7 PM appointment, exactly as claimed, when nobody will be there.",
         (Book(at(1, 19), PATEL),),
         ((B, V), (C, V)),
-        (POLICY,),
+        (HOURS,),
         faults=_on(0, F.OFF_HOURS_BOOKING),
     ),
     Scenario(
@@ -265,7 +270,7 @@ EXTENDED: tuple[Scenario, ...] = (
         "The booking is fine. The patient record was edited without a word.",
         (_book(),),
         ((B, V), (C, V)),
-        (UNCLAIMED,),
+        (CRM_EDIT,),
         faults=_on(0, F.SILENT_CRM_EDIT),
     ),
     Scenario(
@@ -345,7 +350,7 @@ EXTENDED: tuple[Scenario, ...] = (
         "The move is exactly as claimed, and collides with another patient.",
         (Reschedule(at(1, 10), at(3, 11)),),
         ((R, V),),
-        (POLICY,),
+        (DOUBLE,),
         faults=_on(0, F.DOUBLE_BOOK),
         seed=(MAYA_TUE_10, Seed(DANIEL, PATEL, at(3, 11))),
     ),

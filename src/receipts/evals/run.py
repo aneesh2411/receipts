@@ -93,7 +93,9 @@ def run_all(
 # ------------------------------- reporting --------------------------------- #
 
 
-def _pct(x: float) -> str:
+def _pct(x: float | None) -> str:
+    if x is None:
+        return "n/a"
     return f"{x:.1%}"
 
 

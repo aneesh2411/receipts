@@ -8,7 +8,7 @@ import pytest
 
 from receipts.evals import Counts, EvalSummary, evaluate, generate, run_all, score_run
 from receipts.evals.run import render_markdown
-from receipts.models import FindingKind, VerdictStatus
+from receipts.models import VerdictStatus
 from receipts.scenarios import BY_ID, GOLDEN, run_scenario
 
 V, MM, NF = VerdictStatus.VERIFIED, VerdictStatus.MISMATCH, VerdictStatus.NOT_FOUND
@@ -26,8 +26,12 @@ def test_counts_arithmetic():
     assert round(c.f1, 4) == 0.6667
     assert Counts() + c == c
     empty = Counts()
-    assert (empty.precision, empty.recall, empty.f1) == (1.0, 1.0, 1.0)
-    assert Counts(fn=1).f1 == 0.0
+    # Undefined means "nothing to report": None, rendered as n/a downstream -
+    # never 100%, which would credit the auditor with work it did not do.
+    assert (empty.precision, empty.recall, empty.f1) == (None, None, None)
+    assert Counts(fn=1).f1 is None  # nothing predicted: precision is undefined
+    assert Counts(tp=0, fp=1, fn=1).f1 == 0.0  # predicted and missed: a real zero
+    assert Counts(tn=4).precision is None and Counts(tn=4).recall is None
 
 
 def test_scoring_a_correct_report():
@@ -61,12 +65,20 @@ def test_claims_the_auditor_never_saw_or_made_up():
     assert "unexpected claim" in invented.problems[0]
 
 
-def test_findings_are_scored_as_a_multiset():
+def test_findings_are_scored_as_a_multiset_of_codes():
     exact = _score("fault-duplicate-write", [(B, V), (C, V)],
-                   [FindingKind.UNCLAIMED_WRITE, FindingKind.POLICY_VIOLATION])  # fmt: skip
+                   ["unclaimed_appointment_created", "double_booking"])  # fmt: skip
     assert exact.findings == Counts(tp=2) and exact.strict_correct
-    off = _score("fault-duplicate-write", [(B, V), (C, V)], [FindingKind.UNCLAIMED_WRITE] * 2)
+    off = _score("fault-duplicate-write", [(B, V), (C, V)], ["unclaimed_appointment_created"] * 2)
     assert off.findings == Counts(tp=1, fp=1, fn=1)
+
+
+def test_a_wrong_code_is_not_a_correct_finding():
+    # The old kind-level scoring counted any unclaimed write as correct. A silent
+    # CRM edit is not the same finding as a silent booking.
+    wrong = _score("fault-unclaimed-write", [(B, V), (C, V)], ["unclaimed_patient_modified"])
+    assert wrong.findings == Counts(fp=1, fn=1)
+    assert not wrong.strict_correct
 
 
 def test_golden_headline_numbers():

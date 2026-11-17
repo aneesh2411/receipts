@@ -15,7 +15,7 @@ from typing import Any, Literal
 from zoneinfo import ZoneInfo
 
 from receipts.auditor import Auditor, ClaimExtractor, NaiveAuditor, Sealer
-from receipts.models import AuditReport, FindingKind, PatientRef, VerdictStatus
+from receipts.models import AuditReport, PatientRef, VerdictStatus
 from receipts.sor import SqliteStore, with_outage
 from receipts.suspect import (
     AGENT_ID,
@@ -73,7 +73,7 @@ class Scenario:
     story: str
     steps: tuple[Step, ...]
     expected_claims: tuple[Expected, ...]
-    expected_findings: tuple[FindingKind, ...] = ()
+    expected_findings: tuple[str, ...] = ()  # finding codes, e.g. "double_booking"
     caller: PatientRef = MAYA
     faults: Mapping[int, frozenset[FaultMode]] = field(default_factory=dict)
     seed: tuple[SeedAppointment, ...] = ()

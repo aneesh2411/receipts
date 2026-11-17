@@ -17,7 +17,7 @@ from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
-from receipts.models import AuditReport, FindingKind, Outcome, VerdictStatus
+from receipts.models import AuditReport, Outcome, VerdictStatus
 
 Expected = tuple[str, VerdictStatus]
 
@@ -35,16 +35,20 @@ class Counts:
         )
 
     @property
-    def precision(self) -> float:
-        return self.tp / (self.tp + self.fp) if self.tp + self.fp else 1.0
+    def precision(self) -> float | None:
+        """None when undefined (nothing predicted): 100% would be a lie."""
+        return self.tp / (self.tp + self.fp) if self.tp + self.fp else None
 
     @property
-    def recall(self) -> float:
-        return self.tp / (self.tp + self.fn) if self.tp + self.fn else 1.0
+    def recall(self) -> float | None:
+        """None when undefined (nothing to find)."""
+        return self.tp / (self.tp + self.fn) if self.tp + self.fn else None
 
     @property
-    def f1(self) -> float:
+    def f1(self) -> float | None:
         p, r = self.precision, self.recall
+        if p is None or r is None:
+            return None
         return 2 * p * r / (p + r) if p + r else 0.0
 
 
@@ -108,29 +112,28 @@ def _score_claims(
     return counts, correct, total, problems
 
 
-def _score_findings(
-    expected: Sequence[FindingKind], predicted: Sequence[FindingKind]
-) -> tuple[Counts, list[str]]:
+def _score_findings(expected: Sequence[str], predicted: Sequence[str]) -> tuple[Counts, list[str]]:
+    """Match findings by code: a wrong unclaimed write is not a correct one."""
     want, got = Counter(expected), Counter(predicted)
     counts, problems = Counts(), []
-    for kind in FindingKind:
-        tp = min(want[kind], got[kind])
-        counts += Counts(tp=tp, fp=got[kind] - tp, fn=want[kind] - tp)
-        if want[kind] != got[kind]:
-            problems.append(f"{kind.value}: expected {want[kind]}, got {got[kind]}")
+    for code in sorted(set(want) | set(got)):
+        tp = min(want[code], got[code])
+        counts += Counts(tp=tp, fp=got[code] - tp, fn=want[code] - tp)
+        if want[code] != got[code]:
+            problems.append(f"{code}: expected {want[code]}, got {got[code]}")
     return counts, problems
 
 
 def score_run(
     scenario_id: str,
     expected_claims: Sequence[Expected],
-    expected_findings: Sequence[FindingKind],
+    expected_findings: Sequence[str],
     report: AuditReport,
 ) -> RunScore:
     predicted = [(v.claim.type, v.status) for v in report.verdicts]
     claims, correct, total, claim_problems = _score_claims(expected_claims, predicted)
     findings, finding_problems = _score_findings(
-        expected_findings, [f.kind for f in report.findings]
+        expected_findings, [f.code for f in report.findings]
     )
     expected_dirty = bool(expected_findings) or any(_flagged(s) for _, s in expected_claims)
     return RunScore(
@@ -181,12 +184,15 @@ class EvalSummary:
         return tuple(r for r in self.runs if not r.strict_correct)
 
     def as_dict(self) -> dict[str, object]:
-        def counts(c: Counts) -> dict[str, float]:
+        def counts(c: Counts) -> dict[str, float | None]:
+            def rnd(x: float | None) -> float | None:
+                return round(x, 4) if x is not None else None
+
             return {
                 "tp": c.tp, "fp": c.fp, "fn": c.fn, "tn": c.tn,
-                "precision": round(c.precision, 4),
-                "recall": round(c.recall, 4),
-                "f1": round(c.f1, 4),
+                "precision": rnd(c.precision),
+                "recall": rnd(c.recall),
+                "f1": rnd(c.f1),
             }  # fmt: skip
 
         return {

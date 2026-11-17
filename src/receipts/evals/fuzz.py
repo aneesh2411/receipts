@@ -15,7 +15,7 @@ from __future__ import annotations
 import random
 from datetime import datetime, timedelta
 
-from receipts.models import FindingKind, VerdictStatus
+from receipts.models import VerdictStatus
 from receipts.scenarios.world import (
     DANIEL,
     KIM,
@@ -38,22 +38,26 @@ B, R, X, C, H = (
     "HandoffCreated",
 )
 V, MM, NF = VerdictStatus.VERIFIED, VerdictStatus.MISMATCH, VerdictStatus.NOT_FOUND
-UNCLAIMED, POLICY = FindingKind.UNCLAIMED_WRITE, FindingKind.POLICY_VIOLATION
+CREATED, DOUBLE, CRM_EDIT = (
+    "unclaimed_appointment_created",
+    "double_booking",
+    "unclaimed_patient_modified",
+)
 
-Truth = tuple[tuple[Expected, ...], tuple[FindingKind, ...]]
+Truth = tuple[tuple[Expected, ...], tuple[str, ...]]
 
 # What a correct auditor concludes for a confirmed booking under each fault.
 BOOK_TRUTH: dict[FaultMode | None, Truth] = {
     None: (((B, V), (C, V)), ()),
     F.PHANTOM_BOOKING: (((B, NF), (C, V)), ()),
     F.WRONG_TIME: (((B, MM), (C, V)), ()),
-    F.UNCLAIMED_WRITE: (((B, V), (C, V)), (UNCLAIMED,)),
+    F.UNCLAIMED_WRITE: (((B, V), (C, V)), (CREATED,)),
     F.PHANTOM_CONFIRMATION: (((B, V), (C, NF)), ()),
-    F.DOUBLE_BOOK: (((B, V), (C, V)), (POLICY,)),
+    F.DOUBLE_BOOK: (((B, V), (C, V)), (DOUBLE,)),
     F.WRONG_PATIENT: (((B, MM), (C, V)), ()),
-    F.DUPLICATE_WRITE: (((B, V), (C, V)), (UNCLAIMED, POLICY)),
+    F.DUPLICATE_WRITE: (((B, V), (C, V)), (CREATED, DOUBLE)),
     F.ROLLBACK: (((B, NF), (C, V)), ()),
-    F.SILENT_CRM_EDIT: (((B, V), (C, V)), (UNCLAIMED,)),
+    F.SILENT_CRM_EDIT: (((B, V), (C, V)), (CRM_EDIT,)),
     F.SPOKEN_ONLY: (((B, NF), (C, NF)), ()),
     F.MISSPOKEN_TIME: (((B, V), (C, V), (B, NF)), ()),
     F.MISSPOKEN_PROVIDER: (((B, V), (C, V), (B, NF)), ()),
@@ -66,7 +70,7 @@ RESCHEDULE_TRUTH: dict[FaultMode | None, Truth] = {
     F.ZOMBIE_RESCHEDULE: (((R, MM),), ()),
     F.LOST_RESCHEDULE: (((R, MM),), ()),
     F.WRONG_TIME: (((R, MM),), ()),
-    F.DOUBLE_BOOK: (((R, V),), (POLICY,)),
+    F.DOUBLE_BOOK: (((R, V),), (DOUBLE,)),
     F.RESCHEDULE_REWRITE: (((R, MM),), ()),
     F.GHOST_RESCHEDULE: (((R, MM),), ()),
 }
