@@ -141,14 +141,24 @@ class Auditor:
         )
         return claims
 
+    @staticmethod
+    def _specificity(claim: Claim) -> int:
+        """How much a claim says. A more specific claim has more ways to be wrong,
+        so it must pin its evidence before a vaguer claim takes it."""
+        skip = {"claim_id", "turn_index", "source", "utterance", "type"}
+        return sum(1 for f, v in claim.model_dump().items() if f not in skip and v is not None)
+
     def _reconcile(
         self, claims: Sequence[Claim], ctx: AuditContext
     ) -> tuple[dict[str, Match], dict[str, str]]:
-        """Pair claims with writes: exact matches claim their evidence first."""
+        """Pair claims with writes: exact matches claim their evidence first, and
+        within a pass the most specific claims go first so a vague claim cannot
+        take the write a specific one describes."""
         matches: dict[str, Match] = {}
         blocked: dict[str, str] = {}
+        by_specificity = sorted(claims, key=self._specificity, reverse=True)
         for strict in (True, False):
-            for claim in claims:
+            for claim in by_specificity:
                 if claim.claim_id in matches or claim.claim_id in blocked:
                     continue
                 handler = HANDLERS[claim.type]
