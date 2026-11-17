@@ -10,7 +10,7 @@ V verified, MM mismatch, NF not found, UV unverifiable.
 
 from __future__ import annotations
 
-from receipts.models import FindingKind, VerdictStatus
+from receipts.models import FindingKind, PatientRef, VerdictStatus
 from receipts.scenarios.world import (
     DANIEL,
     KIM,
@@ -517,6 +517,17 @@ EDGE: tuple[Scenario, ...] = (
         "not a second one: nothing new to audit.",
         (_book(), Recap(SLOT, PATEL)),
         ((B, V), (C, V)),
+    ),
+    Scenario(
+        "edge-same-name-patients",
+        "Two patients share the caller's name",
+        "Two Maya Chens are on file and the caller never gives a phone number, so "
+        "nothing tells them apart. The booking is real, but the auditor cannot tell "
+        "whose it is: no verdict is better than a guessed one.",
+        (_book(confirm=False),),
+        ((B, UV),),
+        caller=PatientRef(name="Maya Chen"),
+        extra_patients=(PatientRef(name="Maya Chen", phone="+15550101999"),),
     ),
     Scenario(
         "edge-message-log-outage",

@@ -107,6 +107,25 @@ class AuditContext:
             self._patient_cache[key] = frozenset(p.id for p in found)
         return self._patient_cache[key]
 
+    def ambiguous_identity(self, ref: PatientRef | None) -> str | None:
+        """Why this person reference cannot anchor a verdict, or None if it can.
+
+        A name that matches several records with nothing to tell them apart must
+        never produce a VERIFIED: it could clear a booking made for the wrong
+        person.
+        """
+        if ref is None:
+            return None
+        ids = self.patient_ids(ref)
+        if len(ids) <= 1:
+            return None
+        detail = f"{ref.name!r} matches {len(ids)} patient records"
+        if ref.phone:
+            detail += " and the phone number given matches none of them"
+        else:
+            detail += " and no phone number disambiguates them"
+        return detail
+
     def patient_label(self, patient_id: str | None) -> str:
         if patient_id is None:
             return "no patient"

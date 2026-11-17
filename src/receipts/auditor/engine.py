@@ -35,11 +35,14 @@ from receipts.models import (
     AuditReport,
     AuditStats,
     CallRecord,
+    Check,
+    CheckName,
     Claim,
     ClaimSource,
     Entity,
     Finding,
     Outcome,
+    Severity,
     Verdict,
     VerdictStatus,
     max_severity,
@@ -175,6 +178,17 @@ class Auditor:
     ) -> Verdict:
         if claim.claim_id in blocked:
             verdict = unverifiable(claim, blocked[claim.claim_id])
+        elif (ambiguous := ctx.ambiguous_identity(getattr(claim, "patient", None))) is not None:
+            verdict = Verdict(
+                claim=claim,
+                status=VerdictStatus.UNVERIFIABLE,
+                severity=Severity.HIGH,
+                summary=f"Could not be checked: {ambiguous}. A guess here could clear a "
+                "booking made for the wrong person.",
+                checks=(Check(name=CheckName.EXISTENCE, passed=None, detail=ambiguous),),
+                remediation="Disambiguate the patient (confirm the phone number on file) "
+                "and re-run the audit.",
+            )
         else:
             try:
                 verdict = HANDLERS[claim.type].judge(claim, match, ctx)

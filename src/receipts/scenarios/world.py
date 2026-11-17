@@ -77,6 +77,7 @@ class Scenario:
     caller: PatientRef = MAYA
     faults: Mapping[int, frozenset[FaultMode]] = field(default_factory=dict)
     seed: tuple[SeedAppointment, ...] = ()
+    extra_patients: tuple[PatientRef, ...] = ()  # e.g. a second patient with the same name
     tags: tuple[str, ...] = ()
     hard_phrasing: bool = False
     outage: tuple[str, ...] = ()  # adapters that are down when the audit runs
@@ -116,6 +117,8 @@ def build_world(scenario: Scenario, store: SqliteStore | None = None) -> World:
         ref.phone: seeder.crm.create_patient(name=ref.name, phone=ref.phone or "").id
         for ref in ROSTER
     }
+    for ref in scenario.extra_patients:
+        seeder.crm.create_patient(name=ref.name, phone=ref.phone or "")
     for appt in scenario.seed:
         writer = staff if appt.by_staff_during_call else seeder
         created = writer.calendar.create_appointment(
