@@ -229,8 +229,9 @@ The auditor is typed against read-only protocols in
 [`sor/base.py`](src/receipts/sor/base.py). A backend is auditable if it can answer one
 question: *what changed between t0 and t1, and who changed it?*
 
-[`sor/google_calendar.py`](src/receipts/sor/google_calendar.py) documents the mapping for
-Google Calendar. It is a stub, not an implementation.
+[`sor/google_calendar.py`](src/receipts/sor/google_calendar.py) implements that mapping for
+Google Calendar: incremental sync with sync tokens, a snapshot cache for before-images, and
+actor attribution via event extended properties.
 
 ## Limits
 

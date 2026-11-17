@@ -10,7 +10,6 @@ import pytest
 from receipts.models import AppointmentStatus, Entity
 from receipts.scenarios.world import CALL_START, DANIEL, MAYA, PATEL, at
 from receipts.sor import AdapterUnavailable, RecordNotFound, SqliteStore, with_outage
-from receipts.sor.google_calendar import GoogleCalendarReader
 from receipts.suspect import AGENT_ID
 
 DAY = timedelta(days=1)
@@ -131,9 +130,3 @@ def test_outage_wrapper_fails_only_the_named_adapters(clinic):
     assert reader.crm.list_patients()
     with pytest.raises(ValueError, match="unknown adapter"):
         with_outage(clinic.agent, "fax")
-
-
-def test_google_calendar_adapter_is_an_honest_stub():
-    reader = GoogleCalendarReader({PATEL: "cal-1"})
-    with pytest.raises(NotImplementedError):
-        reader.changes(CALL_START, CALL_START)

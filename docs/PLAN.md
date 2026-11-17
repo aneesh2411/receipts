@@ -72,8 +72,8 @@ In scope:
    verification, a scorecard and a demo sandbox.
 6. **Demo**: a CLI replay and a browser replay view with claim and evidence side by side.
 
-Out of scope for now: live telephony, real Google Calendar / CRM / SMS adapters (the
-interface and a documented stub are in place), multi-tenant auth, rate limiting.
+Out of scope for now: live telephony, real CRM / SMS adapters (the
+interface is in place, and Google Calendar is implemented), multi-tenant auth, rate limiting.
 
 ## 5. Build order
 

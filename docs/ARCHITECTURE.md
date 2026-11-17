@@ -27,7 +27,7 @@ Three parties, two trust levels:
 | Package | Responsibility |
 |---|---|
 | `receipts.models` | Frozen pydantic models: claims, records, verdicts, report. |
-| `receipts.sor` | Adapter protocols, SQLite implementation, Google Calendar stub. |
+| `receipts.sor` | Adapter protocols, SQLite implementation, Google Calendar adapter. |
 | `receipts.suspect` | The receptionist, its narrator, fault modes and fault plans. |
 | `receipts.auditor` | Extraction, reconciliation, verdicts, findings, sealing, rendering. |
 | `receipts.scenarios` | Golden dataset and the deterministic world that plays a scenario. |

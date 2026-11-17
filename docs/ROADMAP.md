@@ -16,7 +16,7 @@ Working today:
 
 Not done:
 
-- No real adapters (Google Calendar is a documented stub).
+- No real CRM / SMS adapters (Google Calendar is implemented).
 - The live-model transcript reader has not been run against a real model.
 - An independent code review found open correctness issues. They are listed in
   [FAILURE_ANALYSIS.md](FAILURE_ANALYSIS.md) section 4 and are the first item below.
