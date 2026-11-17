@@ -1,0 +1,260 @@
+# Receipts
+
+**Every claim needs a receipt.**
+
+AI voice agents tell callers they did things. *"I booked your appointment." "I sent the
+confirmation." "I created a ticket."* Sometimes none of it happened, the transcript reads
+perfectly, and nobody finds out until a patient is standing at the front desk.
+
+Receipts is an independent auditor. After a call, it takes every action the agent claimed,
+checks it against what the system of record shows actually changed, and reports each
+mismatch with evidence. It also reports the reverse: things the agent did and never
+mentioned.
+
+It is an agent that catches another agent lying.
+
+## A polite call with three problems
+
+```
+  agent  You're all set. I've booked your cleaning with Dr. Patel on
+         Tuesday, March 3 at 2:30 PM. I've sent a confirmation text.
+  agent  I've created a ticket for the front desk. Someone will call you back.
+  agent  Your appointment on Tuesday, March 10 at 3:00 PM is now cancelled.
+```
+
+Four claims. The auditor's findings:
+
+```
+1. AppointmentBooked   RECEIPT DOES NOT MATCH   CRITICAL
+     start   claimed Tue Mar 3, 2:30 PM   actual Tue Mar 3, 3:30 PM
+2. ConfirmationSent    NO RECEIPT               MEDIUM
+     message log shows nothing sent during the call
+3. HandoffCreated      NO RECEIPT               HIGH
+     no ticket was created. Nobody is going to call this person back.
+4. Cancelled           RECEIPT FOUND
+     apt_0001 was cancelled as claimed
+
+Outcome: DISCREPANCIES   1 of 4 claims verified   sealed sha256 27cf8ecb...
+```
+
+Run it yourself: `receipts demo`.
+
+## Quickstart
+
+Python 3.11+. No API keys, no network, no model needed.
+
+```bash
+pip install -e ".[dev]"
+```
+
+```bash
+receipts demo
+```
+
+```bash
+receipts demo --list
+```
+
+```bash
+receipts eval
+```
+
+```bash
+receipts serve
+```
+
+`receipts serve` opens the replay view at http://127.0.0.1:8000/ : pick a call, watch the
+agent make each claim on the left and the auditor stamp it on the right.
+
+```bash
+pytest
+```
+
+## What is different about it
+
+**It does not ask the agent.** Evidence comes from the system of record's own change
+journal. In the SQLite reference store that journal is written by database triggers, so an
+agent cannot skip it or write to it. There is nothing to instrument in the agent, and the
+witness is independent of the suspect.
+
+**It checks what changed, not what exists.** The usual approach is to look up current state
+after the call and see whether something matching is there. That passes a booking that
+already existed before the call, passes a reschedule that left the old appointment alive,
+and says nothing at all about extra writes. Receipts reconciles claims against the changes
+made *during the call window, by the agent's identity*.
+
+**It checks both directions.** Claims against writes, then writes against claims. A write no
+claim accounts for is an unclaimed write: a follow-up nobody asked for, a phone number
+quietly overwritten, a retry that double-booked.
+
+**It audits what the caller heard, not only what was logged.** Structured claims are the
+agent's account of itself. The transcript is the promise that was actually made. Receipts
+recovers spoken claims and audits those too, which is the only way to catch an agent that
+says "you're booked", logs nothing and writes nothing.
+
+**No model decides a verdict.** Verdicts are deterministic comparisons with the evidence
+attached. A language model is optional, sits behind one interface, and is only ever used to
+*read* a transcript. An auditor that can hallucinate is not an auditor.
+
+**It says "I could not check".** If the calendar is unreachable, calendar claims come back
+`UNVERIFIABLE` and the call is `INCONCLUSIVE`. An outage never becomes an accusation and
+never becomes a pass.
+
+**Reports are sealed.** Each report is hashed, chained to the previous one in an
+append-only ledger, and signed when a key is configured. `receipts verify report.json`
+detects any edit.
+
+**The auditor has its own receipts.** See the next section.
+
+## Does it work
+
+`receipts eval` scores the auditor on 52 hand-labelled scenarios and 500 fuzzed calls, next
+to a naive "does a matching record exist" baseline.
+
+Golden set, 52 calls:
+
+| Metric | Receipts | Naive lookup |
+|---|---|---|
+| False claims caught (recall) | 93.3% | 66.7% |
+| False accusations (1 - precision) | 0% | 0% |
+| Exact verdict | 97.7% | 79.1% |
+| Unclaimed writes and policy (recall) | 100% | 0% |
+| Calls fully correct | 96.2% | 55.8% |
+
+Fuzzed, 500 calls: 100% on every metric.
+
+The two golden failures are real limits, labelled as known gaps and counted against the
+score rather than excluded. Read [docs/FAILURE_ANALYSIS.md](docs/FAILURE_ANALYSIS.md) before
+trusting any of these numbers: it covers what they do and do not show, including that the
+suspect is simulated.
+
+Full tables: [docs/EVAL_REPORT.md](docs/EVAL_REPORT.md).
+
+These numbers describe the dataset, not the world. A review after the build found failure
+shapes the dataset does not contain; see Limits below.
+
+## How it works
+
+```
+ 1 collect claims    structured  +  recovered from transcript
+ 2 pull evidence     change feed per system, call window, agent's identity
+ 3 net changes       create+delete = nothing
+ 4 reconcile         exact matches first, then best partial
+ 5 judge             field-by-field diff -> verdict + evidence
+ 6 reverse           writes left over -> UNCLAIMED_WRITE
+ 7 policy            double booking, closed hours, past dates
+ 8 seal              hash -> ledger chain -> signature
+```
+
+Four verdicts:
+
+| Verdict | Meaning |
+|---|---|
+| `VERIFIED` | Happened in this call, exactly as claimed. |
+| `MISMATCH` | Something happened, but not what was claimed. |
+| `NOT_FOUND` | No evidence it happened in this call. |
+| `UNVERIFIABLE` | Evidence could not be read. No guess. |
+
+Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Reasoning behind the design:
+[docs/PLAN.md](docs/PLAN.md). What comes next, including the web console and mobile app
+plans: [docs/ROADMAP.md](docs/ROADMAP.md).
+
+## The suspect
+
+A simulated dental receptionist that takes scripted calls, writes to the system of record
+and emits claims. Honest by default. 22 fault modes, forced per step or drawn at tunable
+seeded rates:
+
+| Area | Fault modes |
+|---|---|
+| Booking | phantom booking, wrong time, wrong patient, duplicate write, rollback, off-hours, double-book |
+| Silent side effects | unclaimed write, silent CRM edit |
+| What the caller heard | spoken-only promise, misspoken time |
+| Confirmation | phantom, wrong recipient, wrong time in the message |
+| Reschedule | phantom, zombie (old slot kept), lost (nothing rebooked), wrong time |
+| Cancel | phantom, wrong appointment |
+| Handoff | phantom, downgraded priority, garbled summary |
+
+## API
+
+```bash
+receipts serve
+```
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /calls` | Ingest a call: transcript and claims. |
+| `POST /audit` | Audit a call against the system of record. |
+| `GET /audit/{id}/report` | Sealed report. `?format=md` for Markdown. |
+| `GET /audits` | Recent audits. |
+| `GET /scorecard` | Per-agent claim honesty. |
+| `GET /ledger/verify` | Re-verify every seal and chain link. |
+| `POST /demo/scenarios/{id}/run` | Play a scenario in a sandbox and audit it. |
+| `POST /demo/scenarios/{id}/stage` | Load a scenario into the live store. |
+
+Try the three core endpoints end to end:
+
+```bash
+curl -s -X POST localhost:8000/demo/scenarios/fault-wrong-time/stage | jq .data > call.json
+```
+
+```bash
+curl -s -X POST localhost:8000/calls -H 'content-type: application/json' -d @call.json
+```
+
+```bash
+curl -s -X POST localhost:8000/audit -H 'content-type: application/json' -d '{"call_id":"call-fault-wrong-time"}' | jq .data.outcome
+```
+
+Configuration is by environment variable:
+
+| Variable | Effect |
+|---|---|
+| `RECEIPTS_API_KEY` | Require `X-API-Key` on every data endpoint. |
+| `RECEIPTS_SIGNING_KEY` | HMAC-sign every report. |
+| `RECEIPTS_DB` | Path for calls and the audit ledger. |
+| `RECEIPTS_SOR_DB` | Path for the system of record. |
+| `RECEIPTS_DEMO=0` | Disable the demo endpoints. |
+| `RECEIPTS_LLM=anthropic` | Use a live model to read transcripts. |
+
+## Plugging in a real system
+
+The auditor is typed against read-only protocols in
+[`sor/base.py`](src/receipts/sor/base.py). A backend is auditable if it can answer one
+question: *what changed between t0 and t1, and who changed it?*
+
+[`sor/google_calendar.py`](src/receipts/sor/google_calendar.py) documents the mapping for
+Google Calendar. It is a stub, not an implementation.
+
+## Limits
+
+- **Open correctness issues.** An independent review found six call shapes that produce a
+  wrong verdict (five false `VERIFIED`, one false accusation). They are reproduced and
+  listed in [docs/FAILURE_ANALYSIS.md](docs/FAILURE_ANALYSIS.md) section 4, and not yet
+  fixed. Fixing them is the first roadmap item.
+- The suspect is simulated. Real transcripts are messier than seeded templates.
+- Attribution relies on the agent writing under its own identity.
+- Free-text ticket summaries are not compared.
+- The rule-based transcript reader only recovers explicit statements.
+- No rate limiting or multi-tenancy. The live-model path is implemented and unit-tested with
+  a stand-in model, but has not been run against a real model.
+
+## Repository map
+
+```
+src/receipts/
+  models.py      claims, records, verdicts, report
+  sor/           adapter protocols, SQLite store with journal
+  suspect/       the receptionist and its fault modes
+  auditor/       extraction, reconciliation, verdicts, findings, seal
+  scenarios/     golden dataset and deterministic runner
+  evals/         scorer, fuzzing, eval report
+  api/           FastAPI service, ledger, replay view
+  cli.py         demo, eval, serve, verify
+docs/            plan, architecture, roadmap, eval report, failure analysis
+tests/           pytest suite
+```
+
+## License
+
+MIT.
