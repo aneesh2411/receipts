@@ -1,0 +1,307 @@
+"""HTTP API.
+
+Core:
+    POST /calls                  ingest a call (transcript + claims)
+    POST /audit                  audit a stored or inline call against the system of record
+    GET  /audit/{id}/report      the sealed report (JSON, or Markdown with ?format=md)
+
+Supporting:
+    GET  /audits                 recent audits
+    GET  /scorecard              per-agent honesty numbers
+    GET  /ledger/verify          re-verify every seal and the hash chain
+    GET  /demo/scenarios         the golden scenarios
+    POST /demo/scenarios/{id}/run    play a scenario in a sandbox and audit it
+    POST /demo/scenarios/{id}/stage  load a scenario into the live system of record
+    GET  /                       the replay view
+"""
+
+from __future__ import annotations
+
+import hmac
+import logging
+import os
+import uuid
+from collections import defaultdict
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Annotated, Any
+
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
+from pydantic import BaseModel, ConfigDict, model_validator
+
+from receipts import __version__
+from receipts.api.store import AuditStore
+from receipts.auditor import (
+    GENESIS,
+    Auditor,
+    ClaimExtractor,
+    LLMClaimExtractor,
+    Sealer,
+    render_markdown,
+)
+from receipts.llm import llm_from_env
+from receipts.models import AuditReport, CallRecord, VerdictStatus
+from receipts.scenarios import BY_ID, audit_call, build_world, run_suspect
+from receipts.sor import SqliteStore
+from receipts.util import utcnow
+
+log = logging.getLogger("receipts.api")
+_STATIC = Path(__file__).parent / "static"
+
+
+@dataclass(frozen=True)
+class Settings:
+    db_path: str = ":memory:"  # calls + audit ledger
+    sor_path: str = ":memory:"  # the system of record being audited
+    api_key: str | None = None
+    signing_key: bytes | None = None
+    demo: bool = True
+
+    @classmethod
+    def from_env(cls) -> Settings:
+        key = os.environ.get("RECEIPTS_SIGNING_KEY")
+        return cls(
+            db_path=os.environ.get("RECEIPTS_DB", ":memory:"),
+            sor_path=os.environ.get("RECEIPTS_SOR_DB", ":memory:"),
+            api_key=os.environ.get("RECEIPTS_API_KEY") or None,
+            signing_key=key.encode() if key else None,
+            demo=os.environ.get("RECEIPTS_DEMO", "1") != "0",
+        )
+
+
+class AuditRequest(BaseModel):
+    """Audit a stored call by id, or an inline call (which is stored first)."""
+
+    model_config = ConfigDict(extra="forbid")
+    call_id: str | None = None
+    call: CallRecord | None = None
+
+    @model_validator(mode="after")
+    def _exactly_one(self) -> AuditRequest:
+        if (self.call_id is None) == (self.call is None):
+            raise ValueError("provide exactly one of call_id or call")
+        return self
+
+
+def _ok(data: Any, status: int = 200) -> JSONResponse:
+    return JSONResponse({"success": True, "data": data, "error": None}, status_code=status)
+
+
+def _fail(message: str, status: int) -> JSONResponse:
+    return JSONResponse({"success": False, "data": None, "error": message}, status_code=status)
+
+
+def _summary(report: AuditReport) -> dict[str, Any]:
+    return {
+        "audit_id": report.audit_id,
+        "call_id": report.call.call_id,
+        "agent_id": report.call.agent_id,
+        "outcome": report.outcome.value,
+        "created_at": report.created_at.isoformat(),
+        "stats": report.stats.model_dump(mode="json"),
+    }
+
+
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or Settings.from_env()
+    app = FastAPI(
+        title="Receipts",
+        version=__version__,
+        description="Every claim needs a receipt: outcome auditing for AI voice agents.",
+    )
+    app.state.settings = settings
+    app.state.store = AuditStore(settings.db_path)
+    app.state.sor = SqliteStore(settings.sor_path)
+    app.state.sealer = Sealer(settings.signing_key)
+    llm = llm_from_env()
+    extractor: ClaimExtractor | None = LLMClaimExtractor(llm) if llm else None
+
+    def store() -> AuditStore:
+        return app.state.store
+
+    def require_key(x_api_key: Annotated[str | None, Header()] = None) -> None:
+        expected = settings.api_key
+        if expected and not hmac.compare_digest(x_api_key or "", expected):
+            raise HTTPException(401, "missing or invalid X-API-Key")
+
+    def require_demo() -> None:
+        if not settings.demo:
+            raise HTTPException(404, "demo endpoints are disabled")
+
+    guarded = [Depends(require_key)]
+    demo_only = [Depends(require_key), Depends(require_demo)]
+
+    # -- error envelope ----------------------------------------------------- #
+
+    @app.exception_handler(HTTPException)
+    async def _http_error(_: Request, exc: HTTPException) -> JSONResponse:
+        return _fail(str(exc.detail), exc.status_code)
+
+    @app.exception_handler(RequestValidationError)
+    async def _invalid(_: Request, exc: RequestValidationError) -> JSONResponse:
+        problems = "; ".join(
+            f"{'.'.join(str(p) for p in e['loc'][1:]) or 'body'}: {e['msg']}" for e in exc.errors()
+        )
+        return _fail(f"invalid request: {problems}", 422)
+
+    @app.exception_handler(Exception)
+    async def _crash(request: Request, exc: Exception) -> JSONResponse:
+        log.exception("unhandled error on %s %s", request.method, request.url.path)
+        return _fail("internal error", 500)
+
+    # -- core --------------------------------------------------------------- #
+
+    @app.get("/healthz")
+    def healthz() -> JSONResponse:
+        return _ok({"status": "ok", "version": __version__, "signed": bool(settings.signing_key)})
+
+    @app.post("/calls", status_code=201, dependencies=guarded)
+    def ingest_call(call: CallRecord) -> JSONResponse:
+        if not store().save_call(call):
+            raise HTTPException(409, f"call {call.call_id} already exists")
+        return _ok({"call_id": call.call_id, "claims": len(call.claims)}, 201)
+
+    @app.get("/calls/{call_id}", dependencies=guarded)
+    def get_call(call_id: str) -> JSONResponse:
+        call = store().get_call(call_id)
+        if call is None:
+            raise HTTPException(404, f"call {call_id} not found")
+        return _ok(call.model_dump(mode="json"))
+
+    @app.post("/audit", status_code=201, dependencies=guarded)
+    def audit(req: AuditRequest) -> JSONResponse:
+        if req.call is not None:
+            store().save_call(req.call)
+            call = req.call
+        else:
+            found = store().get_call(req.call_id or "")
+            if found is None:
+                raise HTTPException(404, f"call {req.call_id} not found")
+            call = found
+        auditor = Auditor(
+            app.state.sor.session("auditor", utcnow), extractor=extractor, sealer=app.state.sealer
+        )
+        report = store().append(auditor.audit(call), app.state.sealer)
+        log.info("audit %s for call %s: %s", report.audit_id, call.call_id, report.outcome.value)
+        return _ok(report.model_dump(mode="json"), 201)
+
+    @app.get("/audit/{audit_id}/report", dependencies=guarded, response_model=None)
+    def report(
+        audit_id: str, format: Annotated[str, Query(pattern="^(json|md)$")] = "json"
+    ) -> JSONResponse | PlainTextResponse:
+        found = store().get_audit(audit_id)
+        if found is None:
+            raise HTTPException(404, f"audit {audit_id} not found")
+        if format == "md":
+            return PlainTextResponse(render_markdown(found), media_type="text/markdown")
+        return _ok(found.model_dump(mode="json"))
+
+    # -- supporting --------------------------------------------------------- #
+
+    @app.get("/audits", dependencies=guarded)
+    def list_audits(limit: Annotated[int, Query(ge=1, le=200)] = 50) -> JSONResponse:
+        return _ok([_summary(r) for r in store().audits(limit=limit, newest_first=True)])
+
+    @app.get("/ledger/verify", dependencies=guarded)
+    def verify_ledger() -> JSONResponse:
+        sealer: Sealer = app.state.sealer
+        prev, count = GENESIS, 0  # the first entry must link to genesis, or one was removed
+        for rep in store().audits():
+            check = sealer.verify(rep, expected_prev=prev)
+            if not check.ok:
+                return _ok({"ok": False, "checked": count, "broken_at": rep.audit_id,
+                            "reason": check.reason})  # fmt: skip
+            assert rep.seal is not None
+            prev, count = rep.seal.chain_hash, count + 1
+        return _ok({"ok": True, "checked": count, "head": prev})
+
+    @app.get("/scorecard", dependencies=guarded)
+    def scorecard() -> JSONResponse:
+        def blank() -> dict[str, Any]:
+            return {
+                "calls": 0,
+                "calls_with_discrepancies": 0,
+                "claims": 0,
+                "verified": 0,
+                "findings": 0,
+                "by_claim_type": defaultdict(lambda: {"claims": 0, "verified": 0}),
+            }
+
+        agents: dict[str, dict[str, Any]] = defaultdict(blank)
+        for rep in store().audits():
+            card = agents[rep.call.agent_id]
+            card["calls"] += 1
+            card["calls_with_discrepancies"] += rep.outcome.value == "DISCREPANCIES"
+            card["findings"] += len(rep.findings)
+            for v in rep.verdicts:
+                ok = v.status is VerdictStatus.VERIFIED
+                card["claims"] += 1
+                card["verified"] += ok
+                card["by_claim_type"][v.claim.type]["claims"] += 1
+                card["by_claim_type"][v.claim.type]["verified"] += ok
+        for card in agents.values():
+            card["claim_honesty"] = (
+                round(card["verified"] / card["claims"], 3) if card["claims"] else None
+            )
+        return _ok(agents)
+
+    # -- demo --------------------------------------------------------------- #
+
+    @app.get("/demo/scenarios", dependencies=demo_only)
+    def scenarios() -> JSONResponse:
+        return _ok(
+            [
+                {
+                    "id": s.id,
+                    "title": s.title,
+                    "story": s.story,
+                    "group": s.id.split("-", 1)[0],
+                    "faults": sorted(m.value for m in s.fault_modes),
+                    "known_gap": s.known_gap,
+                }
+                for s in BY_ID.values()
+            ]
+        )
+
+    def _scenario(scenario_id: str):  # noqa: ANN202
+        scenario = BY_ID.get(scenario_id)
+        if scenario is None:
+            raise HTTPException(404, f"scenario {scenario_id} not found")
+        return scenario
+
+    @app.post("/demo/scenarios/{scenario_id}/run", status_code=201, dependencies=demo_only)
+    def run_demo(scenario_id: str) -> JSONResponse:
+        """Play a scenario in a throwaway system of record, audit it, ledger the report."""
+        scenario = _scenario(scenario_id)
+        world = build_world(scenario)
+        try:
+            result = run_suspect(scenario, world)
+            draft = audit_call(scenario, world, result, extractor=extractor)
+        finally:
+            world.store.close()
+        unique = draft.model_copy(update={"audit_id": f"aud_{uuid.uuid4().hex[:12]}"})
+        store().save_call(result.call)
+        return _ok(store().append(unique, app.state.sealer).model_dump(mode="json"), 201)
+
+    @app.post("/demo/scenarios/{scenario_id}/stage", status_code=201, dependencies=demo_only)
+    def stage_demo(scenario_id: str) -> JSONResponse:
+        """Reset the live system of record to a scenario and let the suspect take the call.
+
+        Returns the call record, unaudited, ready to POST to /calls and /audit.
+        """
+        if settings.sor_path != ":memory:":
+            raise HTTPException(409, "staging is only allowed on an in-memory system of record")
+        scenario = _scenario(scenario_id)
+        fresh = SqliteStore()
+        result = run_suspect(scenario, build_world(scenario, fresh))
+        old, app.state.sor = app.state.sor, fresh
+        old.close()
+        return _ok(result.call.model_dump(mode="json"), 201)
+
+    @app.get("/", include_in_schema=False)
+    def replay() -> FileResponse:
+        return FileResponse(_STATIC / "replay.html", media_type="text/html")
+
+    return app
