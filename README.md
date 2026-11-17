@@ -65,7 +65,8 @@ receipts serve
 
 Try it without installing anything: **https://aneesh2411.github.io/receipts/demo/** - the
 same replay view, backed by baked responses exported from the auditor
-(`scripts/export_demo.py`).
+(`scripts/export_demo.py`). Or watch the 22-second replay of one call:
+[docs/demo/receipts-demo.mp4](docs/demo/receipts-demo.mp4).
 
 `receipts serve` opens the live replay view at http://127.0.0.1:8000/ : pick a call, watch the
 agent make each claim on the left and the auditor stamp it on the right.
