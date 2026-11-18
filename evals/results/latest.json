@@ -362,17 +362,17 @@
     "label": "Subpoena on 500 fuzzed calls",
     "calls": 500,
     "claim_level": {
-      "tp": 356,
+      "tp": 451,
       "fp": 0,
       "fn": 0,
-      "tn": 398,
+      "tn": 512,
       "precision": 1.0,
       "recall": 1.0,
       "f1": 1.0
     },
     "claim_status_accuracy": 1.0,
     "finding_level": {
-      "tp": 86,
+      "tp": 87,
       "fp": 0,
       "fn": 0,
       "tn": 0,

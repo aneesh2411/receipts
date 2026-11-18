@@ -26,7 +26,7 @@ Golden set: 57 hand-labelled calls, 94 claims, 7 findings beyond claims.
 
 Claim-level confusion for Subpoena: 32 true positives, 0 false positives, 2 false negatives, 60 true negatives.
 
-Fuzzed set: 500 generated calls, 754 claims, 86 findings. No disagreements with ground truth.
+Fuzzed set: 500 generated calls, 963 claims, 87 findings. No disagreements with ground truth.
 <!-- metrics:fa-results:end -->
 
 ## 2. The two failures
@@ -218,11 +218,16 @@ Thursday") and agents that paraphrase are not represented. The one vague phrasin
 is a miss.
 
 **100% on fuzzing is narrower than it sounds.** Fuzzing varies patient, provider, day, time
-of day, phrasing variant and fault mode, one intent per call. It shows the verdicts do not
-depend on hand-picked dates and slots (it crosses the daylight-saving change and month
-boundaries). It does not explore multi-intent calls, combinations of faults, or the two
-known gaps, which are excluded from generation. Its expected outcomes come from a table
-written by the same author as the auditor.
+of day, phrasing variant and fault mode. About 30% of calls chain two or three intents
+(book, reschedule, cancel, handoff) with a fault drawn per step, so one call can mix
+honest and dishonest requests. It shows the verdicts do not depend on hand-picked dates
+and slots (it crosses the daylight-saving change and month boundaries). Multi-intent calls
+chain only distinct intents: steps of one kind share the per-type evidence pool, and the
+greedy reconcile makes same-kind fault composition order-sensitive (#39).
+`wrong_appointment_cancelled` and `silent_crm_edit` never fire in a multi-intent call
+(their blast radius is the whole call, not the step), and the two known gaps are excluded
+from generation. Expected outcomes come from a table written by the same author as the
+auditor.
 
 **Precision is measured on a 57-call sample.** Zero false accusations in that sample is
 encouraging and not a guarantee. Both false positives found so far were caught and fixed
@@ -246,5 +251,6 @@ works.
    scenario.
 2. Measure the model-backed reader on real, messy transcripts, with precision tracked
    separately from recall.
-3. Add multi-fault and multi-intent generation to the fuzzer.
+3. Replace greedy reconcile with per-type assignment so same-kind multi-intent calls can
+   join the fuzzer (#39).
 4. Structured topics for handoffs, to close gap 2.2 without a model on the verdict path.

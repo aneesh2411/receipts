@@ -122,9 +122,10 @@ def test_fuzzed_scenarios_are_deterministic_and_varied():
     first, second = generate(60, seed=11), generate(60, seed=11)
     assert first == second
     assert generate(60, seed=12) != first
-    kinds = {s.tags[1] for s in first}
+    kinds = {t for s in first for t in s.tags[2:]}
     assert kinds == {"book", "reschedule", "cancel", "handoff"}
-    assert len({s.tags[2] for s in first}) >= 12  # many distinct fault modes drawn
+    modes = {m for s in first for modes in s.faults.values() for m in modes}
+    assert len(modes) >= 12  # many distinct fault modes drawn
 
 
 def test_auditor_agrees_with_ground_truth_on_fuzzed_calls():

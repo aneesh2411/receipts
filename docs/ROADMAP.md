@@ -12,7 +12,7 @@ Working today:
 - Auditor: claim verdicts with evidence, unclaimed writes, policy checks, sealed reports.
 - 57 golden scenarios, 500-call fuzzing, naive baseline, ablations.
 - FastAPI service, CLI demo, single-page replay view.
-- 258 tests, lint clean.
+- 299 tests, lint clean.
 
 Not done:
 
@@ -45,10 +45,19 @@ fail to reproduce, and the eval still passes.
 2. **Live-model transcript reader, measured.** Real, messy transcripts. Precision tracked
    separately from recall. A model that invents claims is worse than one that misses them.
 3. **Overlapping calls.** Decide and test attribution when one agent identity handles two
-   calls at once.
+   calls at once. **Done** ([#33](https://github.com/aneesh2411/subpoena/issues/33)):
+   platform-stamped `agent:call-id` sessions are direct evidence; identity plus window
+   alone is correlation, never attribution. Attribution strength is explicit
+   (direct / sole / ambiguous / foreign), ambiguous matches cannot verify, and one
+   mutation cannot independently verify two calls.
 4. **Ingest from voice platforms.** Webhook receivers that turn a platform's end-of-call
    payload into a `CallRecord`.
-5. **Fuzz multi-intent and multi-fault calls.**
+5. **Fuzz multi-intent and multi-fault calls.** **Done**
+   ([#38](https://github.com/aneesh2411/subpoena/issues/38)): about 30% of fuzzed calls
+   chain two or three distinct intents with a fault drawn per step, so honest and
+   dishonest requests mix inside one call. Same-kind chains and two whole-call faults
+   stay excluded until reconcile pairs claims with writes by assignment instead of
+   claim order ([#39](https://github.com/aneesh2411/subpoena/issues/39)).
 
 ## Later: make it a product (v0.4+)
 

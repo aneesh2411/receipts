@@ -3,11 +3,22 @@
 The golden set proves each fault is caught once, under hand-picked conditions.
 Fuzzing checks that the result does not depend on those conditions: other days,
 other times of day (noon, month boundaries, across the clock change), other
-providers, other narrator phrasing.
+providers, other narrator phrasing. Most calls are single-intent; the rest chain
+two or three intents with a fault drawn per step, so honesty and dishonesty mix
+inside one call.
 
-Expected outcomes come from one table per intent. The two known gaps (vague
-spoken promises, free-text ticket summaries) are excluded here and measured in
-the golden set instead.
+Expected outcomes come from one table per intent and compose per step: each
+step contributes its structured claims, then its spoken-derived claims (the
+order the auditor's claim merge produces: by turn, structured before spoken),
+findings as a multiset. One fault per step keeps each step's truth unambiguous,
+and a multi-intent call chains two or three *distinct* intents: steps of the
+same kind share one evidence pool per claim type, which makes fault composition
+order-sensitive. Two faults stay out of multi-intent calls for the same reason:
+SILENT_CRM_EDIT rewrites the caller's identity mid-call, and
+WRONG_APPOINTMENT_CANCELLED picks its victim from the patient's whole
+appointment list, which other steps mutate. The two known gaps (vague spoken
+promises, free-text ticket summaries) are excluded here and measured in the
+golden set instead.
 """
 
 from __future__ import annotations
@@ -101,65 +112,135 @@ def _slot(rng: random.Random, taken: set[datetime]) -> datetime:
             return slot
 
 
+# Claims the caller heard but the agent never logged. The auditor orders claims
+# by turn with structured before spoken, so a step's spoken claims sit between
+# its own structured claims and the next step's.
+SPOKEN_TRUTH: dict[FaultMode | None, tuple[Expected, ...]] = {
+    F.SPOKEN_ONLY: ((B, NF), (C, NF)),
+    F.MISSPOKEN_TIME: ((B, NF),),
+    F.MISSPOKEN_PROVIDER: ((B, NF),),
+}
+
+
+def _split(truth: Truth, mode: FaultMode | None) -> tuple[Truth, tuple[Expected, ...]]:
+    """Split a step's truth into (structured claims, findings) and spoken claims."""
+    claims, findings = truth
+    spoken = SPOKEN_TRUTH.get(mode, ())
+    return (claims[: len(claims) - len(spoken)], findings), spoken
+
+
+# Faults whose blast radius is the whole call, not the step: identity rewrites
+# change what later steps' claims resolve to, and a wrong-target cancel picks
+# its victim from every appointment the patient has, including other steps'.
+MULTI_EXCLUDED = frozenset({F.SILENT_CRM_EDIT, F.WRONG_APPOINTMENT_CANCELLED})
+
+
+def _mode(rng: random.Random, table: dict[FaultMode | None, Truth], multi: bool):
+    if not multi:
+        return rng.choice(list(table))
+    faults = [m for m in table if m is not None and m not in MULTI_EXCLUDED]
+    return None if rng.random() < 0.35 else rng.choice(faults)
+
+
+def _draw(
+    rng: random.Random,
+    kind: str,
+    caller,
+    other,
+    taken: set[datetime],
+    topics: set[str],
+    multi: bool,
+) -> tuple[Step, FaultMode | None, list[SeedAppointment], Truth]:
+    provider = rng.choice(PROVIDERS)
+    if kind == "book":
+        slot = _slot(rng, taken)
+        mode = _mode(rng, BOOK_TRUTH, multi)
+        step = Book(slot, provider, reason=rng.choice(REASONS))
+        seeds = [SeedAppointment(other, provider, slot)] if mode is F.DOUBLE_BOOK else []
+        return step, mode, seeds, BOOK_TRUTH[mode]
+    if kind == "reschedule":
+        slot, elsewhere = _slot(rng, taken), _slot(rng, taken)
+        mode = _mode(rng, RESCHEDULE_TRUTH, multi)
+        step = Reschedule(
+            slot,
+            elsewhere,
+            recreate=mode is None and rng.random() < 0.5,
+            provider=provider,
+        )
+        seeds = []
+        if mode is not F.GHOST_RESCHEDULE:
+            seeds.append(SeedAppointment(caller, provider, slot))
+        if mode is F.DOUBLE_BOOK:
+            seeds.append(SeedAppointment(other, provider, elsewhere))
+        return step, mode, seeds, RESCHEDULE_TRUTH[mode]
+    if kind == "cancel":
+        slot, elsewhere = _slot(rng, taken), _slot(rng, taken)
+        mode = _mode(rng, CANCEL_TRUTH, multi)
+        step = Cancel(slot)
+        seeds = [SeedAppointment(caller, provider, slot)]
+        if mode is F.WRONG_APPOINTMENT_CANCELLED:
+            seeds.append(SeedAppointment(caller, rng.choice(PROVIDERS), elsewhere))
+        return step, mode, seeds, CANCEL_TRUTH[mode]
+    mode = _mode(rng, HANDOFF_TRUTH, multi)
+    topic = rng.choice([t for t in TOPICS if t not in topics] or list(TOPICS))
+    topics.add(topic)
+    priority = "urgent" if mode is F.DOWNGRADED_HANDOFF or rng.random() < 0.3 else "normal"
+    return Handoff(topic, priority=priority), mode, [], HANDOFF_TRUTH[mode]
+
+
 def generate(n: int, seed: int = 0) -> list[Scenario]:
-    """``n`` deterministic single-intent scenarios with known correct outcomes."""
+    """``n`` deterministic scenarios with known correct outcomes.
+
+    About 30% chain two or three intents with a fault drawn per step, so one
+    call mixes honest and dishonest steps.
+    """
     rng = random.Random(seed)
     scenarios: list[Scenario] = []
     for i in range(n):
         caller = rng.choice(ROSTER)
         other = DANIEL if caller != DANIEL else ROSTER[0]
-        provider = rng.choice(PROVIDERS)
         taken: set[datetime] = set()
-        slot, elsewhere = _slot(rng, taken), _slot(rng, taken)
-        kind = rng.choice(("book", "book", "reschedule", "cancel", "handoff"))
+        topics: set[str] = set()
+        k = 1 if rng.random() < 0.7 else rng.choice((2, 2, 3))
+        # Distinct kinds per call: steps of one kind share the per-type evidence
+        # pool, and greedy reconcile would make their fault composition depend
+        # on claim order.
+        kinds = (
+            (rng.choice(("book", "book", "reschedule", "cancel", "handoff")),)
+            if k == 1
+            else tuple(rng.sample(("book", "reschedule", "cancel", "handoff"), k))
+        )
+        steps: list[Step] = []
         seeds: list[SeedAppointment] = []
-        step: Step
-
-        if kind == "book":
-            mode = rng.choice(list(BOOK_TRUTH))
-            truth = BOOK_TRUTH[mode]
-            step = Book(slot, provider, reason=rng.choice(REASONS))
-            if mode is F.DOUBLE_BOOK:
-                seeds.append(SeedAppointment(other, provider, slot))
-        elif kind == "reschedule":
-            mode = rng.choice(list(RESCHEDULE_TRUTH))
-            truth = RESCHEDULE_TRUTH[mode]
-            step = Reschedule(
-                slot,
-                elsewhere,
-                recreate=mode is None and rng.random() < 0.5,
-                provider=provider,
+        faults: dict[int, frozenset[FaultMode]] = {}
+        claims: list[Expected] = []
+        findings: list[str] = []
+        titles: list[str] = []
+        for j, kind in enumerate(kinds):
+            step, mode, step_seeds, truth = _draw(
+                rng, kind, caller, other, taken, topics, multi=k > 1
             )
-            if mode is not F.GHOST_RESCHEDULE:
-                seeds.append(SeedAppointment(caller, provider, slot))
-            if mode is F.DOUBLE_BOOK:
-                seeds.append(SeedAppointment(other, provider, elsewhere))
-        elif kind == "cancel":
-            mode = rng.choice(list(CANCEL_TRUTH))
-            truth = CANCEL_TRUTH[mode]
-            step = Cancel(slot)
-            seeds.append(SeedAppointment(caller, provider, slot))
-            if mode is F.WRONG_APPOINTMENT_CANCELLED:
-                seeds.append(SeedAppointment(caller, rng.choice(PROVIDERS), elsewhere))
-        else:
-            mode = rng.choice(list(HANDOFF_TRUTH))
-            truth = HANDOFF_TRUTH[mode]
-            priority = "urgent" if mode is F.DOWNGRADED_HANDOFF or rng.random() < 0.3 else "normal"
-            step = Handoff(rng.choice(TOPICS), priority=priority)
-
-        claims, findings = truth
+            (main, step_findings), step_spoken = _split(truth, mode)
+            steps.append(step)
+            seeds.extend(step_seeds)
+            claims.extend(main)
+            claims.extend(step_spoken)
+            findings.extend(step_findings)
+            if mode is not None:
+                faults[j] = frozenset({mode})
+            titles.append(f"{kind}/{mode.value if mode else 'honest'}")
         scenarios.append(
             Scenario(
                 id=f"fuzz-{seed}-{i:04d}",
-                title=f"{kind} / {mode.value if mode else 'honest'}",
+                title=" + ".join(titles),
                 story="Generated scenario.",
-                steps=(step,),
-                expected_claims=claims,
-                expected_findings=findings,
+                steps=tuple(steps),
+                expected_claims=tuple(claims),
+                expected_findings=tuple(findings),
                 caller=caller,
-                faults={0: frozenset({mode})} if mode else {},
+                faults=faults,
                 seed=tuple(seeds),
-                tags=("fuzz", kind, mode.value if mode else "honest"),
+                tags=("fuzz", "multi" if k > 1 else "single", *sorted(set(kinds))),
             )
         )
     return scenarios
