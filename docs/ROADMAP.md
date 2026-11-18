@@ -1,6 +1,6 @@
 # Roadmap
 
-Where Receipts is, what comes next, and the plan for the product surfaces: a web console
+Where Subpoena is, what comes next, and the plan for the product surfaces: a web console
 and a mobile app.
 
 ## Where it stands (v0.2)
@@ -26,17 +26,17 @@ Not done:
 Nothing else matters until a `VERIFIED` can be relied on. All nine review findings are
 fixed, each with a regression test and, where the shape was missing, a golden scenario and
 a fuzzer entry: wrong-verdict shapes
-([#1](https://github.com/aneesh2411/receipts/issues/1)-[#6](https://github.com/aneesh2411/receipts/issues/6),
-[#17](https://github.com/aneesh2411/receipts/issues/17)), findings scored by code with
+([#1](https://github.com/aneesh2411/subpoena/issues/1)-[#6](https://github.com/aneesh2411/subpoena/issues/6),
+[#17](https://github.com/aneesh2411/subpoena/issues/17)), findings scored by code with
 undefined precision reported as n/a
-([#7](https://github.com/aneesh2411/receipts/issues/7)), and API hardening
-([#8](https://github.com/aneesh2411/receipts/issues/8)). The review's reproductions all
+([#7](https://github.com/aneesh2411/subpoena/issues/7)), and API hardening
+([#8](https://github.com/aneesh2411/subpoena/issues/8)). The review's reproductions all
 fail to reproduce, and the eval still passes.
 
 ## Next: touch reality (v0.3)
 
 1. **One real adapter**: Google Calendar reader with a snapshot cache for before-images.
-   Re-run the golden set through it. **Done** ([#10](https://github.com/aneesh2411/receipts/issues/10)):
+   Re-run the golden set through it. **Done** ([#10](https://github.com/aneesh2411/subpoena/issues/10)):
    `sor/google_calendar.py` implements sync-token change feeds with snapshot
    before-images and actor attribution, and the golden set replays through it
    with identical verdicts and findings - except `fault-rollback`, pinned as a

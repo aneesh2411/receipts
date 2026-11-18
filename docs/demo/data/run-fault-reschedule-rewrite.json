@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-reschedule-rewrite",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-reschedule-rewrite",
@@ -209,10 +209,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "a42bb094c364a749e90b363149a668a342af173fce6c184d0a9056212c4e5f17",
+  "content_hash": "9696494374300a6a29d79658e7eae420993a178e239c2796822f888af9d7eaf1",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "2cf17bfe99c461d249f4a27cd4f169ca036135a45a7d773de753ba225764ddaf",
-  "signature": "51613d495386ebd3643c4b5f357b8804d335ae245ffc289581009759219eff54",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "e83d28024f88343c083aec9aedbd228eb3d57a3dd41d651144550f186902d529",
+  "signature": "5ecfd7cc9887b5a8401e8b410348d7899eb12bf472f48f036c900ec397fcfcd0",
+  "key_id": "6508b98a7ace"
  }
 }

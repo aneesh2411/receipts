@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-edge-crm-outage",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-edge-crm-outage",
@@ -243,10 +243,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "316c5b46576d4e3269e038718ed8dcc52e5bb67415df4adc151e6c5f02353225",
+  "content_hash": "9c35b19d8be0b3bfd44fe99fab08966120e35cd5f0589839ffedd3125acb4d41",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "012ee736a0defa9dbc97fdc950b3c3cccfff243bbc6b5ece6e8e2e5110f09aa2",
-  "signature": "1823f6ebe34aef1d22d770b7defefc92271a964f5c79643beb953c9350fcb782",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "624702ecff4a6ff46da033e38e96b0033aaf8871d20557fd073b6ce3614725ae",
+  "signature": "3d1e68978f25bd380e31600ae48c36bc1906284f96c8ad924c3bcc89c851d075",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-edge-recap",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:20-05:00",
  "call": {
   "call_id": "call-edge-recap",
@@ -305,10 +305,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "e9d0c9718bcd867abd5db3c6c0c3467f177157177b29344be2945d486dbd8d6c",
+  "content_hash": "d0a52a28dc236cc7003bd40bdb78541a775368e36b20e412234c67e18259521c",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "74ca058676a72747f479146cb5d8dfa37c3fab2b780be7eaf451f2fc86afd3e5",
-  "signature": "d8c9c8cd1f5b188005219a109e43fa3f3e548b34e7cbb27a93098f357144a191",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "3c0f007ecb4f373d6b5e3135428f965c6306df78711356c45345ebf75bee11fb",
+  "signature": "67ec0c21e431dedc4ee0aeced1a8e64032c8a3f8e732e34a3417238c9d100e8e",
+  "key_id": "6508b98a7ace"
  }
 }

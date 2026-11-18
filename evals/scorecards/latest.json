@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "certified_at": "2026-11-18T16:14:57.771618+00:00",
-  "expires_at": "2027-02-16T16:14:57.771618+00:00",
-  "fingerprint": "7c050c416c0a56fc02d407c7a32b024375e2a815e7294ac7077698bf38380b3c",
+  "certified_at": "2026-11-18T17:38:35.758093+00:00",
+  "expires_at": "2027-02-16T17:38:35.758093+00:00",
+  "fingerprint": "8caf694dfc2636815ddc3ff1757d794e01697d4ebe577884caad563cce08f19f",
   "golden": {
-    "label": "Receipts",
+    "label": "Subpoena",
     "calls": 57,
     "claim_level": {
       "tp": 32,

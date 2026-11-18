@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-clean-book-new-patient",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-clean-book-new-patient",
@@ -304,10 +304,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "44789b7b7e015db570301b85ef5fc30c14cf9c732bcdd2aa0be5b6511051a585",
+  "content_hash": "ce800933fe1a875a3de007f673f01dc8d246a673d7621f6198a1123755a3cec8",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "a1f484c16a0c575ad77740b7b3e6463e358dac8fc16248746af091acdd2d0cae",
-  "signature": "0516f50a5d65b7049e4da1456dc70c2fd3f34f44e565e02ac7e68966d004a631",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "cbedcf362446c786237b63ef321eb7c4a74bda95e0351591e3cf4ba32d3de65c",
+  "signature": "6c4cd127476d927f6f434a4701a1434375e3fa415216ce909f71a43dc2789733",
+  "key_id": "6508b98a7ace"
  }
 }

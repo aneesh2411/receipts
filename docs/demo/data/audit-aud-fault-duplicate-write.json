@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-duplicate-write",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-duplicate-write",
@@ -372,10 +372,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "f0f4bd992325a859f91349f85faf96da059e8787182aa835195618af12753c41",
+  "content_hash": "2c7fe05f4967995337a64b6fd863024ba66be94ac8feaa03f6a7889b7410374a",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "5a9d7ff411841535c166f9e69c5a8a23f36c5bc31bfcbf5fc8716064cd341a0d",
-  "signature": "d2984a9c5ab9ac194fa65afd1c7fe7209d5f2274fec5c6f04000de8892736226",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "dec8f8ef1ba78a11e0001da6d043f52be3a5ab560c74457d62caec82f7069901",
+  "signature": "94c960baafe6c6704ecadb02958e01c698c663248e5cb69f28cd94dbb4997086",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-wrong-patient",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-wrong-patient",
@@ -299,10 +299,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "690717902395629460fe5eac4ff0e2b8750f817f6ddb354eceb814ad76ff749b",
+  "content_hash": "7b7dcf5bb57c86296f81be5a444c0c63ddf70213b859ca93670d33d93fb8b74e",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "a84a7a86dde3e1e0bada52374c406dadc9199da64bd2175ed0b80f50dae1e6e2",
-  "signature": "af7f9152a94f9a126395ee1ef12845283c1682ef74471d686aad4efaf8f4c3b1",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "f078dd9434adc2f4d23775bfb0aa76672430e2af5d34f1be5d8a041329fa4194",
+  "signature": "43e28c2abf8664ff4a5eebcc94cb2d0f51d2a6e21a6b399f90cb346b4a8613b0",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-edge-timezone-equivalent",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-edge-timezone-equivalent",
@@ -299,10 +299,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "9cbed9efee3ff184bae941f7580b07482ef24aed3579e0ec03dcaa13a5fef35b",
+  "content_hash": "be4e5470169b1233da835850f1b2397f24789083063a2f51ad675ce9c69368ef",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "9ccc34388b42caf1c0a67d60ad43a00635d9057a436b56bf1ea5ab01af54e761",
-  "signature": "e9773d517468f12f1e8f2a727229d50196cee6f65c8abfec085ff85b9539ee6b",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "3adaaa11365fa0578ef1bf508716d6f5cb01c55f45c22e29c968b6894a91812b",
+  "signature": "5fa23945ab433e8834c51629972e0c101558b556a76c30e52616e63a335d9ce2",
+  "key_id": "6508b98a7ace"
  }
 }

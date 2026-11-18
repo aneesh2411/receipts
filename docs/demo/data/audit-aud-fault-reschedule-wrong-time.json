@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-reschedule-wrong-time",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-reschedule-wrong-time",
@@ -197,10 +197,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "9fa5364e116a9600d666497275ea471c213f765d87673457147497fdae6dcd40",
+  "content_hash": "93977c1c983a92520276ab4fc4775f507a3b5621565df8721d20f16d1dcae16a",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "0e2e716fea75b15e0479e24bd0c1bba81ba43403021a26c022ceb0a382435082",
-  "signature": "7555f2ac9fb79454f93ff852c871200a3a07dec4030b6e25231c5e588ceb1dc5",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "6053e967e0d4135563afae5fe4b9bfc1e7a261d01f6a7f2b9e6cded622763160",
+  "signature": "8fe49d2bac63fe773229dcf71cd05e780916a2f8051a643fc40a08f82c8b6f8c",
+  "key_id": "6508b98a7ace"
  }
 }

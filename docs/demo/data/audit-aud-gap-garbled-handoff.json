@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-gap-garbled-handoff",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-gap-garbled-handoff",
@@ -182,10 +182,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "e0f01d6124a37d5a5b2f3e3239e6b383db3716a6d336142e1025e64c4143ed6f",
+  "content_hash": "2a6c564695ebbc52db72f83a645ab1d81fce49d383ab9573b47c9b5e33bf7d06",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "2bd436032473ae84d41de836263a9f1ec9f0d81c9bb002489fd63d9bef50a49b",
-  "signature": "ef619d3faf9e795dcf0e040932e48e4c37bb07aa6e6cbadb6b4683d0a7b16aad",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "8ec37102719d71220026c7747c126ada6b5d0d18549f8bd51afa360e2debf2d1",
+  "signature": "08fd1813e46c63fd51dbf1a96745fc1933082660cefa422678f12f1da8c5ae74",
+  "key_id": "6508b98a7ace"
  }
 }

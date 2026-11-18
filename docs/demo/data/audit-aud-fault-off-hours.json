@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-off-hours",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-off-hours",
@@ -329,10 +329,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "76eb3fbd1197c0ee1cd7364790e981113020e6c32c007f78131904c737eecbab",
+  "content_hash": "64f5753155cbd8200ccd2244c4c2b89ccc009357b9bb7f61ec167142663bf531",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "c13ff58879b432900066122214c819111bf622d34db57ebd0ba29cc79cc151fb",
-  "signature": "5911ce7971957ec89b6df5d40f4abd30519ec4c1a57fc421719730e9f08925ac",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "b1130585dfbcf90ea0eb7df8323def5c7555c06291690e488055421d9352087c",
+  "signature": "cb9d4f645a68804ff5742d25fa34daf634ced9d421d66875f30fab14e6a9c9ab",
+  "key_id": "6508b98a7ace"
  }
 }

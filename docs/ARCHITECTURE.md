@@ -26,14 +26,14 @@ Three parties, two trust levels:
 
 | Package | Responsibility |
 |---|---|
-| `receipts.models` | Frozen pydantic models: claims, records, verdicts, report. |
-| `receipts.sor` | Adapter protocols, SQLite implementation, Google Calendar adapter. |
-| `receipts.suspect` | The receptionist, its narrator, fault modes and fault plans. |
-| `receipts.auditor` | Extraction, reconciliation, verdicts, findings, sealing, rendering. |
-| `receipts.scenarios` | Golden dataset and the deterministic world that plays a scenario. |
-| `receipts.evals` | Scorer, fuzz generator, eval runner and report. |
-| `receipts.api` | FastAPI service, audit ledger, replay view. |
-| `receipts.llm` | The single interface a language model comes through. Optional. |
+| `subpoena.models` | Frozen pydantic models: claims, records, verdicts, report. |
+| `subpoena.sor` | Adapter protocols, SQLite implementation, Google Calendar adapter. |
+| `subpoena.suspect` | The receptionist, its narrator, fault modes and fault plans. |
+| `subpoena.auditor` | Extraction, reconciliation, verdicts, findings, sealing, rendering. |
+| `subpoena.scenarios` | Golden dataset and the deterministic world that plays a scenario. |
+| `subpoena.evals` | Scorer, fuzz generator, eval runner and report. |
+| `subpoena.api` | FastAPI service, audit ledger, replay view. |
+| `subpoena.llm` | The single interface a language model comes through. Optional. |
 
 ## The system of record
 
@@ -129,7 +129,7 @@ any system could not be read (it may be hiding unclaimed writes). Otherwise `CLE
 ### 8. Sealing
 
 `content_hash` is SHA-256 over the report's canonical JSON. `chain_hash` links it to the
-previous report in the ledger. With `RECEIPTS_SIGNING_KEY` set, the chain hash is signed
+previous report in the ledger. With `SUBPOENA_SIGNING_KEY` set, the chain hash is signed
 with HMAC-SHA256. The ledger table is append-only, and `GET /ledger/verify` re-checks every
 seal and link, starting from genesis.
 

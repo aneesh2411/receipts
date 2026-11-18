@@ -1,17 +1,17 @@
 # Failure analysis
 
-Numbers here come from `receipts eval` at the commit that added this file. Regenerate them
+Numbers here come from `subpoena eval` at the commit that added this file. Regenerate them
 with:
 
 ```bash
-receipts eval --report docs/EVAL_REPORT.md --json evals/results/latest.json
+subpoena eval --report docs/EVAL_REPORT.md --json evals/results/latest.json
 ```
 
 ## 1. Results in one screen
 
 Golden set: 57 hand-labelled calls, 94 claims, 7 findings beyond claims.
 
-| Metric | Receipts | Naive lookup |
+| Metric | Subpoena | Naive lookup |
 |---|---|---|
 | Claim precision | 100% | 100% |
 | Claim recall | 93.3% | 66.7% |
@@ -20,7 +20,7 @@ Golden set: 57 hand-labelled calls, 94 claims, 7 findings beyond claims.
 | Call accuracy | 96.2% | 71.2% |
 | Calls fully correct | 96.2% | 55.8% |
 
-Claim-level confusion for Receipts: 28 true positives, 0 false positives, 2 false negatives,
+Claim-level confusion for Subpoena: 28 true positives, 0 false positives, 2 false negatives,
 56 true negatives.
 
 Fuzzed set: 500 generated calls, 732 claims, 87 findings. No disagreements with ground
@@ -115,55 +115,55 @@ False `VERIFIED`:
 
 1. **Duplicate claim ids.** Two claims sharing one `claim_id` both verified against a
    single write. Fixed: call records with duplicate claim ids are rejected at ingest.
-   ([#1](https://github.com/aneesh2411/receipts/issues/1),
-   [PR #11](https://github.com/aneesh2411/receipts/pull/11))
+   ([#1](https://github.com/aneesh2411/subpoena/issues/1),
+   [PR #11](https://github.com/aneesh2411/subpoena/pull/11))
 2. **Reschedule that also rewrites the record.** An in-place move that also reassigns the
    patient, provider or duration verified, because only the times were compared. Fixed:
    the reschedule judge checks every identifying field of the original.
-   ([#2](https://github.com/aneesh2411/receipts/issues/2),
-   [PR #12](https://github.com/aneesh2411/receipts/pull/12))
+   ([#2](https://github.com/aneesh2411/subpoena/issues/2),
+   [PR #12](https://github.com/aneesh2411/subpoena/pull/12))
 3. **Reschedule of an appointment that never existed.** "Moved from A to B" verified when
    nothing was ever booked at A and a fresh appointment was created at B. Fixed: a
    reschedule whose original cannot be found is a mismatch, not a soft miss.
-   ([#3](https://github.com/aneesh2411/receipts/issues/3),
-   [PR #12](https://github.com/aneesh2411/receipts/pull/12))
+   ([#3](https://github.com/aneesh2411/subpoena/issues/3),
+   [PR #12](https://github.com/aneesh2411/subpoena/pull/12))
 4. **Spoken detail that differs from the log.** The caller was told one provider, the log
    said another, and the spoken claim was merged away because only the time was compared.
    Fixed: spoken and logged claims that disagree are audited as separate promises.
-   ([#4](https://github.com/aneesh2411/receipts/issues/4),
-   [PR #13](https://github.com/aneesh2411/receipts/pull/13))
+   ([#4](https://github.com/aneesh2411/subpoena/issues/4),
+   [PR #13](https://github.com/aneesh2411/subpoena/pull/13))
 5. **Two patients with the same name.** With no usable phone number, a booking for the
    other person of that name verified. Fixed: an ambiguous patient reference is
    `UNVERIFIABLE`, never `VERIFIED` - a guess could clear a booking made for the wrong
-   person. ([#5](https://github.com/aneesh2411/receipts/issues/5),
-   [PR #14](https://github.com/aneesh2411/receipts/pull/14))
+   person. ([#5](https://github.com/aneesh2411/subpoena/issues/5),
+   [PR #14](https://github.com/aneesh2411/subpoena/pull/14))
 
 False accusation:
 
 6. **Recaps.** "To recap, you're booked for Tuesday" in a later turn was read as a second
    booking claim with no write behind it, and reported `NOT_FOUND`. Fixed: recaps
    corroborate the original claim when every identifying field matches, and repeated
-   spoken claims dedupe. ([#6](https://github.com/aneesh2411/receipts/issues/6),
-   [PR #13](https://github.com/aneesh2411/receipts/pull/13))
+   spoken claims dedupe. ([#6](https://github.com/aneesh2411/subpoena/issues/6),
+   [PR #13](https://github.com/aneesh2411/subpoena/pull/13))
 
 Weaker than they should be:
 
 7. **Claim order affected attribution.** Matching was greedy in claim order, so an earlier
    vague claim could take a write that belonged to a later, more specific one. Fixed:
    within each strictness pass the most specific claims match first.
-   ([#17](https://github.com/aneesh2411/receipts/issues/17),
-   [PR #18](https://github.com/aneesh2411/receipts/pull/18))
+   ([#17](https://github.com/aneesh2411/subpoena/issues/17),
+   [PR #18](https://github.com/aneesh2411/subpoena/pull/18))
 8. **Findings were scored by kind only.** A wrong unclaimed write could be counted as a
    correct one, and undefined precision was reported as 100%. Fixed: findings are scored
    as a multiset of codes, and undefined precision or recall is reported as `n/a`.
-   ([#7](https://github.com/aneesh2411/receipts/issues/7),
-   [PR #15](https://github.com/aneesh2411/receipts/pull/15))
+   ([#7](https://github.com/aneesh2411/subpoena/issues/7),
+   [PR #15](https://github.com/aneesh2411/subpoena/pull/15))
 9. **API**: no authentication unless a key was set, an inline call that conflicted with a
    stored one was not rejected, and the demo stage endpoint swapped the store without a
-   lock. Fixed: the CLI refuses a public bind without `RECEIPTS_API_KEY`, conflicting
+   lock. Fixed: the CLI refuses a public bind without `SUBPOENA_API_KEY`, conflicting
    inline calls get a 409, and stage swaps are serialized.
-   ([#8](https://github.com/aneesh2411/receipts/issues/8),
-   [PR #16](https://github.com/aneesh2411/receipts/pull/16))
+   ([#8](https://github.com/aneesh2411/subpoena/issues/8),
+   [PR #16](https://github.com/aneesh2411/subpoena/pull/16))
 
 No SQL injection, cross-site scripting or error-detail leaks were found.
 
@@ -199,7 +199,7 @@ Ablations switch off one capability of the real auditor:
 
 Each ablation costs what it should and nothing else. That is evidence the dataset exercises
 those capabilities and that the scorer can tell a worse auditor from a better one. A CLI
-test also breaks the auditor on purpose and checks that `receipts eval` exits non-zero.
+test also breaks the auditor on purpose and checks that `subpoena eval` exits non-zero.
 
 ## 6. What these numbers do not show
 

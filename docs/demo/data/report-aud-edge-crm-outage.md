@@ -6,7 +6,7 @@
 - Window: 2026-03-02T09:05:00-05:00 to 2026-03-02T09:05:16-05:00
 - Claims: 2 | verified 1, mismatch 0, not found 0, unverifiable 1
 - Findings beyond claims: 0 | Claim trust score: 100% | Highest severity: `MEDIUM`
-- Audited by `receipts/0.1.0` at 2026-03-02T09:06:16-05:00
+- Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -61,6 +61,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `316c5b46576d4e3269e038718ed8dcc52e5bb67415df4adc151e6c5f02353225`
-- chain `012ee736a0defa9dbc97fdc950b3c3cccfff243bbc6b5ece6e8e2e5110f09aa2` (prev `0000000000000000...`)
-- signed (key `952a7ab34a0a`)
+- content `9c35b19d8be0b3bfd44fe99fab08966120e35cd5f0589839ffedd3125acb4d41`
+- chain `624702ecff4a6ff46da033e38e96b0033aaf8871d20557fd073b6ce3614725ae` (prev `0000000000000000...`)
+- signed (key `6508b98a7ace`)

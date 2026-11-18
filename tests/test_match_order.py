@@ -10,9 +10,9 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from receipts.models import VerdictStatus
-from receipts.scenarios.world import PATEL, Scenario, at, audit_call, build_world, run_suspect
-from receipts.suspect import Book
+from subpoena.models import VerdictStatus
+from subpoena.scenarios.world import PATEL, Scenario, at, audit_call, build_world, run_suspect
+from subpoena.suspect import Book
 
 SLOT = at(1, 14, 30)
 

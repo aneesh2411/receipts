@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-ghost-reschedule",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-ghost-reschedule",
@@ -197,10 +197,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "cf02125d00316e82b89383308a9c5876a92f016c90b6b834e7c2cb8bb0fe636a",
+  "content_hash": "f10e793c1cf26ab5ad07fa4718a2d117a0ee32c703f3a8b4ee9bd6ba971ccd8f",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "f348ba07846fda89a5bc51f0f9016bb7833ff4e393ec6b311280271d7d66319c",
-  "signature": "797a3b4d81364582f71ca4d32b940ab4c82d303412257549dba9099e04fcae74",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "54fc230f08c9decc0a17594806fb9ee3269ea06f835aaadfdcac33da37a0b3e0",
+  "signature": "3e52fcd3c51b9a6febc675e45fb48a2ff04d845b445442a4139f1ce16e675cf0",
+  "key_id": "6508b98a7ace"
  }
 }

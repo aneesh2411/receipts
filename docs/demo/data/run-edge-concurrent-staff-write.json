@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-edge-concurrent-staff-write",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-edge-concurrent-staff-write",
@@ -299,10 +299,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "f02c8ea23b9f894ea97410609fc0931b9c9d6d0b6d4469e567a6337bf98e47dd",
+  "content_hash": "936457ddcf56234ae2178eae3f14519870fef6b0047b5c487e49fe2ecd418a7b",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "a93dca2417b87a518cb28b9f90b46ccad3fcdc6c2ddb98194c9ceb9d68a4f4a0",
-  "signature": "d96e3c1df05df0a7c4ea786af4a7603b566e924f71dfed33915ae53d997e07a9",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "7864bbda59aa3b4b85c37e13d3fbdd4a1d7ffbca20ba978c7bb287697f3cf758",
+  "signature": "991a0abba8ccacf9361fcc9364e8095ac24578616d80c64e3841f7ef49eefccc",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-phantom-handoff",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-phantom-handoff",
@@ -162,10 +162,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0e2f40ead1d2a55838f6065f13f86291bd46c2444d26b75d1e40880eaffe5dd8",
+  "content_hash": "663f5f4f73b15bc04c5ab93e84694d7d1c101ee38b9f8c2f5cc995ccf5b283e0",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "291df12bf866da38156498f03971c883c98c2b04f7d13d34cd66da2cf61a1ff1",
-  "signature": "4ed6b2f57836976273fdf505f33cd1c7ba09d1e19f327c126a865b60df2cebff",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "dce2564635ae249ebe1a2d3ba82defb7ef14e4281ce93b55ed4df5562dab04a0",
+  "signature": "59c4b7d72568b04ba59e85e9cffa8ea6e9ec6bed2ddeb4e39fab6e94fe43ef57",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -14,15 +14,15 @@ import json
 import shutil
 from pathlib import Path
 
-from receipts.auditor import RuleBasedExtractor, Sealer
-from receipts.auditor.render import render_markdown
-from receipts.scenarios import BY_ID
-from receipts.scenarios.world import audit_call, build_world, run_suspect
+from subpoena.auditor import RuleBasedExtractor, Sealer
+from subpoena.auditor.render import render_markdown
+from subpoena.scenarios import BY_ID
+from subpoena.scenarios.world import audit_call, build_world, run_suspect
 
 DEFAULT_OUT = Path(__file__).resolve().parent.parent / "docs" / "demo" / "data"
 
 # Fixed key so the baked seals are deterministic from one export to the next.
-SEALING_KEY = b"receipts-pages-demo"
+SEALING_KEY = b"subpoena-pages-demo"
 
 
 def export(out: Path) -> list[str]:

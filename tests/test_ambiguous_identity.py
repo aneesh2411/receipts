@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from receipts.models import PatientRef, VerdictStatus
-from receipts.scenarios import run_scenario
-from receipts.scenarios.world import PATEL, Scenario, at
-from receipts.suspect import Book as _Book
+from subpoena.models import PatientRef, VerdictStatus
+from subpoena.scenarios import run_scenario
+from subpoena.scenarios.world import PATEL, Scenario, at
+from subpoena.suspect import Book as _Book
 
 # A second patient with the caller's name.
 _OTHER_MAYA = PatientRef(name="Maya Chen", phone="+15550101999")
@@ -48,9 +48,9 @@ def test_unmatched_phone_is_reported_as_matching_neither():
     # A claim that names a phone no record has: the detail must say the phone
     # matched none of the name matches. (End to end the suspect would create a
     # new record for that phone, so this checks the auditor's wording directly.)
-    from receipts.auditor.context import AuditContext
-    from receipts.models import CallRecord
-    from receipts.scenarios.world import CALL_START, CLINIC, build_world
+    from subpoena.auditor.context import AuditContext
+    from subpoena.models import CallRecord
+    from subpoena.scenarios.world import CALL_START, CLINIC, build_world
 
     world = build_world(BOOKING_SCENARIO)
     call = CallRecord(
@@ -77,6 +77,6 @@ def test_disambiguated_caller_still_verifies():
 
 
 def test_golden_scenario_is_defined():
-    from receipts.scenarios.golden import GOLDEN
+    from subpoena.scenarios.golden import GOLDEN
 
     assert "edge-same-name-patients" in {s.id for s in GOLDEN}

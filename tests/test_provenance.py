@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from receipts.auditor import Sealer
-from receipts.auditor.render import render_markdown
-from receipts.models import Provenance
-from receipts.scenarios import BY_ID, run_scenario
+from subpoena.auditor import Sealer
+from subpoena.auditor.render import render_markdown
+from subpoena.models import Provenance
+from subpoena.scenarios import BY_ID, run_scenario
 
 
 def test_call_record_without_provenance_still_validates(clinic):

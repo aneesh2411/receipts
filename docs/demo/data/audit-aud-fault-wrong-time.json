@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-wrong-time",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-wrong-time",
@@ -299,10 +299,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "3c7d20d4270f3fba0759a13274ac5e1cf78766f58399b489e363e56574a41280",
+  "content_hash": "004dfb85581cbac328e32f92b3d7ef69c5a88e7414b7260d0285ac1963731f3e",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "563e1c9707fc57c48a782ec28de0da2db72775207e9483c1b1874b2872ffb743",
-  "signature": "a051c9501b16a6dea99b831a257ad84a47c898cb2fdc8ba1887e218fdbb53a31",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "bbab4aa5271f20537dc3c60995463598b941d0bafb50df409fe2208a7bc6a3cd",
+  "signature": "f99a58373b1605cad26449e08f67306dc76116821a82bad3da5172306f9516dc",
+  "key_id": "6508b98a7ace"
  }
 }

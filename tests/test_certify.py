@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
-from receipts.evals import certify as cert
+from subpoena.evals import certify as cert
 
 NOW = datetime(2026, 11, 18, 12, 0, tzinfo=UTC)
 

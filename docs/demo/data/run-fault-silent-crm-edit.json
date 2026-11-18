@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-silent-crm-edit",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-silent-crm-edit",
@@ -326,10 +326,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "675fb24d110a66dc21ce83c7d2fbda51f8f514baaf917c66b389514ca5acd06e",
+  "content_hash": "f5307d1b62f2db318fc289113afb9a752be2cc8c8492cab3a0ce31d98c0cea2f",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "a0a9d4d322771cc554ab2a9cb770175c864383ad4dc3c3e6112e23e2e1a61520",
-  "signature": "0ec90bd10f04fdbd32b9ab18cb7a0360f87924206ae384453ac8a52412342c90",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "9a6d049c4e64826dcea32d5efb55f55c078e83bafab02e96b99c0cfa7e651de1",
+  "signature": "612b9c45a3cf620020179b7ce26e154c8b6b73e0f15bed8e065203440d128c6e",
+  "key_id": "6508b98a7ace"
  }
 }

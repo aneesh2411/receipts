@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-phantom-cancel",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-phantom-cancel",
@@ -174,10 +174,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "84c89fbbec1f7916a1ae907b7558583892792251f93db00e3ae62ddfda4d2755",
+  "content_hash": "2e6be345ff8fa2fe8c5c6e4fbe8146926dfd278006c0df6b563fb6d78fa20d2b",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "7d24f30c3768d008bdb83a034f3f5c1751762eb52db8772fee7adf40da835bfc",
-  "signature": "b33a37f8b7b34d558612f1bb19562db052ab69bc354c5081235ab5461d3101f5",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "08307d4748ada1a819b4dccfd26a52851832eff00187a443a7dd7ffd578953b0",
+  "signature": "2c682f23550f42f2e86f26af226d998c2492e54ac8f12e3fa73886cd4be24387",
+  "key_id": "6508b98a7ace"
  }
 }

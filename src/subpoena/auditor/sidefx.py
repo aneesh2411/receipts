@@ -1,0 +1,183 @@
+"""Verifying side-effect claims: confirmations sent and handoff tickets created."""
+
+from __future__ import annotations
+
+from subpoena.auditor.context import AuditContext, Match, ref_label
+from subpoena.auditor.delta import ChangeKind, NetChange
+from subpoena.auditor.verdicts import conclude, not_found
+from subpoena.models import (
+    ConfirmationSent,
+    Entity,
+    FieldDiff,
+    HandoffCreated,
+    Message,
+    Severity,
+    Ticket,
+    Verdict,
+)
+from subpoena.util import find_times, norm_phone, norm_text
+
+# ------------------------------ ConfirmationSent --------------------------- #
+
+_CHANNEL = {"sms": "an SMS", "email": "an email"}
+
+
+def _same_recipient(channel: str, a: str, b: str) -> bool:
+    if channel == "email":
+        return norm_text(a) == norm_text(b)
+    return norm_phone(a) == norm_phone(b)
+
+
+def _states_time(claim: ConfirmationSent, message: Message, ctx: AuditContext) -> bool | None:
+    """True/False when the body states a time we can compare; None when it states none."""
+    if claim.about_start is None:
+        return None
+    stated = find_times(message.body, ref=ctx.call.started_at, tz=ctx.tz)
+    if not stated:
+        return None
+    return claim.about_start in stated
+
+
+def _created(nc: NetChange) -> bool:
+    return nc.kind is ChangeKind.CREATED and nc.after is not None
+
+
+def match_confirmation(claim: ConfirmationSent, ctx: AuditContext, strict: bool) -> Match | None:
+    best: tuple[int, NetChange] | None = None
+    for nc in ctx.free(Entity.MESSAGE):
+        if not _created(nc):
+            continue
+        message = Message.model_validate(nc.after)
+        to_ok = _same_recipient(claim.channel, claim.to, message.recipient)
+        channel_ok = message.channel == claim.channel
+        time_ok = _states_time(claim, message, ctx)
+        if strict and not (to_ok and channel_ok and time_ok is not False):
+            continue
+        score = 4 * to_ok + channel_ok + 2 * (time_ok is True)
+        if best is None or score > best[0]:
+            best = (score, nc)
+    return Match(primary=best[1]) if best else None
+
+
+def judge_confirmation(claim: ConfirmationSent, match: Match | None, ctx: AuditContext) -> Verdict:
+    if match is None or match.primary is None:
+        return not_found(
+            claim,
+            f"The agent claimed it sent {_CHANNEL[claim.channel]} confirmation to {claim.to}, "
+            "but the message log shows nothing sent during the call.",
+            [ctx.journal_evidence(Entity.MESSAGE, "None is this confirmation.")],
+            severity=Severity.MEDIUM,
+            remediation="Send the confirmation the caller was promised.",
+        )
+
+    message = Message.model_validate(match.primary.after)
+    diffs = [
+        FieldDiff(
+            field="recipient",
+            claimed=claim.to,
+            actual=message.recipient,
+            match=_same_recipient(claim.channel, claim.to, message.recipient),
+        ),
+        FieldDiff(
+            field="channel",
+            claimed=claim.channel,
+            actual=message.channel,
+            match=claim.channel == message.channel,
+        ),
+        FieldDiff(
+            field="delivery", claimed="sent", actual=message.status, match=message.status == "sent"
+        ),
+    ]
+    if claim.about_start is not None:
+        stated = find_times(message.body, ref=ctx.call.started_at, tz=ctx.tz)
+        diffs.append(
+            FieldDiff(
+                field="stated_time",
+                claimed=ctx.show(claim.about_start),
+                actual=ctx.show(stated[0]) if stated else "no time stated in the message",
+                match=_states_time(claim, message, ctx) is not False,
+            )
+        )
+    return conclude(
+        claim,
+        diffs,
+        [match.primary.evidence("Message logged during the call")],
+        field_severity={
+            "recipient": Severity.HIGH,
+            "stated_time": Severity.HIGH,
+            "delivery": Severity.MEDIUM,
+            "channel": Severity.LOW,
+        },
+        verified=f"Confirmation was sent to {message.recipient} as claimed ({message.id}).",
+        mismatch=f"A message was sent ({message.id}) but it is not the confirmation claimed.",
+        remediation="Send a corrected confirmation to the right recipient. If it went to a "
+        "stranger, treat it as a privacy incident.",
+    )
+
+
+# ------------------------------- HandoffCreated ---------------------------- #
+
+
+def match_handoff(claim: HandoffCreated, ctx: AuditContext, strict: bool) -> Match | None:
+    ids = ctx.patient_ids(claim.patient)
+    best: tuple[int, NetChange] | None = None
+    for nc in ctx.free(Entity.TICKET):
+        if not _created(nc):
+            continue
+        ticket = Ticket.model_validate(nc.after)
+        who = claim.patient is None or ticket.patient_id in ids
+        priority = claim.priority is None or ticket.priority == claim.priority
+        if strict and not (who and priority):
+            continue
+        score = 2 * who + priority
+        if best is None or score > best[0]:
+            best = (score, nc)
+    return Match(primary=best[1]) if best else None
+
+
+def judge_handoff(claim: HandoffCreated, match: Match | None, ctx: AuditContext) -> Verdict:
+    urgent = claim.priority == "urgent"
+    if match is None or match.primary is None:
+        return not_found(
+            claim,
+            f"The agent claimed it created a{'n urgent' if urgent else ''} handoff ticket, but "
+            "no ticket was created during the call. Nobody is going to call this person back.",
+            [ctx.journal_evidence(Entity.TICKET, "None is this handoff.")],
+            severity=Severity.CRITICAL if urgent else Severity.HIGH,
+            remediation="Create the ticket now and have a human follow up with the caller.",
+        )
+
+    ticket = Ticket.model_validate(match.primary.after)
+    diffs: list[FieldDiff] = []
+    if claim.patient is not None:
+        diffs.append(
+            FieldDiff(
+                field="patient",
+                claimed=ref_label(claim.patient),
+                actual=ctx.patient_label(ticket.patient_id),
+                match=ticket.patient_id in ctx.patient_ids(claim.patient),
+            )
+        )
+    if claim.priority is not None:
+        diffs.append(
+            FieldDiff(
+                field="priority",
+                claimed=claim.priority,
+                actual=ticket.priority,
+                match=claim.priority == ticket.priority,
+            )
+        )
+    return conclude(
+        claim,
+        diffs,
+        [
+            match.primary.evidence(
+                "Ticket created during the call. The summary is free text and is not compared"
+            )
+        ],
+        field_severity={"patient": Severity.HIGH, "priority": Severity.HIGH},
+        verified=f"Handoff ticket exists as claimed ({ticket.id}, priority {ticket.priority}).",
+        mismatch=f"A ticket was created ({ticket.id}) but not as the caller was told.",
+        remediation="Fix the ticket's patient and priority so the right person is called back "
+        "with the right urgency.",
+    )

@@ -6,7 +6,7 @@
 - Window: 2026-03-02T09:05:00-05:00 to 2026-03-02T09:05:16-05:00
 - Claims: 2 | verified 2, mismatch 0, not found 0, unverifiable 0
 - Findings beyond claims: 2 | Claim trust score: 100% | Highest severity: `HIGH`
-- Audited by `receipts/0.1.0` at 2026-03-02T09:06:16-05:00
+- Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -88,6 +88,6 @@ Evidence:
 
 ## Seal
 
-- content `f0f4bd992325a859f91349f85faf96da059e8787182aa835195618af12753c41`
-- chain `5a9d7ff411841535c166f9e69c5a8a23f36c5bc31bfcbf5fc8716064cd341a0d` (prev `0000000000000000...`)
-- signed (key `952a7ab34a0a`)
+- content `2c7fe05f4967995337a64b6fd863024ba66be94ac8feaa03f6a7889b7410374a`
+- chain `dec8f8ef1ba78a11e0001da6d043f52be3a5ab560c74457d62caec82f7069901` (prev `0000000000000000...`)
+- signed (key `6508b98a7ace`)

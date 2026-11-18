@@ -7,10 +7,10 @@ from datetime import timedelta
 import pytest
 from fake_gcal import FakeCalendarService
 
-from receipts.models import AppointmentStatus, Entity
-from receipts.scenarios.world import CALL_START, KIM, PATEL, at
-from receipts.sor.base import RecordNotFound
-from receipts.sor.google_calendar import (
+from subpoena.models import AppointmentStatus, Entity
+from subpoena.scenarios.world import CALL_START, KIM, PATEL, at
+from subpoena.sor.base import RecordNotFound
+from subpoena.sor.google_calendar import (
     GoogleCalendarAdapter,
     GoogleCalendarReader,
     SnapshotCache,
@@ -145,7 +145,7 @@ def test_change_feed_survives_cache_reload(tmp_path):
 
 # ----------------------- golden set through the adapter -------------------- #
 
-from receipts.scenarios.world import OSEI  # noqa: E402
+from subpoena.scenarios.world import OSEI  # noqa: E402
 
 GCAL_CALENDARS = {PATEL: "cal-patel", KIM: "cal-kim", OSEI: "cal-osei"}
 
@@ -159,14 +159,14 @@ class _HybridStore:
     """
 
     def __init__(self) -> None:
-        from receipts.sor import SqliteStore
+        from subpoena.sor import SqliteStore
 
         self._sqlite = SqliteStore()
         self._service = FakeCalendarService(lambda: CALL_START)
         self._cache = SnapshotCache()
 
     def session(self, actor: str, clock):
-        from receipts.sor.base import SystemOfRecord
+        from subpoena.sor.base import SystemOfRecord
 
         self._service._clock = clock
         base = self._sqlite.session(actor, clock)
@@ -185,7 +185,7 @@ class _HybridStore:
 
 
 def _hybrid_report(scenario):
-    from receipts.scenarios import audit_call, build_world, run_suspect
+    from subpoena.scenarios import audit_call, build_world, run_suspect
 
     store = _HybridStore()
     world = build_world(scenario, store=store)
@@ -227,7 +227,7 @@ def test_golden_set_verdicts_match_through_google_calendar():
     outcome. The single exception is F.ROLLBACK (see KNOWN_DELTAS above),
     a documented limitation of the Google API itself.
     """
-    from receipts.scenarios import GOLDEN, run_scenario
+    from subpoena.scenarios import GOLDEN, run_scenario
 
     mismatches = []
     for scenario in GOLDEN:

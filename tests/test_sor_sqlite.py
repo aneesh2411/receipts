@@ -7,10 +7,10 @@ from datetime import timedelta
 
 import pytest
 
-from receipts.models import AppointmentStatus, Entity
-from receipts.scenarios.world import CALL_START, DANIEL, MAYA, PATEL, at
-from receipts.sor import AdapterUnavailable, RecordNotFound, SqliteStore, with_outage
-from receipts.suspect import AGENT_ID
+from subpoena.models import AppointmentStatus, Entity
+from subpoena.scenarios.world import CALL_START, DANIEL, MAYA, PATEL, at
+from subpoena.sor import AdapterUnavailable, RecordNotFound, SqliteStore, with_outage
+from subpoena.suspect import AGENT_ID
 
 DAY = timedelta(days=1)
 

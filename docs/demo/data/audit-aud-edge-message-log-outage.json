@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-edge-message-log-outage",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-edge-message-log-outage",
@@ -250,10 +250,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "c8585e9940f7a245661a955fa530f53a0db9dcc2751a8b7cfd2754d7516098be",
+  "content_hash": "c0b80aa97b9d55a489ab289c136442f695c08c569e0977403c0de63a6dd6df37",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "307ee083a12b330ad7721255031728ba675c5df3b9fee5aca78797aa49f489fe",
-  "signature": "b2c3f37b505e00a7a4f7aff64e969818e9b84ad0a8d1b001f80f7fdf32f35e96",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "f85064ccd6fc95a613e9d9f11ed29a1e753833f7acd41a474b66c1dd300b7ccf",
+  "signature": "c641f511e43f4cb0a9b61357b647f56bf749e1d375521f7d56c1d176d0a18a35",
+  "key_id": "6508b98a7ace"
  }
 }

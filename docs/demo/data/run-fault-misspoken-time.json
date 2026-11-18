@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-misspoken-time",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-misspoken-time",
@@ -356,10 +356,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "c4bcf8d4ed189f870a040797733d1cef3c7061cd2418deb3fbb5127a354bd984",
+  "content_hash": "686137cb338ee6ab636ea562133a4244a85fc7556bf68a98f809a966f3d0ee0e",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "6bd79f0e9f11862d483f4d9e18e653f57c3abf94e259602cfb14c08d359dedf6",
-  "signature": "11b8eb8330e4de2695abc72be0a086c38d7157917f5ecdc2b2b760061f63cbae",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "2afbcadb6a144caf4424a795bf79709b1381428af31caf1ee86411887c75c609",
+  "signature": "5d6584ef29d25ff1ed3bae34b657a14c5f70dcc9b001565cbd3c31266e551789",
+  "key_id": "6508b98a7ace"
  }
 }

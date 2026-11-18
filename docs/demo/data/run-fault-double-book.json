@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-double-book",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-double-book",
@@ -343,10 +343,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "6bb2cd1b2c11db9e0dcd1a09730015ada40cafea20fc0193da4e3328470fa493",
+  "content_hash": "62aefd4df3f1bb41c9c202f4632cf0a294c9695565d647eb148dcf311e3c8ae6",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "518f88a433f9e99abf22cefa99ced424f42b51dd2454ca5efa42413c7cdce4c3",
-  "signature": "088d8aa149a93d231f617ba1f2d2d1e818bb0768a7fb618839cf7e7b40640fee",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "ebd46333474a35973090a4c4d2354997eba24b93f4287faebac3283fa540846b",
+  "signature": "7a35488b507d82fc3b7905a187533206e620931ff1f1f948050ba1c058ce3a2b",
+  "key_id": "6508b98a7ace"
  }
 }

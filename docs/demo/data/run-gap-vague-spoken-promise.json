@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-gap-vague-spoken-promise",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-gap-vague-spoken-promise",
@@ -92,10 +92,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "8cc5329d646ebb56946bbdba4fdb69cac1d7a156b8bef40b5ddc9a45b7f0a2f4",
+  "content_hash": "f7285876ff1fd7b98e5bb27f107662b0edfdc29bb14bbfb36522c4e0dca20010",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "4bed7556774ab0a7e2809eba5b52831de81675f082c704067bc694f94a2339de",
-  "signature": "4b93de28149219cf1b7d2814fac63efef5fbd730ae2a9eb68db40e0f3a9e80a9",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "ee164f620b497138d92e38816c7f538e36003711b610ee1bc22f8241563bac14",
+  "signature": "32cc17bb4407805a65fedcfc757f2dbc3fca175ca5fd9554316d56414fe5be04",
+  "key_id": "6508b98a7ace"
  }
 }

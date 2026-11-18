@@ -7,9 +7,9 @@ recap was read as a second claim with no write behind it (false NOT_FOUND).
 
 from __future__ import annotations
 
-from receipts.auditor.extractor import RuleBasedExtractor, merge_claims
-from receipts.models import AppointmentBooked, ClaimSource
-from receipts.scenarios.world import CALL_START, CLINIC, MAYA, at
+from subpoena.auditor.extractor import RuleBasedExtractor, merge_claims
+from subpoena.models import AppointmentBooked, ClaimSource
+from subpoena.scenarios.world import CALL_START, CLINIC, MAYA, at
 
 
 def _booked(claim_id: str, turn: int, provider: str, **kw) -> AppointmentBooked:
@@ -63,7 +63,7 @@ def test_extractor_reads_a_recap_line() -> None:
         },
     )()
     # covered end to end by the edge-recap golden scenario; here just the regex path
-    from receipts.models import Turn
+    from subpoena.models import Turn
 
     clinic_call.transcript = (
         Turn(

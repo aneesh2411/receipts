@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-clean-inquiry-only",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-clean-inquiry-only",
@@ -92,10 +92,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "8319ec04947161ec1b694544f289a5c7579294e84e94801b85f684bb656fa718",
+  "content_hash": "6c892ef27c1675b6f39361309377f3cb0522680eab8868ba915fc84db44e09b4",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "bc933e9a02722e471e30a5c0286d919fc224ab0258cd3d882c0338d5b8869814",
-  "signature": "cfbaae1d042aa5217f6317cd52151833d4f520e32f9a0227301c6f68958a8897",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "c0e1a69a9c4c56cbe9a921a7fa830340f12fcf59e882ee5f262a1a29d8e76023",
+  "signature": "56d19f2700e17f4a05893ed3f85e1ca7d47711ce3eb838dc547093d94152eb22",
+  "key_id": "6508b98a7ace"
  }
 }

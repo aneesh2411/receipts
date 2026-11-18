@@ -6,8 +6,8 @@ from datetime import timedelta
 
 import pytest
 
-from receipts.auditor.delta import ChangeKind, collapse
-from receipts.models import (
+from subpoena.auditor.delta import ChangeKind, collapse
+from subpoena.models import (
     AppointmentBooked,
     Cancelled,
     ConfirmationSent,
@@ -17,8 +17,8 @@ from receipts.models import (
     Severity,
     VerdictStatus,
 )
-from receipts.scenarios.world import CALL_START, DANIEL, KIM, MAYA, PATEL, at
-from receipts.sor import with_outage
+from subpoena.scenarios.world import CALL_START, DANIEL, KIM, MAYA, PATEL, at
+from subpoena.sor import with_outage
 
 V, MM, NF, UV = (
     VerdictStatus.VERIFIED,
@@ -239,7 +239,7 @@ def test_outage_that_appears_mid_audit_is_still_handled(clinic):
             return self._inner.changes(since, until)
 
         def __getattr__(self, name):
-            from receipts.sor import AdapterUnavailable
+            from subpoena.sor import AdapterUnavailable
 
             def boom(*_, **__):
                 raise AdapterUnavailable("crm adapter went away")
@@ -283,7 +283,7 @@ def test_an_edit_that_is_reverted_is_not_an_unclaimed_write(clinic):
 
 @pytest.mark.parametrize("ended_before_started", [True])
 def test_call_window_must_be_ordered(clinic, ended_before_started):
-    from receipts.models import CallRecord
+    from subpoena.models import CallRecord
 
     with pytest.raises(ValueError, match="ended_at"):
         CallRecord(

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from receipts.evals import score_run
-from receipts.models import Outcome
-from receipts.scenarios import GOLDEN, run_scenario
+from subpoena.evals import score_run
+from subpoena.models import Outcome
+from subpoena.scenarios import GOLDEN, run_scenario
 
 SOLVED = [s for s in GOLDEN if not s.known_gap]
 GAPS = [s for s in GOLDEN if s.known_gap]

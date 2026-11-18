@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-cancel-wrong-appointment",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-cancel-wrong-appointment",
@@ -175,10 +175,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "c553506d18c2412ecbcef486c3fdea90b8b116776665faa2e403e4ba13e9a1ac",
+  "content_hash": "2817036a689fcbdbc648ec653a7be8b2889c081bf433296571ba351a5b51b968",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "6522b27cd266ed1c14182de42d1bf209d34fc3faab2bee5e5dbde66eef78f64a",
-  "signature": "8de156ed3f9820662a2e02785c3bbb8aaa174df812a8e07d1f1dcbdc3920447f",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "37a24a1658f786d6fe33065830d5d3214693e946b7c240afeab12778e5d3f5b0",
+  "signature": "fff5885bdd58fed2c90cb6d99af6be9515df21f543d1070e5157ca0a8558bcfb",
+  "key_id": "6508b98a7ace"
  }
 }

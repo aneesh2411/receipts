@@ -9,8 +9,8 @@ from __future__ import annotations
 
 from datetime import timedelta
 
-from receipts.models import Rescheduled
-from receipts.scenarios.world import CALL_START, MAYA, PATEL, at
+from subpoena.models import Rescheduled
+from subpoena.scenarios.world import CALL_START, MAYA, PATEL, at
 
 
 def _seed(clinic):

@@ -6,10 +6,10 @@ import json
 
 import pytest
 
-from receipts.evals import Counts, EvalSummary, evaluate, generate, run_all, score_run
-from receipts.evals.run import render_markdown
-from receipts.models import VerdictStatus
-from receipts.scenarios import BY_ID, GOLDEN, run_scenario
+from subpoena.evals import Counts, EvalSummary, evaluate, generate, run_all, score_run
+from subpoena.evals.run import render_markdown
+from subpoena.models import VerdictStatus
+from subpoena.scenarios import BY_ID, GOLDEN, run_scenario
 
 V, MM, NF = VerdictStatus.VERIFIED, VerdictStatus.MISMATCH, VerdictStatus.NOT_FOUND
 B, C = "AppointmentBooked", "ConfirmationSent"
@@ -82,7 +82,7 @@ def test_a_wrong_code_is_not_a_correct_finding():
 
 
 def test_golden_headline_numbers():
-    summary = evaluate(GOLDEN, label="Receipts")
+    summary = evaluate(GOLDEN, label="Subpoena")
     gaps = {s.id for s in GOLDEN if s.known_gap}
     assert {r.scenario_id for r in summary.failures} == gaps
     assert summary.claims.fp == 0 and summary.findings.fp == 0, "no false alarms"
@@ -97,7 +97,7 @@ def test_golden_headline_numbers():
 
 
 def test_naive_baseline_is_measurably_worse():
-    receipts = evaluate(GOLDEN, label="Receipts")
+    receipts = evaluate(GOLDEN, label="Subpoena")
     naive = evaluate(GOLDEN, label="Naive", auditor="naive")
     assert naive.claims.recall < receipts.claims.recall
     assert naive.findings.recall == 0.0

@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-clean-urgent-handoff",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-clean-urgent-handoff",
@@ -182,10 +182,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "28559a1c5722b6f9bd7091ba8020e3ba7b4b6593202aa42afb8a8681f9ec345d",
+  "content_hash": "50003f9476ec404365100e3f1c95b5e8b5c03cb40fb2fe859433b938a9689f21",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "a320b3e644fca12f5cc50fa75bacd767708b0580afcb443456fd4712ec40e231",
-  "signature": "d9da7263e894229d1f329b7c0fa08be640318235b1c24a548c6b7e091f47c8fb",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "da865c6232bea8860bb09f71356711a9bd66367956d1b58ff20ce55e14e470a0",
+  "signature": "0da1c74bda44fd26d5b5d2cd213356a052c53493b7f3e1eed0417ed108dd7d92",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -8,11 +8,11 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from receipts.auditor import Auditor
-from receipts.models import AuditReport, CallRecord, Claim, Patient, PatientRef, Turn
-from receipts.scenarios.world import CALL_START, CLINIC, ROSTER
-from receipts.sor import SqliteStore, SystemOfRecord
-from receipts.suspect import AGENT_ID, SimClock
+from subpoena.auditor import Auditor
+from subpoena.models import AuditReport, CallRecord, Claim, Patient, PatientRef, Turn
+from subpoena.scenarios.world import CALL_START, CLINIC, ROSTER
+from subpoena.sor import SqliteStore, SystemOfRecord
+from subpoena.suspect import AGENT_ID, SimClock
 
 
 @dataclass

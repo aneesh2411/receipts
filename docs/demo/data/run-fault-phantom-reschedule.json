@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-phantom-reschedule",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-phantom-reschedule",
@@ -178,10 +178,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "7981754f39399b113e73eaa1a33e416c336b7d7c6636c7c650ecf30e825b6181",
+  "content_hash": "49ed621c753fe91394582a6c281a89d5272db0df0bfe1d34f6f0679d2b1ec1a8",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "1bc90d1b45853d806427ef6d668cd76b5e43d53506aed4418782c0af00c639c2",
-  "signature": "7eb992ea8298c7a1230155141b061517cfb931200a61ddc0d6a6221ad06e8f07",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "c55be348992faaf6f9d74168e2a5d80b689e808cdbf891a5f0178b74b20fc01a",
+  "signature": "0c27e80bba3336d2c4540d743fbbb368d3408d46f611c56aaa96927a2850d13e",
+  "key_id": "6508b98a7ace"
  }
 }

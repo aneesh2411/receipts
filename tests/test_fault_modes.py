@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import pytest
 
-from receipts.models import FindingKind, Severity, VerdictStatus
-from receipts.scenarios import BY_ID, GOLDEN, run_scenario
-from receipts.suspect import REQUIRED_FAULTS, FaultMode
+from subpoena.models import FindingKind, Severity, VerdictStatus
+from subpoena.scenarios import BY_ID, GOLDEN, run_scenario
+from subpoena.suspect import REQUIRED_FAULTS, FaultMode
 
 V, MM, NF = VerdictStatus.VERIFIED, VerdictStatus.MISMATCH, VerdictStatus.NOT_FOUND
 

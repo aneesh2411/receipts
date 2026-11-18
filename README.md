@@ -1,4 +1,4 @@
-# Receipts
+# Subpoena
 
 **Every claim needs a receipt.**
 
@@ -6,7 +6,7 @@ AI voice agents tell callers they did things. *"I booked your appointment." "I s
 confirmation." "I created a ticket."* Sometimes none of it happened, the transcript reads
 perfectly, and nobody finds out until a patient is standing at the front desk.
 
-Receipts is an independent auditor. After a call, it takes every action the agent claimed,
+Subpoena is an independent auditor. After a call, it takes every action the agent claimed,
 checks it against what the system of record shows actually changed, and reports each
 mismatch with evidence. It also reports the reverse: things the agent did and never
 mentioned.
@@ -37,7 +37,7 @@ Four claims. The auditor's findings:
 Outcome: DISCREPANCIES   1 of 4 claims verified   sealed sha256 27cf8ecb...
 ```
 
-Run it yourself: `receipts demo`.
+Run it yourself: `subpoena demo`.
 
 ## Quickstart
 
@@ -48,37 +48,37 @@ pip install -e ".[dev]"
 ```
 
 ```bash
-receipts demo
+subpoena demo
 ```
 
 ```bash
-receipts demo --list
+subpoena demo --list
 ```
 
 ```bash
-receipts eval
+subpoena eval
 ```
 
 ```bash
-receipts certify
+subpoena certify
 ```
 
 `certify` writes a scorecard for the golden-set run, pinned to a fingerprint of the
 code that plays and grades the calls. The scorecard goes STALE the moment that code
-changes or 90 days pass, and `receipts certify --check` exits non-zero when it does -
+changes or 90 days pass, and `subpoena certify --check` exits non-zero when it does -
 a standing scorecard would be a lie. Scorecards live in
 [evals/scorecards/](evals/scorecards/).
 
 ```bash
-receipts serve
+subpoena serve
 ```
 
-Try it without installing anything: **https://aneesh2411.github.io/receipts/demo/** - the
+Try it without installing anything: **https://aneesh2411.github.io/subpoena/demo/** - the
 same replay view, backed by baked responses exported from the auditor
 (`scripts/export_demo.py`). Or watch the 22-second replay of one call:
-[docs/demo/receipts-demo.mp4](docs/demo/receipts-demo.mp4).
+[docs/demo/subpoena-demo.mp4](docs/demo/subpoena-demo.mp4).
 
-`receipts serve` opens the live replay view at http://127.0.0.1:8000/ : pick a call, watch the
+`subpoena serve` opens the live replay view at http://127.0.0.1:8000/ : pick a call, watch the
 agent make each claim on the left and the auditor stamp it on the right.
 
 ```bash
@@ -95,7 +95,7 @@ witness is independent of the suspect.
 **It checks what changed, not what exists.** The usual approach is to look up current state
 after the call and see whether something matching is there. That passes a booking that
 already existed before the call, passes a reschedule that left the old appointment alive,
-and says nothing at all about extra writes. Receipts reconciles claims against the changes
+and says nothing at all about extra writes. Subpoena reconciles claims against the changes
 made *during the call window, by the agent's identity*.
 
 **It checks both directions.** Claims against writes, then writes against claims. A write no
@@ -103,7 +103,7 @@ claim accounts for is an unclaimed write: a follow-up nobody asked for, a phone 
 quietly overwritten, a retry that double-booked.
 
 **It audits what the caller heard, not only what was logged.** Structured claims are the
-agent's account of itself. The transcript is the promise that was actually made. Receipts
+agent's account of itself. The transcript is the promise that was actually made. Subpoena
 recovers spoken claims and audits those too, which is the only way to catch an agent that
 says "you're booked", logs nothing and writes nothing.
 
@@ -116,19 +116,19 @@ attached. A language model is optional, sits behind one interface, and is only e
 never becomes a pass.
 
 **Reports are sealed.** Each report is hashed, chained to the previous one in an
-append-only ledger, and signed when a key is configured. `receipts verify report.json`
+append-only ledger, and signed when a key is configured. `subpoena verify report.json`
 detects any edit.
 
 **The auditor has its own receipts.** See the next section.
 
 ## Does it work
 
-`receipts eval` scores the auditor on 57 hand-labelled scenarios and 500 fuzzed calls, next
+`subpoena eval` scores the auditor on 57 hand-labelled scenarios and 500 fuzzed calls, next
 to a naive "does a matching record exist" baseline.
 
 Golden set, 57 calls:
 
-| Metric | Receipts | Naive lookup |
+| Metric | Subpoena | Naive lookup |
 |---|---|---|
 | False claims caught (recall) | 94.1% | 58.8% |
 | False accusations (1 - precision) | 0% | 0% |
@@ -194,7 +194,7 @@ seeded rates:
 ## API
 
 ```bash
-receipts serve
+subpoena serve
 ```
 
 | Endpoint | Purpose |
@@ -226,20 +226,20 @@ Configuration is by environment variable:
 
 | Variable | Effect |
 |---|---|
-| `RECEIPTS_API_KEY` | Require `X-API-Key` on every data endpoint. |
-| `RECEIPTS_SIGNING_KEY` | HMAC-sign every report. |
-| `RECEIPTS_DB` | Path for calls and the audit ledger. |
-| `RECEIPTS_SOR_DB` | Path for the system of record. |
-| `RECEIPTS_DEMO=0` | Disable the demo endpoints. |
-| `RECEIPTS_LLM=anthropic` | Use a live model to read transcripts. |
+| `SUBPOENA_API_KEY` | Require `X-API-Key` on every data endpoint. |
+| `SUBPOENA_SIGNING_KEY` | HMAC-sign every report. |
+| `SUBPOENA_DB` | Path for calls and the audit ledger. |
+| `SUBPOENA_SOR_DB` | Path for the system of record. |
+| `SUBPOENA_DEMO=0` | Disable the demo endpoints. |
+| `SUBPOENA_LLM=anthropic` | Use a live model to read transcripts. |
 
 ## Plugging in a real system
 
 The auditor is typed against read-only protocols in
-[`sor/base.py`](src/receipts/sor/base.py). A backend is auditable if it can answer one
+[`sor/base.py`](src/subpoena/sor/base.py). A backend is auditable if it can answer one
 question: *what changed between t0 and t1, and who changed it?*
 
-[`sor/google_calendar.py`](src/receipts/sor/google_calendar.py) implements that mapping for
+[`sor/google_calendar.py`](src/subpoena/sor/google_calendar.py) implements that mapping for
 Google Calendar: incremental sync with sync tokens, a snapshot cache for before-images, and
 actor attribution via event extended properties.
 
@@ -259,7 +259,7 @@ actor attribution via event extended properties.
 ## Repository map
 
 ```
-src/receipts/
+src/subpoena/
   models.py      claims, records, verdicts, report
   sor/           adapter protocols, SQLite store with journal
   suspect/       the receptionist and its fault modes

@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-phantom-booking",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-phantom-booking",
@@ -260,10 +260,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "08528411aaa453ed4d082e2955eec838cf9e5823489c6283598f72078e27d9fc",
+  "content_hash": "b00cc49738c35266c28c19366b23a8ab354e703451930a3e8fd84b5fe38024f0",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "620133d67d9729261e460ee64b2dc1d81289bf5d1463e4f3f4959ead65853ff9",
-  "signature": "d9506691df1baa595a656e06f91b26711330bda7cfc3be8d23d80dd84ace7fa5",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "0bb95934914ca073c3659d615b0b11067ac4e9eae95e0cb7d96ea28823bed16b",
+  "signature": "0319eef00941f9b1a2715a9ba3f6bd50ed112f0f3ed4204b93e0c178a7cb1426",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -1,6 +1,6 @@
 {
   "golden": {
-    "label": "Receipts",
+    "label": "Subpoena",
     "calls": 57,
     "claim_level": {
       "tp": 32,
@@ -231,7 +231,7 @@
   },
   "ablations": [
     {
-      "label": "Receipts without the transcript reader",
+      "label": "Subpoena without the transcript reader",
       "calls": 57,
       "claim_level": {
         "tp": 27,
@@ -295,7 +295,7 @@
       ]
     },
     {
-      "label": "Receipts without policy checks",
+      "label": "Subpoena without policy checks",
       "calls": 57,
       "claim_level": {
         "tp": 32,
@@ -359,7 +359,7 @@
     }
   ],
   "fuzz": {
-    "label": "Receipts on 500 fuzzed calls",
+    "label": "Subpoena on 500 fuzzed calls",
     "calls": 500,
     "claim_level": {
       "tp": 356,

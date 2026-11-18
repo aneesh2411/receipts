@@ -1,4 +1,4 @@
-# Receipts: plan
+# Subpoena: plan
 
 > Every claim needs a receipt.
 

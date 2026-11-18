@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-rollback",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-rollback",
@@ -274,10 +274,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "db79e8c4ca8ec9d8d37f22c28c6543971274f54a2c4ce01bc64ea0f3d8a48a1e",
+  "content_hash": "2af6b23a7457c0ab1ef4b7bb690c0518873d6d017fdfb5fcf4144d4d307ee57d",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "9a496504b40dff2e6fe6224097c1a2f136f599b2b7b489667f0840534b337062",
-  "signature": "efa325016ad9d9ca5fd85ccd90829364b66ec225109c4cbfbd3511bc036db521",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "b62a43c1f2f077c6dac2b9d9cb5a44f10e72a79cab7da9aa08bde7ebe4f83f5f",
+  "signature": "f7b4aca2cbe133a30d2aba32063dfeeeee457c2f80e2cc7c019e19a6e2818a05",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from receipts.auditor import GENESIS, NaiveAuditor, Sealer, render_markdown
-from receipts.models import AuditReport, Outcome, VerdictStatus
-from receipts.scenarios import BY_ID, HERO, run_scenario
-from receipts.scenarios.world import CLINIC
+from subpoena.auditor import GENESIS, NaiveAuditor, Sealer, render_markdown
+from subpoena.models import AuditReport, Outcome, VerdictStatus
+from subpoena.scenarios import BY_ID, HERO, run_scenario
+from subpoena.scenarios.world import CLINIC
 
 KEY = b"test-signing-key"
 

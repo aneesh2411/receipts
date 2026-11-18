@@ -12,9 +12,9 @@ import pytest
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from receipts.api import Settings, create_app
-from receipts.models import AppointmentBooked
-from receipts.scenarios import BY_ID, build_world, run_suspect
+from subpoena.api import Settings, create_app
+from subpoena.models import AppointmentBooked
+from subpoena.scenarios import BY_ID, build_world, run_suspect
 
 
 def _staged_call(scenario_id: str = "fault-phantom-booking"):

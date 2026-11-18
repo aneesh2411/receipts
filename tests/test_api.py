@@ -5,8 +5,8 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from receipts.api import Settings, create_app
-from receipts.scenarios import BY_ID, HERO, build_world, run_suspect
+from subpoena.api import Settings, create_app
+from subpoena.scenarios import BY_ID, HERO, build_world, run_suspect
 
 
 @pytest.fixture
@@ -167,7 +167,7 @@ def test_scenario_catalogue(client):
 
 def test_replay_page_is_served(client):
     page = client.get("/")
-    assert page.status_code == 200 and "RECEIPTS" in page.text
+    assert page.status_code == 200 and "SUBPOENA" in page.text
     assert "innerHTML" not in page.text  # transcript text is untrusted: textContent only
 
 
@@ -195,9 +195,9 @@ def test_staging_refuses_to_wipe_a_persistent_system_of_record(tmp_path):
 
 
 def test_settings_from_env(monkeypatch):
-    monkeypatch.setenv("RECEIPTS_API_KEY", "abc")
-    monkeypatch.setenv("RECEIPTS_SIGNING_KEY", "sign")
-    monkeypatch.setenv("RECEIPTS_DEMO", "0")
+    monkeypatch.setenv("SUBPOENA_API_KEY", "abc")
+    monkeypatch.setenv("SUBPOENA_SIGNING_KEY", "sign")
+    monkeypatch.setenv("SUBPOENA_DEMO", "0")
     settings = Settings.from_env()
     assert (settings.api_key, settings.signing_key, settings.demo) == ("abc", b"sign", False)
     assert settings.db_path == settings.sor_path == ":memory:"
@@ -207,7 +207,7 @@ def test_unhandled_errors_do_not_leak_details(client, monkeypatch):
     def boom(*_: object, **__: object):
         raise RuntimeError("secret internal detail")
 
-    monkeypatch.setattr("receipts.api.app.render_markdown", boom)
+    monkeypatch.setattr("subpoena.api.app.render_markdown", boom)
     audit_id = _data(client.post("/demo/scenarios/clean-book/run"), 201)["audit_id"]
     quiet = TestClient(client.app, raise_server_exceptions=False)
     response = quiet.get(f"/audit/{audit_id}/report", params={"format": "md"})

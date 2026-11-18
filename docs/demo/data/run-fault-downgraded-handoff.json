@@ -1,6 +1,6 @@
 {
  "audit_id": "aud-fault-downgraded-handoff",
- "auditor": "receipts/0.1.0",
+ "auditor": "subpoena/0.1.0",
  "created_at": "2026-03-02T09:06:16-05:00",
  "call": {
   "call_id": "call-fault-downgraded-handoff",
@@ -182,10 +182,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "52514eaaa18fad0cc11e25057e8dfd0135c5b7fdc342b6066b5b523561216a57",
+  "content_hash": "5246d35c9a6ed45b10e7b6fa452e0f0151cf6a54a078336f058388b1fe454401",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "8cedb1b1205b1d9fe8e7caeab81a141bc87c025a4b27ad195216da02c14be732",
-  "signature": "d9c1bc8172b7e59c7fd2a10e88105b6d9b241c7b29dfb614445f97c99fa152a6",
-  "key_id": "952a7ab34a0a"
+  "chain_hash": "8e0ac6eaec255a0429c0a9fea0f9ff6291721f2df52725be2b3eaf3d26dff682",
+  "signature": "10f28acf9355a9655c942c24a019582bcd7d4e6f6dd7f884549245e4a49751e1",
+  "key_id": "6508b98a7ace"
  }
 }

@@ -6,7 +6,7 @@ import importlib.util
 import json
 from pathlib import Path
 
-from receipts.scenarios import BY_ID
+from subpoena.scenarios import BY_ID
 
 SPEC = importlib.util.spec_from_file_location(
     "export_demo", Path(__file__).parent.parent / "scripts" / "export_demo.py"

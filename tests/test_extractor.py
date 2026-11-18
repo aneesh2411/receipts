@@ -5,11 +5,11 @@ from __future__ import annotations
 import json
 from datetime import UTC
 
-from receipts.auditor import LLMClaimExtractor, RuleBasedExtractor, merge_claims
-from receipts.llm import StaticLLM, llm_from_env
-from receipts.models import AppointmentBooked, ClaimSource, ConfirmationSent, VerdictStatus
-from receipts.scenarios.world import CALL_START, CLINIC, MAYA, PATEL, TZ, at
-from receipts.util import find_times, norm_phone, show, speak
+from subpoena.auditor import LLMClaimExtractor, RuleBasedExtractor, merge_claims
+from subpoena.llm import StaticLLM, llm_from_env
+from subpoena.models import AppointmentBooked, ClaimSource, ConfirmationSent, VerdictStatus
+from subpoena.scenarios.world import CALL_START, CLINIC, MAYA, PATEL, TZ, at
+from subpoena.util import find_times, norm_phone, show, speak
 
 SLOT = at(1, 14, 30)
 
@@ -208,8 +208,8 @@ def test_model_reader_falls_back_to_rules_on_garbage(clinic):
 
 
 def test_no_live_model_unless_explicitly_enabled(monkeypatch):
-    monkeypatch.delenv("RECEIPTS_LLM", raising=False)
+    monkeypatch.delenv("SUBPOENA_LLM", raising=False)
     assert llm_from_env() is None
-    monkeypatch.setenv("RECEIPTS_LLM", "anthropic")
+    monkeypatch.setenv("SUBPOENA_LLM", "anthropic")
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     assert llm_from_env() is None

@@ -6,11 +6,11 @@ import random
 
 import pytest
 
-from receipts.llm import StaticLLM
-from receipts.models import CallRecord
-from receipts.scenarios import BY_ID, build_world, run_suspect
-from receipts.scenarios.world import CALL_START, CLINIC, MAYA, PATEL, TZ, at
-from receipts.suspect import (
+from subpoena.llm import StaticLLM
+from subpoena.models import CallRecord
+from subpoena.scenarios import BY_ID, build_world, run_suspect
+from subpoena.scenarios.world import CALL_START, CLINIC, MAYA, PATEL, TZ, at
+from subpoena.suspect import (
     AGENT_ID,
     Book,
     Cancel,
@@ -23,9 +23,9 @@ from receipts.suspect import (
     ReceptionistAgent,
     SimClock,
 )
-from receipts.suspect.agent import _transpose
-from receipts.suspect.faults import BOOK_FAULTS, HANDOFF_FAULTS
-from receipts.util import find_times
+from subpoena.suspect.agent import _transpose
+from subpoena.suspect.faults import BOOK_FAULTS, HANDOFF_FAULTS
+from subpoena.util import find_times
 
 
 def _play(scenario_id: str):

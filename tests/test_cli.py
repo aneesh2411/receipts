@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 
-from receipts.cli import main
-from receipts.models import AuditReport, Outcome
+from subpoena.cli import main
+from subpoena.models import AuditReport, Outcome
 
 
 def test_demo_plays_the_hero_call(capsys):
@@ -32,7 +32,7 @@ def test_demo_lists_scenarios_and_rejects_unknown_ones(capsys):
 
 
 def test_saved_report_verifies_and_a_doctored_one_does_not(tmp_path, capsys, monkeypatch):
-    monkeypatch.setenv("RECEIPTS_SIGNING_KEY", "cli-test-key")
+    monkeypatch.setenv("SUBPOENA_SIGNING_KEY", "cli-test-key")
     path = tmp_path / "report.json"
     assert main(["demo", "--fast", "--json", str(path)]) == 0
     assert main(["verify", str(path)]) == 0
@@ -44,7 +44,7 @@ def test_saved_report_verifies_and_a_doctored_one_does_not(tmp_path, capsys, mon
     assert main(["verify", str(path)]) == 1
     assert "INVALID" in capsys.readouterr().out
 
-    monkeypatch.setenv("RECEIPTS_SIGNING_KEY", "some-other-key")
+    monkeypatch.setenv("SUBPOENA_SIGNING_KEY", "some-other-key")
     path.write_text(report.model_dump_json())
     assert main(["verify", str(path)]) == 1
 
@@ -66,7 +66,7 @@ def test_eval_writes_reports_and_passes_with_only_known_gaps(tmp_path, capsys):
 
 def test_eval_fails_the_build_on_an_unexpected_regression(monkeypatch, capsys):
     """Break the auditor (no policy checks) and the eval must exit non-zero."""
-    import receipts.auditor.engine as engine
+    import subpoena.auditor.engine as engine
 
     monkeypatch.setattr(engine, "policy_violations", lambda ctx, policies: [])
     assert main(["eval", "--fuzz", "20"]) == 1
@@ -75,10 +75,10 @@ def test_eval_fails_the_build_on_an_unexpected_regression(monkeypatch, capsys):
 
 
 def test_public_bind_without_a_key_is_refused():
-    from receipts.cli import unsafe_bind_reason
+    from subpoena.cli import unsafe_bind_reason
 
     assert unsafe_bind_reason("0.0.0.0", None) is not None
-    assert "RECEIPTS_API_KEY" in unsafe_bind_reason("0.0.0.0", None)
+    assert "SUBPOENA_API_KEY" in unsafe_bind_reason("0.0.0.0", None)
     assert unsafe_bind_reason("0.0.0.0", "secret") is None
     assert unsafe_bind_reason("127.0.0.1", None) is None
     assert unsafe_bind_reason("localhost", None) is None
