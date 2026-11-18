@@ -27,6 +27,7 @@ from subpoena.models import (
     Claim,
     ClaimSource,
     ConfirmationSent,
+    ExtractionHealth,
     HandoffCreated,
     Rescheduled,
 )
@@ -35,6 +36,10 @@ from subpoena.util import ClinicConfig, find_times, norm_text
 
 class ClaimExtractor(Protocol):
     def extract(self, call: CallRecord, clinic: ClinicConfig) -> list[Claim]: ...
+
+    def health(self) -> ExtractionHealth:
+        """How the last extract() run went; a healthy default for rules-only."""
+        ...
 
 
 _SENTENCE = re.compile(r"(?<!Dr\.)(?<!Mr\.)(?<!Ms\.)(?<=[.!?])\s+")
@@ -55,6 +60,9 @@ _PROVIDER = re.compile(r"\bDr\.\s+[A-Z][A-Za-z'-]+")
 
 class RuleBasedExtractor:
     """Deterministic, offline. Reads explicit statements; misses vague ones by design."""
+
+    def health(self) -> ExtractionHealth:
+        return ExtractionHealth(extractor="rules")
 
     def extract(self, call: CallRecord, clinic: ClinicConfig) -> list[Claim]:
         claims: list[Claim] = []
@@ -149,22 +157,42 @@ class LLMClaimExtractor:
         '"priority": "low|normal|urgent"}.'
     )
 
-    def __init__(self, llm: LLMClient, fallback: ClaimExtractor | None = None) -> None:
+    def __init__(
+        self,
+        llm: LLMClient,
+        fallback: ClaimExtractor | None = None,
+        name: str | None = None,
+    ) -> None:
         self._llm = llm
         self._fallback = fallback or RuleBasedExtractor()
+        self._requested = name or f"llm:{getattr(llm, 'model', None) or 'unknown'}"
+        self._health = ExtractionHealth(extractor=self._requested)
+
+    def health(self) -> ExtractionHealth:
+        return self._health
 
     def extract(self, call: CallRecord, clinic: ClinicConfig) -> list[Claim]:
         try:
             reply = self._llm.complete(system=self._SYSTEM, prompt=self._prompt(call, clinic))
             raw = json.loads(reply[reply.index("[") : reply.rindex("]") + 1])
             items = [_Extracted.model_validate(item) for item in raw]
-            return [
+            claims = [
                 claim
                 for n, item in enumerate(items, start=1)
                 if (claim := self._to_claim(call, item, n)) is not None
             ]
-        except (ValueError, ValidationError, TypeError, RuntimeError, OSError):
+        except (ValueError, ValidationError, TypeError, RuntimeError, OSError) as exc:
+            # The caller asked for a model and got rules: the run is degraded,
+            # and the report must say so instead of looking like a healthy one.
+            self._health = ExtractionHealth(
+                extractor="rules",
+                degraded=True,
+                detail=f"requested {self._requested} failed "
+                f"({type(exc).__name__}); rules ran instead",
+            )
             return self._fallback.extract(call, clinic)
+        self._health = ExtractionHealth(extractor=self._requested)
+        return claims
 
     @staticmethod
     def _prompt(call: CallRecord, clinic: ClinicConfig) -> str:

@@ -102,6 +102,7 @@ def _summary(report: AuditReport) -> dict[str, Any]:
         "outcome": report.outcome.value,
         "created_at": report.created_at.isoformat(),
         "stats": report.stats.model_dump(mode="json"),
+        "extraction": report.extraction.model_dump(mode="json"),
     }
 
 

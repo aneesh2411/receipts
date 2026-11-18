@@ -40,6 +40,7 @@ from subpoena.models import (
     Claim,
     ClaimSource,
     Entity,
+    ExtractionHealth,
     Finding,
     Outcome,
     Severity,
@@ -125,6 +126,7 @@ class Auditor:
             findings=findings,
             trail=tuple(ctx.trail),
             stats=_stats(verdicts, findings),
+            extraction=self._extraction_health(ctx),
         )
         return self._sealer.seal(report, prev_hash)
 
@@ -140,6 +142,14 @@ class Auditor:
             f"transcript, {len(spoken_only)} of them never logged by the agent",
         )
         return claims
+
+    def _extraction_health(self, ctx: AuditContext) -> ExtractionHealth:
+        if self._extractor is None:
+            return ExtractionHealth(extractor="none")
+        health = self._extractor.health()
+        if health.degraded:
+            ctx.log("claims", f"Extraction degraded: {health.detail}")
+        return health
 
     @staticmethod
     def _specificity(claim: Claim) -> int:

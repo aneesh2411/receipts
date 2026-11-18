@@ -22,6 +22,7 @@ from subpoena.models import (
     Cancelled,
     Claim,
     ConfirmationSent,
+    ExtractionHealth,
     HandoffCreated,
     Outcome,
     PatientRef,
@@ -61,6 +62,7 @@ class NaiveAuditor:
             findings=(),
             trail=(),
             stats=_stats(verdicts, ()),
+            extraction=ExtractionHealth(extractor="none"),
         )
 
     def _judge(self, claim: Claim) -> Verdict:

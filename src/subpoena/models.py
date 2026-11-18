@@ -327,6 +327,21 @@ class AuditStats(Frozen):
     max_severity: Severity
 
 
+class ExtractionHealth(Frozen):
+    """How the transcript claims were obtained.
+
+    ``extractor`` names what actually produced the claims: ``rules``,
+    ``llm:<model>``, or ``none`` when the transcript reader was off. An
+    intentional rules-only run is healthy. ``degraded`` means a requested model
+    failed and the rules ran instead - the claims are still usable, but the
+    operator asked for a model and did not get one, which ``detail`` explains.
+    """
+
+    extractor: str
+    degraded: bool = False
+    detail: str | None = None
+
+
 class Seal(Frozen):
     algorithm: Literal["sha256"] = "sha256"
     content_hash: str
@@ -346,4 +361,5 @@ class AuditReport(Frozen):
     findings: tuple[Finding, ...]
     trail: tuple[TrailEvent, ...]
     stats: AuditStats
+    extraction: ExtractionHealth
     seal: Seal | None = None

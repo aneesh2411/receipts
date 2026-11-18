@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from subpoena.models import AuditReport, Claim, Finding, Verdict, VerdictStatus
+from subpoena.models import AuditReport, Claim, ExtractionHealth, Finding, Verdict, VerdictStatus
 
 _STAMP = {
     VerdictStatus.VERIFIED: "RECEIPT FOUND",
@@ -67,6 +67,13 @@ def _finding_md(n: int, f: Finding) -> list[str]:
     return [*lines, ""]
 
 
+def _render_extraction(extraction: ExtractionHealth) -> str:
+    line = f"- Extraction: `{extraction.extractor}`"
+    if extraction.degraded:
+        line += f" | **degraded:** {extraction.detail}"
+    return line
+
+
 def render_markdown(report: AuditReport) -> str:
     s, call = report.stats, report.call
     trust = "n/a" if s.trust_score is None else f"{s.trust_score:.0%}"
@@ -82,6 +89,7 @@ def render_markdown(report: AuditReport) -> str:
         f"- Findings beyond claims: {s.findings} | Claim trust score: {trust} | "
         f"Highest severity: `{s.max_severity.value}`",
         f"- Audited by `{report.auditor}` at {report.created_at.isoformat()}",
+        _render_extraction(report.extraction),
     ]
     if call.provenance is not None:
         prov = call.provenance

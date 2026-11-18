@@ -390,12 +390,17 @@
   "trust_score": 1.0,
   "max_severity": "HIGH"
  },
+ "extraction": {
+  "extractor": "rules",
+  "degraded": false,
+  "detail": null
+ },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0607c1ef6c7c3cb6680150a5ed0304f28fa927613c74cb758b2d879c82e65314",
+  "content_hash": "0846b707a0b302c9a8f18fe331c301b2b293a131cc5f99981939c5db2070297f",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "6917fc72204d118db1cae2b76390420937f4720e3efafda0fe89546e6dbefdc5",
-  "signature": "6103fda690320aa60effb3d6a5f7eafe9eba923c226308134bde9b66f0d643cb",
+  "chain_hash": "6b1f019b0ce2355646174030fe1ded501f46c80e2e6002f052fada941a5d945f",
+  "signature": "e8ebc38817782cd02d56f31de171b0175838ef61df16c4b11f48127c9db08539",
   "key_id": "6508b98a7ace"
  }
 }

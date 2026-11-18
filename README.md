@@ -233,7 +233,7 @@ Configuration is by environment variable:
 | `SUBPOENA_DB` | Path for calls and the audit ledger. |
 | `SUBPOENA_SOR_DB` | Path for the system of record. |
 | `SUBPOENA_DEMO=0` | Disable the demo endpoints. |
-| `SUBPOENA_LLM=anthropic` | Use a live model to read transcripts. |
+| `SUBPOENA_LLM=anthropic` | Use a live model to read transcripts. If the model fails, the rules run instead and the report's extraction health is marked degraded - a silent fallback never looks like a healthy run. |
 
 ## Plugging in a real system
 

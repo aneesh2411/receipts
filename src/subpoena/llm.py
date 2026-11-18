@@ -19,6 +19,8 @@ class LLMClient(Protocol):
 class StaticLLM:
     """A canned model for tests and offline demos."""
 
+    model = "static"
+
     def __init__(self, reply: str) -> None:
         self._reply = reply
         self.prompts: list[str] = []
@@ -38,6 +40,10 @@ class AnthropicLLM:  # pragma: no cover - needs network and credentials
             raise RuntimeError("install the 'llm' extra to use a live model") from exc
         self._client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from the environment
         self._model = model or os.environ.get("SUBPOENA_LLM_MODEL", DEFAULT_MODEL)
+
+    @property
+    def model(self) -> str:
+        return self._model
 
     def complete(self, *, system: str, prompt: str, max_tokens: int = 1024) -> str:
         response = self._client.messages.create(

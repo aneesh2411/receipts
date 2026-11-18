@@ -7,6 +7,7 @@
 - Claims: 1 | verified 0, mismatch 0, not found 1, unverifiable 0
 - Findings beyond claims: 0 | Claim trust score: 0% | Highest severity: `CRITICAL`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
+- Extraction: `rules`
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -44,6 +45,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `5bc96599b9e1a5b8d99b42520666c52cee679412af7cf7b84f9bcd4753c4785a`
-- chain `1b0835ff20f3aac10b75710d771e066599b3640282ffb5b7812f1aff49431c4b` (prev `0000000000000000...`)
+- content `16ab87d0352a2b1fbf86564431b0ca006458eb4092d4f9bd80f34b548df58f1f`
+- chain `864f088a330639ebab20379725fb8888b22817f217e8ab7445c23b2acaff0bbe` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)
