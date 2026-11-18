@@ -59,6 +59,9 @@ def test_every_verdict_carries_three_checks_and_a_trail():
             if verdict.status.value != "UNVERIFIABLE":
                 names = [c.name.value for c in verdict.checks]
                 assert names[:3] == ["existence", "exactness", "side_effects"]
-                # A matched verdict also shows how firmly the write is this call's.
+                # A matched verdict also shows how firmly the write is this call's;
+                # every judged verdict records that the window was fully observed.
                 if verdict.checks[0].passed is True:
-                    assert names[3:] == ["attribution"]
+                    assert names[3:] == ["attribution", "coverage"]
+                else:
+                    assert names[3:] == ["coverage"]

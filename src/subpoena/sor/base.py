@@ -13,7 +13,8 @@ these interfaces: SQLite here, Google Calendar / a CRM / an SMS provider later.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections.abc import Callable
+from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import Any, Protocol
 
@@ -22,6 +23,31 @@ from subpoena.models import Appointment, Change, Channel, Message, Patient, Prio
 
 class AdapterUnavailable(RuntimeError):
     """The backing system could not be read. The auditor must not guess."""
+
+
+@dataclass(frozen=True)
+class Coverage:
+    """Whether a change feed actually observed the whole requested window.
+
+    A feed is incomplete when its cursor expired mid-sync, retrieval was partial,
+    a stale cache stood in for a fresh read, or a create/delete pair can fall
+    outside the observed interval. Absence of evidence from an incomplete feed
+    is not evidence of absence.
+    """
+
+    complete: bool = True
+    detail: str = ""
+
+
+COMPLETE = Coverage()
+
+
+class CoverageFeed(Protocol):
+    """A change feed that can say how much of the window it really saw.
+    Feeds without this method are assumed complete (the trigger-written
+    journal is); backends that cannot guarantee coverage must say so."""
+
+    def coverage(self, since: datetime, until: datetime) -> Coverage: ...
 
 
 class RecordNotFound(LookupError):
@@ -160,3 +186,46 @@ def with_outage(sor: SystemOfRecordReader, *down: str) -> SystemOfRecordReader:
         messages=_Down("messages") if "messages" in down else sor.messages,
         tickets=_Down("tickets") if "tickets" in down else sor.tickets,
     )
+
+
+class _Partial:
+    """A feed wrapper that reports partial coverage and can drop the rows a real
+    outage of the feed would have missed (an expired cursor, a stale cache)."""
+
+    def __init__(
+        self,
+        name: str,
+        inner: Any,
+        cov: Coverage,
+        drop: Callable[[Change], bool] | None,
+    ) -> None:
+        self._name = name
+        self._inner = inner
+        self._cov = cov
+        self._drop = drop
+
+    def __getattr__(self, item: str) -> Any:
+        return getattr(self._inner, item)
+
+    def coverage(self, since: datetime, until: datetime) -> Coverage:
+        return self._cov
+
+    def changes(self, since: datetime, until: datetime) -> list[Change]:
+        rows = self._inner.changes(since, until)
+        if self._drop is not None:
+            rows = [c for c in rows if not self._drop(c)]
+        return rows
+
+
+def with_coverage(
+    sor: SystemOfRecordReader,
+    name: str,
+    cov: Coverage,
+    *,
+    drop: Callable[[Change], bool] | None = None,
+) -> SystemOfRecordReader:
+    """Return a reader whose named feed reports partial coverage. ``drop`` removes
+    matching rows from the feed, simulating a mutation the feed never saw."""
+    if name not in {"calendar", "crm", "messages", "tickets"}:
+        raise ValueError(f"unknown adapter: {name!r}")
+    return replace(sor, **{name: _Partial(name, getattr(sor, name), cov, drop)})

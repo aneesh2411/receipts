@@ -31,6 +31,7 @@ Checks:
 - `exactness`: FAIL. Differs on: start.
 - `side_effects`: n/a. Not applicable.
 - `attribution`: pass. Every backing write carries this call's own stamp.
+- `coverage`: pass. The calendar change history for the call window was fully observed.
 
 Evidence:
 - `calendar` `apt_0002`: Appointment written by the agent during the call (journal #7; net: created)
@@ -46,6 +47,7 @@ Checks:
 - `existence`: FAIL. No write by the agent during the call corresponds to this claim.
 - `exactness`: n/a. Nothing to compare.
 - `side_effects`: n/a. Nothing to compare.
+- `coverage`: pass. The messages change history for the call window was fully observed.
 
 Evidence:
 - `journal` `messages 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:06:02-05:00`: 0 agent write(s) to messages in the call window. None is this confirmation.
@@ -61,6 +63,7 @@ Checks:
 - `existence`: FAIL. No write by the agent during the call corresponds to this claim.
 - `exactness`: n/a. Nothing to compare.
 - `side_effects`: n/a. Nothing to compare.
+- `coverage`: pass. The tickets change history for the call window was fully observed.
 
 Evidence:
 - `journal` `tickets 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:06:02-05:00`: 0 agent write(s) to tickets in the call window. None is this handoff.
@@ -80,6 +83,7 @@ Checks:
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
 - `attribution`: pass. Every backing write carries this call's own stamp.
+- `coverage`: pass. The calendar change history for the call window was fully observed.
 
 Evidence:
 - `calendar` `apt_0001`: Released by the agent during the call (journal #8; net: updated)
@@ -107,6 +111,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `6e29d07809bcdb59eaae562aebc3ee8c0ab3a8ff0f946f93c19af26cefb024fa`
-- chain `64d3639048f97637d570cad06bb9504e03547de6f8920582d09b8caacd38c0c9` (prev `0000000000000000...`)
+- content `5776beb01ee0185dbe1c9d6ed2b0e93a70cc250dcfe4157afb415dd5f316715b`
+- chain `8a87efebd0760c4d1280f69dc852f9f26a4176856f1d12fd35b937ff3dd95def` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

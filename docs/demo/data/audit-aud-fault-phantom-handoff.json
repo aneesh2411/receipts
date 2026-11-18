@@ -93,6 +93,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Nothing to compare."
+    },
+    {
+     "name": "coverage",
+     "passed": true,
+     "detail": "The tickets change history for the call window was fully observed."
     }
    ],
    "diffs": [],
@@ -162,10 +167,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "b3772415970e0cbfc685f98a71ae169a7ae2773e6943b62d45e7cab0efa800f9",
+  "content_hash": "7788a9e6ecb9885148efe6212f1517edd3f196a41d47dab29f30e6bc76b213a0",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "d574a81543d38f3934d78baa33d4be132406d0b12ba8c431d1975b84b80a2729",
-  "signature": "fd3cd6548238448e989f4d0848d00d48195f55ef72ab72e373507024e65bb09b",
+  "chain_hash": "4e6de7dd4a17ec3ad366a67152db1dea46f2df6d8f0424f2969edf82af9a72b9",
+  "signature": "018472bab0ac6c5ceada7e7c0eba1f4f91a38f293b832c7c94311352fbc09ebb",
   "key_id": "6508b98a7ace"
  }
 }

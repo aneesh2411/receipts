@@ -27,6 +27,7 @@ Checks:
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
 - `attribution`: pass. Every backing write carries this call's own stamp.
+- `coverage`: pass. The tickets change history for the call window was fully observed.
 
 Evidence:
 - `tickets` `tkt_0001`: Ticket created during the call. The summary is free text and is not compared (journal #6; net: created)
@@ -48,6 +49,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `2cfc4133eca733a5d8a3c9d592e4e4495429537fffcba1a1af9a885b36f71d95`
-- chain `ad3ce4c25a09aa909df6125e782ee70657ffc2bba753cca2e65c33560de2c828` (prev `0000000000000000...`)
+- content `f144d2e1a0948936aca5d0f6b1d4088270bd604a4e1d410f443dfa6cfd3c132c`
+- chain `f1d9307c4b7c1f19ab39198472af113e2528f9afc17d0b847e219b1edf5ab7ef` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

@@ -47,7 +47,7 @@ from subpoena.models import (
     VerdictStatus,
     max_severity,
 )
-from subpoena.sor.base import AdapterUnavailable, SystemOfRecordReader
+from subpoena.sor.base import COMPLETE, AdapterUnavailable, SystemOfRecordReader
 from subpoena.util import ClinicConfig, utcnow
 
 
@@ -206,6 +206,7 @@ class Auditor:
                 verdict = unverifiable(claim, str(exc))
             else:
                 verdict = _apply_attribution(claim, verdict, match, ctx)
+                verdict = _apply_coverage(claim, verdict, ctx)
         ctx.log("verdict", f"{claim.claim_id} ({claim.type}): {verdict.status.value}")
         return verdict
 
@@ -219,6 +220,14 @@ class Auditor:
             for v in verdicts
             if v.status is VerdictStatus.UNVERIFIABLE
         }
+        for entity, cov in ctx.coverage.items():
+            if not cov.complete and entity not in unsound:
+                unsound.add(entity)
+                ctx.log(
+                    "reconcile",
+                    f"{SOURCE[entity]}: unclaimed-write check skipped, the feed did not "
+                    "observe the whole window",
+                )
         for entity in sorted(unsound):
             ctx.log(
                 "reconcile",
@@ -291,13 +300,70 @@ def _apply_attribution(
     )
 
 
+def _apply_coverage(claim: Claim, verdict: Verdict, ctx: AuditContext) -> Verdict:
+    """No definitive verdict from a partial history.
+
+    Incomplete coverage means the feed did not observably see the whole window:
+    a cursor expired, retrieval was partial, a cache was stale. A matched write
+    may have been undone by a row the feed missed, and an absent write may simply
+    never have been seen. VERIFIED, MISMATCH and NOT_FOUND all become
+    UNVERIFIABLE; the current-state observation is kept as evidence, labelled as
+    what exists now, not as proof this call caused it.
+    """
+    if verdict.status is VerdictStatus.UNVERIFIABLE:
+        return verdict
+    entity = HANDLERS[claim.type].consumes
+    cov = ctx.coverage.get(entity, COMPLETE)
+    source = SOURCE[entity]
+    if cov.complete:
+        check = Check(
+            name=CheckName.COVERAGE,
+            passed=True,
+            detail=f"The {source} change history for the call window was fully observed.",
+        )
+        return verdict.model_copy(update={"checks": verdict.checks + (check,)})
+    check = Check(
+        name=CheckName.COVERAGE,
+        passed=False,
+        detail=f"The {source} change history for the call window was not fully "
+        f"observed: {cov.detail}.",
+    )
+    if verdict.status is VerdictStatus.NOT_FOUND:
+        what = (
+            "Absence cannot be proven from a partial history. Any current-state "
+            "observation in the evidence shows what exists now, not what this call did."
+        )
+    else:
+        what = (
+            "The matching write appears in the partial history, but rows the feed "
+            "missed could change the net effect. The evidence shows what exists now, "
+            "not proof that this call caused it."
+        )
+    return Verdict(
+        claim=claim,
+        status=VerdictStatus.UNVERIFIABLE,
+        severity=Severity.MEDIUM,
+        summary=(
+            f"Could not be verified: the {source} history for the call window is "
+            f"incomplete ({cov.detail}). {what}"
+        ),
+        checks=verdict.checks + (check,),
+        diffs=verdict.diffs,
+        evidence=verdict.evidence,
+        remediation="Re-sync the system of record so the full window is observed, then "
+        "re-run the audit; the original sealed report stands.",
+    )
+
+
 def _outcome(
     verdicts: Sequence[Verdict], findings: Sequence[Finding], ctx: AuditContext
 ) -> Outcome:
     flagged = {VerdictStatus.MISMATCH, VerdictStatus.NOT_FOUND}
     if findings or any(v.status in flagged for v in verdicts):
         return Outcome.DISCREPANCIES
-    blind = any(d is None for d in ctx.delta.values())
+    blind = any(d is None for d in ctx.delta.values()) or any(
+        not c.complete for c in ctx.coverage.values()
+    )
     if blind or any(v.status is VerdictStatus.UNVERIFIABLE for v in verdicts):
         return Outcome.INCONCLUSIVE  # an unreadable system can hide unclaimed writes
     return Outcome.CLEAN

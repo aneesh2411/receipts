@@ -39,6 +39,7 @@ Checks:
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
 - `attribution`: pass. Every backing write carries this call's own stamp.
+- `coverage`: pass. The messages change history for the call window was fully observed.
 
 Evidence:
 - `messages` `msg_0001`: Message logged during the call (journal #7; net: created)
@@ -62,6 +63,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `c62aed060ac938d3d6dfec3c1fac9f8104ffc9c1fc39ae1e4263dbc2d6631aac`
-- chain `ba0700851142e993f507068003c7121812cdcad7d0d758c9ccb20de5707ce1dd` (prev `0000000000000000...`)
+- content `2568400cfd01cfa247750f45451f587646d71da44ae5c3d16bfa310eaa81647c`
+- chain `990cf2d0ec6571150432f93d75619770fa48eb9d15727a63ddbbfe9f77d23a19` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

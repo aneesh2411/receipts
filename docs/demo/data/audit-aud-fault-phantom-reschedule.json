@@ -95,6 +95,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Nothing to compare."
+    },
+    {
+     "name": "coverage",
+     "passed": true,
+     "detail": "The calendar change history for the call window was fully observed."
     }
    ],
    "diffs": [],
@@ -178,10 +183,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "984419daa1bca0bf81a55787452e275fa941e1f6f4963829bb0702172ab5deff",
+  "content_hash": "e8c9917345e165808d11b3222d86d76f6cfd48932faa390a71a385ad24bc0206",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "351b8edc6f42bd93e2c337418dfe82f7c38252a81bf050c20bce21c5de579e3f",
-  "signature": "62d5fd392ff5c38cdb1c029773f8aa2bd37ed2880afc0e0fd9839a169d8fcc82",
+  "chain_hash": "657ef00cdcefa910ed66a1d88259ef1e068548ff4b5ce83e37e79d9f2dd5cddf",
+  "signature": "4208e256692f5f6fb61d51c1fcdbf9b8bc92a7654befe3b276fe5de6d1a00f4d",
   "key_id": "6508b98a7ace"
  }
 }

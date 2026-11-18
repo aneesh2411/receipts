@@ -96,6 +96,11 @@
      "name": "attribution",
      "passed": true,
      "detail": "Every backing write carries this call's own stamp."
+    },
+    {
+     "name": "coverage",
+     "passed": true,
+     "detail": "The calendar change history for the call window was fully observed."
     }
    ],
    "diffs": [
@@ -180,10 +185,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "ab9c540187b078e587848eadd04b9dbe06c4c19ee35f3bdfb5d819f467e144be",
+  "content_hash": "fc72e7fceb254fc642f507fc06835566220ff563bf96c8ab581e6752d1c2c522",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "6d2e02e3b8b955f0a8089dba02dad079471809f9a69acc1c6f16ba176df9ddca",
-  "signature": "db14b3c20ac3a28065dc6ff8d3fb30046be51c424a074a67017c713201300e7c",
+  "chain_hash": "df14516a2a6288f4633fa8445a19641bad2bc36644b5f5640918dbbf7b45b6f9",
+  "signature": "095d50b3904c4f748b9acf8ca5f8d99ce4fcb61625d31845fe09c38dc657ca6f",
   "key_id": "6508b98a7ace"
  }
 }

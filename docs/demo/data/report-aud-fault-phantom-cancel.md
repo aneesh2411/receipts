@@ -22,6 +22,7 @@ Checks:
 - `existence`: FAIL. No write by the agent during the call corresponds to this claim.
 - `exactness`: n/a. Nothing to compare.
 - `side_effects`: n/a. Nothing to compare.
+- `coverage`: pass. The calendar change history for the call window was fully observed.
 
 Evidence:
 - `journal` `calendar 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00`: 0 agent write(s) to calendar in the call window. None cancels this appointment.
@@ -44,6 +45,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `0ae1b6f468342ed39a58539a1ab55ff1690d9602b5b26f939a41550c91cab6f4`
-- chain `b6d3d691ffb36b6007afde3b5b740143d1d70a096f45f110c511b150ffc83178` (prev `0000000000000000...`)
+- content `b12e44181731c45421b36b31762244243d0f3cb2b935dc0fc3a394b1eaa57fdd`
+- chain `02f3a5f80f903e41ef505de90f238e77030b9aecc0f483f38d37f1e6378cda09` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

@@ -251,6 +251,7 @@ class CheckName(StrEnum):
     EXACTNESS = "exactness"
     SIDE_EFFECTS = "side_effects"
     ATTRIBUTION = "attribution"
+    COVERAGE = "coverage"
 
 
 class Check(Frozen):

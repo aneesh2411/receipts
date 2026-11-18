@@ -30,6 +30,7 @@ Checks:
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
 - `attribution`: pass. Every backing write carries this call's own stamp.
+- `coverage`: pass. The calendar change history for the call window was fully observed.
 
 Evidence:
 - `calendar` `apt_0001`: Appointment written by the agent during the call (journal #6; net: created)
@@ -52,6 +53,7 @@ Checks:
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
 - `attribution`: pass. Every backing write carries this call's own stamp.
+- `coverage`: pass. The messages change history for the call window was fully observed.
 
 Evidence:
 - `messages` `msg_0001`: Message logged during the call (journal #7; net: created)
@@ -75,6 +77,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `cdc56a49cda2abf741991d79b11149bdb04ff2f72af536140ec39695068bcaa1`
-- chain `1a0fc07971aa15b133f8d5b3a9a7c7503cf39b282749a9ea33b0d4c07c572177` (prev `0000000000000000...`)
+- content `4c307d695b9aca2ea59c4c50c7107de7ef70f419c019600a28892a83c860f304`
+- chain `06effdc8ed3768bd92e1afd67e2392b9d4da0d2694443db78eea137b683269ec` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

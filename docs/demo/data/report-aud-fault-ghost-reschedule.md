@@ -30,6 +30,7 @@ Checks:
 - `exactness`: FAIL. Differs on: old_appointment.
 - `side_effects`: pass. Side effects are as claimed.
 - `attribution`: pass. Every backing write carries this call's own stamp.
+- `coverage`: pass. The calendar change history for the call window was fully observed.
 
 Evidence:
 - `calendar` `apt_0001`: Changed by the agent during the call (journal #6; net: created)
@@ -51,6 +52,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `99670054363d7a2e1b762f0a03f3ade57133664872737196bb881b198f57477d`
-- chain `565a4a0a5b89052c9fc8768e77fb2afcb030e7f5bc67cb4c9254623ddaf3ae82` (prev `0000000000000000...`)
+- content `a2bde740e9fbd04771417770a9a7fb972ea1bb5355a359ff75113852e93622b1`
+- chain `18f16915dc692189caa4a541f0d4c4ce4317b3abed9e3f85f82eb3ce7c40ce07` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

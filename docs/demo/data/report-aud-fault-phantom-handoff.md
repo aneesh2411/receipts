@@ -22,6 +22,7 @@ Checks:
 - `existence`: FAIL. No write by the agent during the call corresponds to this claim.
 - `exactness`: n/a. Nothing to compare.
 - `side_effects`: n/a. Nothing to compare.
+- `coverage`: pass. The tickets change history for the call window was fully observed.
 
 Evidence:
 - `journal` `tickets 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00`: 0 agent write(s) to tickets in the call window. None is this handoff.
@@ -43,6 +44,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `b3772415970e0cbfc685f98a71ae169a7ae2773e6943b62d45e7cab0efa800f9`
-- chain `d574a81543d38f3934d78baa33d4be132406d0b12ba8c431d1975b84b80a2729` (prev `0000000000000000...`)
+- content `7788a9e6ecb9885148efe6212f1517edd3f196a41d47dab29f30e6bc76b213a0`
+- chain `4e6de7dd4a17ec3ad366a67152db1dea46f2df6d8f0424f2969edf82af9a72b9` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

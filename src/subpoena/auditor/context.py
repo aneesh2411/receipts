@@ -24,7 +24,7 @@ from subpoena.models import (
     PatientRef,
     TrailEvent,
 )
-from subpoena.sor.base import AdapterUnavailable, SystemOfRecordReader
+from subpoena.sor.base import COMPLETE, AdapterUnavailable, Coverage, SystemOfRecordReader
 from subpoena.util import ClinicConfig, norm_phone, norm_text, show
 
 
@@ -50,6 +50,7 @@ class AuditContext:
     errors: dict[Entity, str] = field(default_factory=dict)
     trail: list[TrailEvent] = field(default_factory=list)
     attribution: dict[tuple[Entity, str], Attribution] = field(default_factory=dict)
+    coverage: dict[Entity, Coverage] = field(default_factory=dict)
     _consumed: set[tuple[Entity, str]] = field(default_factory=set)
     _patient_cache: dict[tuple[str, str | None], frozenset[str]] = field(default_factory=dict)
 
@@ -85,6 +86,19 @@ class AuditContext:
                 ctx.log("evidence", f"{SOURCE[entity]}: UNAVAILABLE ({exc}). Will not guess.")
                 continue
             pulled[entity] = rows
+            cov_fn = getattr(feed, "coverage", None)
+            try:
+                cov = cov_fn(*ctx.window) if callable(cov_fn) else COMPLETE
+            except AdapterUnavailable as exc:
+                # A coverage probe that fails cannot prove coverage: incomplete.
+                cov = Coverage(complete=False, detail=str(exc))
+            ctx.coverage[entity] = cov
+            if not cov.complete:
+                ctx.log(
+                    "evidence",
+                    f"{SOURCE[entity]}: INCOMPLETE history for the window ({cov.detail}). "
+                    "Absence here is not evidence.",
+                )
             concurrent = concurrent or any(
                 c.actor.startswith(prefix) and c.actor != own_stamp for c in rows
             )
