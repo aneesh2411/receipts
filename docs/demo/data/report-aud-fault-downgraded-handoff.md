@@ -27,6 +27,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: FAIL. Differs on: priority.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `tickets` `tkt_0001`: Ticket created during the call. The summary is free text and is not compared (journal #6; net: created)
@@ -37,10 +38,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 0 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 0 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 1 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-fault-downgraded-handoff-c1 (HandoffCreated): partial match -> tkt_0001
 7. `verdict` call-fault-downgraded-handoff-c1 (HandoffCreated): MISMATCH
@@ -48,6 +49,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `5246d35c9a6ed45b10e7b6fa452e0f0151cf6a54a078336f058388b1fe454401`
-- chain `8e0ac6eaec255a0429c0a9fea0f9ff6291721f2df52725be2b3eaf3d26dff682` (prev `0000000000000000...`)
+- content `a5de408bdf3600d0d6f9a63c20f21990b90a10abb8d3e68b1b4c09ebebb5403a`
+- chain `6c4c3fb71a281658c33b524b9833491954e35be918ecf4c8c96dd141df1f0948` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

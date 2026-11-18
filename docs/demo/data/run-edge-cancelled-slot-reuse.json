@@ -107,6 +107,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -188,6 +193,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -239,22 +249,22 @@
   {
    "seq": 1,
    "stage": "evidence",
-   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+   "message": "calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 2,
    "stage": "evidence",
-   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 3,
    "stage": "evidence",
-   "message": "messages: 1 journal row(s) by agent:receptionist in the call window"
+   "message": "messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 4,
    "stage": "evidence",
-   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 5,
@@ -299,10 +309,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "71cbb90dee0d6dcd380231b3f847ddf85f3aad9c7a88c0c6541bd88e59b870dd",
+  "content_hash": "1c0f19d2b979820ebd2cab12406b179ba3607f0aaf2cb2fc4cf36828c46989d2",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "2d4ef15daa9003c10e1edf710d0fdb93918154c402907bb77dfb63175ddf44d7",
-  "signature": "00a2c1a24c67dd69f062273106b7dc5ca0c3d0767ecae37362ea1207e92cd4ba",
+  "chain_hash": "999f455772c2eaa4a3987595e4a5e5b7ed332a8ff83cd640bbad709f7e550548",
+  "signature": "49caffeeb420b283b73af314927811aa5743562ac54bfbe4d5bf0945b6605681",
   "key_id": "6508b98a7ace"
  }
 }

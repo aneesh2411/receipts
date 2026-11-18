@@ -29,6 +29,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0001`: Appointment written by the agent during the call (journal #6; net: created)
@@ -54,10 +55,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 1 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 0 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-fault-phantom-confirmation-c1 (AppointmentBooked): exact match -> apt_0001
 7. `reconcile` call-fault-phantom-confirmation-c2 (ConfirmationSent): no write corresponds
@@ -67,6 +68,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `f97f4038e0ccf9f2e017842b9eaa8a099567700056fe74dacddcc47f04741dfa`
-- chain `9354dae9e787bc3c6a1994499d2fdf15a8a0f31823ae060ec37e555bfdcde46d` (prev `0000000000000000...`)
+- content `458ee30c1989fae614ded28675812579da783ac13915e9dd22305752f48d7816`
+- chain `3ce9fac150174b02094466ecb51e74f8d2e40104595b6f27c394916dcc4e9fdf` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

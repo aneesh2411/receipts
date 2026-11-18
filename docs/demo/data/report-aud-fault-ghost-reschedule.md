@@ -29,6 +29,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: FAIL. Differs on: old_appointment.
 - `side_effects`: pass. Side effects are as claimed.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0001`: Changed by the agent during the call (journal #6; net: created)
@@ -39,10 +40,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 1 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 0 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-fault-ghost-reschedule-c1 (Rescheduled): exact match -> apt_0001
 7. `verdict` call-fault-ghost-reschedule-c1 (Rescheduled): MISMATCH
@@ -50,6 +51,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `f10e793c1cf26ab5ad07fa4718a2d117a0ee32c703f3a8b4ee9bd6ba971ccd8f`
-- chain `54fc230f08c9decc0a17594806fb9ee3269ea06f835aaadfdcac33da37a0b3e0` (prev `0000000000000000...`)
+- content `99670054363d7a2e1b762f0a03f3ade57133664872737196bb881b198f57477d`
+- chain `565a4a0a5b89052c9fc8768e77fb2afcb030e7f5bc67cb4c9254623ddaf3ae82` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

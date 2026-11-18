@@ -250,6 +250,7 @@ class CheckName(StrEnum):
     EXISTENCE = "existence"
     EXACTNESS = "exactness"
     SIDE_EFFECTS = "side_effects"
+    ATTRIBUTION = "attribution"
 
 
 class Check(Frozen):

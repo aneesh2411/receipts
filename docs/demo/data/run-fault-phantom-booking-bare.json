@@ -116,22 +116,22 @@
   {
    "seq": 1,
    "stage": "evidence",
-   "message": "calendar: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 2,
    "stage": "evidence",
-   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 3,
    "stage": "evidence",
-   "message": "messages: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 4,
    "stage": "evidence",
-   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 5,
@@ -166,10 +166,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0b6cec0d05b9feeef27dfa7152c93904d46b852664f12aa2daa549fd1f126375",
+  "content_hash": "dbd3c6c65340b3bd4af5063b101dde2cac05ede2af6da350e8cd8e1651ae3e97",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "b07a45cd137d7ae79b3e87ff83ccef820954259365b54bd04d6c6f6c6eacdba5",
-  "signature": "f1ff736725c1a44be935e31adce89cba500d87da3e2f20745db3566e19b24b7c",
+  "chain_hash": "0c11531a774ead30783b8664235e7562136e811193bdd94f053bf77516d21e61",
+  "signature": "3c0ffd078e2f97d7535b59206a80e4acea10c8111fa0734133a4ef385d436e21",
   "key_id": "6508b98a7ace"
  }
 }

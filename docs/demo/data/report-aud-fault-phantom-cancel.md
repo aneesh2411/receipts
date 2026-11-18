@@ -33,10 +33,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 0 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 0 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-fault-phantom-cancel-c1 (Cancelled): no write corresponds
 7. `verdict` call-fault-phantom-cancel-c1 (Cancelled): NOT_FOUND
@@ -44,6 +44,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `2e6be345ff8fa2fe8c5c6e4fbe8146926dfd278006c0df6b563fb6d78fa20d2b`
-- chain `08307d4748ada1a819b4dccfd26a52851832eff00187a443a7dd7ffd578953b0` (prev `0000000000000000...`)
+- content `0ae1b6f468342ed39a58539a1ab55ff1690d9602b5b26f939a41550c91cab6f4`
+- chain `b6d3d691ffb36b6007afde3b5b740143d1d70a096f45f110c511b150ffc83178` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

@@ -29,6 +29,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0001`: Appointment written by the agent during the call (journal #6; net: created)
@@ -49,10 +50,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 1 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: UNAVAILABLE (messages adapter is unavailable). Will not guess.
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` messages: UNAVAILABLE (messages adapter is unavailable). Will not guess.
+2. `evidence` calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-edge-message-log-outage-c1 (AppointmentBooked): exact match -> apt_0001
 7. `verdict` call-edge-message-log-outage-c1 (AppointmentBooked): VERIFIED
@@ -62,6 +63,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `c0b80aa97b9d55a489ab289c136442f695c08c569e0977403c0de63a6dd6df37`
-- chain `f85064ccd6fc95a613e9d9f11ed29a1e753833f7acd41a474b66c1dd300b7ccf` (prev `0000000000000000...`)
+- content `ce9efe11094d80d210e7fe48d2f8682a539c571bc4162e8b729c7e01e4a13716`
+- chain `6384b44255e873a53cfadcd5014e0937df7a0e1f2f7f52c9706f33cc561b4258` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

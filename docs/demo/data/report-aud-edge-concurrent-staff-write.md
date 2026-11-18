@@ -29,6 +29,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0002`: Appointment written by the agent during the call (journal #7; net: created)
@@ -50,6 +51,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `messages` `msg_0001`: Message logged during the call (journal #8; net: created)
@@ -60,10 +62,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 1 journal row(s) by agent:receptionist in the call window; 1 by other actors ignored
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 1 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window; 1 by other actors ignored
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-edge-concurrent-staff-write-c1 (AppointmentBooked): exact match -> apt_0002
 7. `reconcile` call-edge-concurrent-staff-write-c2 (ConfirmationSent): exact match -> msg_0001
@@ -73,6 +75,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `936457ddcf56234ae2178eae3f14519870fef6b0047b5c487e49fe2ecd418a7b`
-- chain `7864bbda59aa3b4b85c37e13d3fbdd4a1d7ffbca20ba978c7bb287697f3cf758` (prev `0000000000000000...`)
+- content `5fc7d30dbd9d9ca3085151ef34bf9b9e344b83f4b7331d279c530c02e97178ab`
+- chain `a19701612df65a8e072edcd641cb2b770ea7f386b728ca16b65b925b4ac5a4a9` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

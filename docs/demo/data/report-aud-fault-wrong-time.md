@@ -30,6 +30,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: FAIL. Differs on: start.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0001`: Appointment written by the agent during the call (journal #6; net: created)
@@ -51,6 +52,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `messages` `msg_0001`: Message logged during the call (journal #7; net: created)
@@ -61,10 +63,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 1 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 1 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-fault-wrong-time-c2 (ConfirmationSent): exact match -> msg_0001
 7. `reconcile` call-fault-wrong-time-c1 (AppointmentBooked): partial match -> apt_0001
@@ -74,6 +76,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `004dfb85581cbac328e32f92b3d7ef69c5a88e7414b7260d0285ac1963731f3e`
-- chain `bbab4aa5271f20537dc3c60995463598b941d0bafb50df409fe2208a7bc6a3cd` (prev `0000000000000000...`)
+- content `043cc70e9eb71a8db0791fdd7f1896a5ddc4a7461e5ab350dbf4931ccb880b12`
+- chain `afe8cde9713d2624dc35089b5e79cebf3c22a5488dcec0306f61ec9daf31f32a` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

@@ -57,8 +57,8 @@ def test_every_verdict_carries_three_checks_and_a_trail():
         assert [e.seq for e in report.trail] == list(range(1, len(report.trail) + 1))
         for verdict in report.verdicts:
             if verdict.status.value != "UNVERIFIABLE":
-                assert [c.name.value for c in verdict.checks] == [
-                    "existence",
-                    "exactness",
-                    "side_effects",
-                ]
+                names = [c.name.value for c in verdict.checks]
+                assert names[:3] == ["existence", "exactness", "side_effects"]
+                # A matched verdict also shows how firmly the write is this call's.
+                if verdict.checks[0].passed is True:
+                    assert names[3:] == ["attribution"]

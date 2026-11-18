@@ -29,6 +29,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0001`: Appointment written by the agent during the call (journal #6; net: created)
@@ -50,6 +51,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `messages` `msg_0001`: Message logged during the call (journal #7; net: created)
@@ -76,10 +78,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 1 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 1 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 2 structured claim(s); 2 recovered from the transcript, 1 of them never logged by the agent
 6. `reconcile` call-fault-misspoken-provider-c1 (AppointmentBooked): exact match -> apt_0001
 7. `reconcile` call-fault-misspoken-provider-c2 (ConfirmationSent): exact match -> msg_0001
@@ -91,6 +93,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `6e253500d0c7828dd51a43072995ebfdfee388f39918cdecd5bb722dd8568813`
-- chain `8d6df0d64d4dc5bbdb84d734ad063e5e62ae581fef3c03a660b98615c3723480` (prev `0000000000000000...`)
+- content `1b9458b7cfb57a11e4a86275130f5d9fe54afc82326659433ae3df3d947ff660`
+- chain `154013ae283fe778018aa9d53443b9bd32670a865574de4e9fae31f1b2c3ad98` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

@@ -134,6 +134,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -215,6 +220,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -294,6 +304,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -352,22 +367,22 @@
   {
    "seq": 1,
    "stage": "evidence",
-   "message": "calendar: 2 journal row(s) by agent:receptionist in the call window"
+   "message": "calendar: 2 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 2,
    "stage": "evidence",
-   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 3,
    "stage": "evidence",
-   "message": "messages: 1 journal row(s) by agent:receptionist in the call window"
+   "message": "messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 4,
    "stage": "evidence",
-   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 5,
@@ -422,10 +437,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "fad1b5c161751c2d10604c198e0f1d7daa30f4f0818f5c362f94028daa3cb042",
+  "content_hash": "a48a3a6fceb4a935a9b82728ca0aa8c2502955166f49745c452c02491266db3e",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "07a5206a6218bec5ab0642df4add26eb7a627f02c07e2d3601fe099a8ac308d0",
-  "signature": "c693ec2e9841a41567a17d299c6884162cf993142126f2e5b2e4f372af2b9e9d",
+  "chain_hash": "b507997e7a71942c45f60686209a4c3882826f55605b34f7360787328a733b11",
+  "signature": "696b4a875d93d812494a5ce930fd14ccd38be8851a06eeb7c0426fdcc8c78176",
   "key_id": "6508b98a7ace"
  }
 }

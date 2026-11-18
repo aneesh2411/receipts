@@ -228,9 +228,12 @@ written by the same author as the auditor.
 encouraging and not a guarantee. Both false positives found so far were caught and fixed
 during the build (3.1, and recaps in section 4, item 6); none are open.
 
-**The dataset is one clinic, one agent, non-overlapping calls.** Attribution by identity
-and time window is untested against two calls in progress at once under the same agent
-identity. The architecture document describes what would go wrong.
+**The dataset is one clinic, one agent, and golden calls do not overlap.** Overlapping
+calls under a shared agent identity are covered by dedicated tests
+(`tests/test_attribution.py`): a write correlated by identity plus window alone can no
+longer verify a claim while another call is in progress, one mutation cannot verify two
+calls, and only a platform-stamped `agent:call-id` session is direct evidence. What is
+not measured is how a real platform behaves when its sessions cannot stamp calls at all.
 
 **The reference store is ideal evidence.** A trigger-written journal with before-images and
 actors is the best case. Google Calendar gives you update times and no before-images. The
@@ -243,7 +246,5 @@ works.
    scenario.
 2. Measure the model-backed reader on real, messy transcripts, with precision tracked
    separately from recall.
-3. Add overlapping-call scenarios and decide attribution rules for them.
-4. Build one real adapter (Google Calendar) and re-run the golden set through it.
-5. Add multi-fault and multi-intent generation to the fuzzer.
-6. Structured topics for handoffs, to close gap 2.2 without a model on the verdict path.
+3. Add multi-fault and multi-intent generation to the fuzzer.
+4. Structured topics for handoffs, to close gap 2.2 without a model on the verdict path.

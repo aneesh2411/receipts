@@ -26,6 +26,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `tickets` `tkt_0001`: Ticket created during the call. The summary is free text and is not compared (journal #6; net: created)
@@ -36,10 +37,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 0 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 0 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 1 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-clean-urgent-handoff-c1 (HandoffCreated): exact match -> tkt_0001
 7. `verdict` call-clean-urgent-handoff-c1 (HandoffCreated): VERIFIED
@@ -47,6 +48,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `50003f9476ec404365100e3f1c95b5e8b5c03cb40fb2fe859433b938a9689f21`
-- chain `da865c6232bea8860bb09f71356711a9bd66367956d1b58ff20ce55e14e470a0` (prev `0000000000000000...`)
+- content `92b58662fe3a66f354010565e0f3d8626cbd4a7405f78bd6f22e11020efcd3c2`
+- chain `01b1d30ab94f570ff1333c41497232158e448860fcf4a33462330822a64ce487` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

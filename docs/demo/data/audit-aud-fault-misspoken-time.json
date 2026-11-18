@@ -107,6 +107,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -188,6 +193,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -286,22 +296,22 @@
   {
    "seq": 1,
    "stage": "evidence",
-   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+   "message": "calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 2,
    "stage": "evidence",
-   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 3,
    "stage": "evidence",
-   "message": "messages: 1 journal row(s) by agent:receptionist in the call window"
+   "message": "messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 4,
    "stage": "evidence",
-   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 5,
@@ -356,10 +366,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "686137cb338ee6ab636ea562133a4244a85fc7556bf68a98f809a966f3d0ee0e",
+  "content_hash": "d4be6c6725a258d40f9f6363ac4a486061e94fb58fe168ecb10020140acd73f9",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "2afbcadb6a144caf4424a795bf79709b1381428af31caf1ee86411887c75c609",
-  "signature": "5d6584ef29d25ff1ed3bae34b657a14c5f70dcc9b001565cbd3c31266e551789",
+  "chain_hash": "e49553b610eacca846b1b5392f3410466ad6c130a80381cf56871f038f6d6144",
+  "signature": "76c0222cda9a330b0c42bf646dbe2c3300956c3771c5bcee7369769d97cef65e",
   "key_id": "6508b98a7ace"
  }
 }

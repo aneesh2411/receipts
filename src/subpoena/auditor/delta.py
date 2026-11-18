@@ -7,6 +7,7 @@ before the call and the state after it.
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import StrEnum
@@ -27,6 +28,59 @@ class ChangeKind(StrEnum):
     UPDATED = "updated"
     DELETED = "deleted"
     TRANSIENT = "transient"  # no net effect: created-then-deleted, or changed back
+
+
+class Attribution(StrEnum):
+    """How firmly a journal row can be pinned to the call being audited.
+
+    DIRECT: the row carries this call's own stamp (``agent:call-id``), written by
+    the platform session. SOLE: only the shared agent identity, and no concurrent
+    call was observed. AMBIGUOUS: the shared agent identity while another call was
+    in progress - correlation by identity and window cannot say which call wrote it,
+    and an agent-stamped call id is a hint, not independent evidence.
+    """
+
+    DIRECT = "direct"
+    SOLE = "sole"
+    AMBIGUOUS = "ambiguous"
+
+
+RANK: dict[Attribution, int] = {
+    Attribution.AMBIGUOUS: 0,
+    Attribution.SOLE: 1,
+    Attribution.DIRECT: 2,
+}
+
+
+def dedupe(changes: Sequence[Change]) -> tuple[list[Change], int]:
+    """Drop exact replays: same record, op, images, actor and timestamp, new seq.
+
+    A redelivered batch must not count twice - replaying an insert after a delete
+    would otherwise resurrect a removed record in the net change.
+    """
+    seen: set[tuple[Any, ...]] = set()
+    rows: list[Change] = []
+    dropped = 0
+    for change in sorted(changes, key=lambda c: c.seq):
+        sig = (
+            change.entity,
+            change.entity_id,
+            change.op,
+            _freeze(change.before),
+            _freeze(change.after),
+            change.actor,
+            change.at,
+        )
+        if sig in seen:
+            dropped += 1
+            continue
+        seen.add(sig)
+        rows.append(change)
+    return rows, dropped
+
+
+def _freeze(image: dict[str, Any] | None) -> str | None:
+    return json.dumps(image, sort_keys=True, default=str) if image is not None else None
 
 
 @dataclass(frozen=True)

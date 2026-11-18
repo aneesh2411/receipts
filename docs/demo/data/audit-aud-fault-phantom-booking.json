@@ -149,6 +149,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -200,22 +205,22 @@
   {
    "seq": 1,
    "stage": "evidence",
-   "message": "calendar: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 2,
    "stage": "evidence",
-   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 3,
    "stage": "evidence",
-   "message": "messages: 1 journal row(s) by agent:receptionist in the call window"
+   "message": "messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 4,
    "stage": "evidence",
-   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 5,
@@ -260,10 +265,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "b00cc49738c35266c28c19366b23a8ab354e703451930a3e8fd84b5fe38024f0",
+  "content_hash": "682ef40a8078ab70a3afb8eb6a615090c41dbca68c9bfd0a068aedc3a88d03b5",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "0bb95934914ca073c3659d615b0b11067ac4e9eae95e0cb7d96ea28823bed16b",
-  "signature": "0319eef00941f9b1a2715a9ba3f6bd50ed112f0f3ed4204b93e0c178a7cb1426",
+  "chain_hash": "11c959880dff741dc74cfd594b5cbbbfe5e097a6d332b9c14442acc20618a3b9",
+  "signature": "6945aeed1fcbf9f0d7b59d732fc127e4523dbd15c8a186250dd9a84bb7354ba7",
   "key_id": "6508b98a7ace"
  }
 }

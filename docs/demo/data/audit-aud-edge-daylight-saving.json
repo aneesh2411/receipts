@@ -107,6 +107,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -188,6 +193,11 @@
      "name": "side_effects",
      "passed": null,
      "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
     }
    ],
    "diffs": [
@@ -239,22 +249,22 @@
   {
    "seq": 1,
    "stage": "evidence",
-   "message": "calendar: 1 journal row(s) by agent:receptionist in the call window"
+   "message": "calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 2,
    "stage": "evidence",
-   "message": "crm: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 3,
    "stage": "evidence",
-   "message": "messages: 1 journal row(s) by agent:receptionist in the call window"
+   "message": "messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 4,
    "stage": "evidence",
-   "message": "tickets: 0 journal row(s) by agent:receptionist in the call window"
+   "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
   },
   {
    "seq": 5,
@@ -299,10 +309,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "16c7463eb88a35754cb339b29b9238cfb7d55c01771bf66fbde1af39dd82b257",
+  "content_hash": "cdc56a49cda2abf741991d79b11149bdb04ff2f72af536140ec39695068bcaa1",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "ccf0ef4a57826154e0447d512a4dca1133d964c6c9fb0ba3304155520e40b2b3",
-  "signature": "3a6bd0fc4a82ca8932e4e0ae40429304c1070c6bd88da2a0d965e68dff8aab08",
+  "chain_hash": "1a0fc07971aa15b133f8d5b3a9a7c7503cf39b282749a9ea33b0d4c07c572177",
+  "signature": "362f895e575cf0b2fb585ce7ce5eb8527a6f074371a342d931b941a158e3c698",
   "key_id": "6508b98a7ace"
  }
 }

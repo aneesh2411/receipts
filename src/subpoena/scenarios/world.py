@@ -134,14 +134,17 @@ def build_world(scenario: Scenario, store: SqliteStore | None = None) -> World:
 
 
 def run_suspect(scenario: Scenario, world: World) -> CallResult:
+    # The platform session stamps every write with the call id, so the journal
+    # can attribute a mutation to one call, not just to the shared agent identity.
+    call_id = f"call-{scenario.id}"
     agent = ReceptionistAgent(
-        world.store.session(AGENT_ID, world.clock),
+        world.store.session(f"{AGENT_ID}:{call_id}", world.clock),
         world.clock,
         narrator=Narrator(random.Random(scenario.id), TZ, hard=scenario.hard_phrasing),
         clinic=CLINIC,
         faults=ForcedFaults(scenario.faults),
     )
-    return agent.handle_call(f"call-{scenario.id}", scenario.caller, scenario.steps)
+    return agent.handle_call(call_id, scenario.caller, scenario.steps)
 
 
 def audit_call(

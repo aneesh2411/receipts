@@ -19,15 +19,15 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 0 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 0 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 0 structured claim(s); 0 recovered from the transcript, 0 of them never logged by the agent
 6. `verdict` Outcome: CLEAN
 
 ## Seal
 
-- content `6c892ef27c1675b6f39361309377f3cb0522680eab8868ba915fc84db44e09b4`
-- chain `c0e1a69a9c4c56cbe9a921a7fa830340f12fcf59e882ee5f262a1a29d8e76023` (prev `0000000000000000...`)
+- content `36e94bd235c22b0f908e4191ac226fd1b53584eb48165328b383a7a40a078f1a`
+- chain `6669fb94d78ade51b0ab76d1cfb149cd36afb99afcd1633e4b509903f2f816ec` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

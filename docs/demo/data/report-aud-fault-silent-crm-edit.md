@@ -29,6 +29,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0001`: Appointment written by the agent during the call (journal #6; net: created)
@@ -50,6 +51,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `messages` `msg_0001`: Message logged during the call (journal #8; net: created)
@@ -65,10 +67,10 @@ Evidence:
 
 ## Audit trail
 
-1. `evidence` calendar: 1 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 1 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 1 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-fault-silent-crm-edit-c1 (AppointmentBooked): exact match -> apt_0001
 7. `reconcile` call-fault-silent-crm-edit-c2 (ConfirmationSent): exact match -> msg_0001
@@ -79,6 +81,6 @@ Evidence:
 
 ## Seal
 
-- content `f5307d1b62f2db318fc289113afb9a752be2cc8c8492cab3a0ce31d98c0cea2f`
-- chain `9a6d049c4e64826dcea32d5efb55f55c078e83bafab02e96b99c0cfa7e651de1` (prev `0000000000000000...`)
+- content `1e80526d06e28fc4109c2719828e172c57ef4e7fd271e606283dbe637c167a0c`
+- chain `1a8f693ad703b105769e2b761fc94ad59220acb407a2500a748ad6be4efa48cf` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

@@ -29,6 +29,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0001`: Appointment written by the agent during the call (journal #6; net: created)
@@ -50,6 +51,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: pass. All fields match.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `messages` `msg_0001`: Message logged during the call (journal #7; net: created)
@@ -73,6 +75,7 @@ Checks:
 - `existence`: pass. A write by the agent during the call corresponds to this claim.
 - `exactness`: FAIL. Differs on: start.
 - `side_effects`: n/a. Not applicable.
+- `attribution`: pass. Every backing write carries this call's own stamp.
 
 Evidence:
 - `calendar` `apt_0002`: Appointment written by the agent during the call (journal #8; net: created)
@@ -83,10 +86,10 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Audit trail
 
-1. `evidence` calendar: 2 journal row(s) by agent:receptionist in the call window
-2. `evidence` crm: 0 journal row(s) by agent:receptionist in the call window
-3. `evidence` messages: 1 journal row(s) by agent:receptionist in the call window
-4. `evidence` tickets: 0 journal row(s) by agent:receptionist in the call window
+1. `evidence` calendar: 2 write(s) stamped to this call, 0 under the shared agent identity in the call window
+2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
+3. `evidence` messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
+4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 3 structured claim(s); 3 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-edge-family-one-wrong-c1 (AppointmentBooked): exact match -> apt_0001
 7. `reconcile` call-edge-family-one-wrong-c2 (ConfirmationSent): exact match -> msg_0001
@@ -98,6 +101,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `4fade018543ab687e00dbe0fd56678441a6fe1abbc8db94e573d568a611db5a7`
-- chain `466288809ad14e3f8d8dc9e959605ad6cc5fc7c3a967763f6e6ba42d8b9e9f89` (prev `0000000000000000...`)
+- content `48cf110be5d1133fcf1ac0f430428086abc1ca6e3646472b3f6c99f7c7bbd9f3`
+- chain `d1b84af9298d64ccd9893a313a9db1460a2c49187ea7212ab2c0951b57c14daa` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

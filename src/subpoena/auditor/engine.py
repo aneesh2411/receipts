@@ -26,7 +26,7 @@ from typing import Any
 from subpoena import __version__
 from subpoena.auditor import appointments, sidefx
 from subpoena.auditor.context import AuditContext, Match
-from subpoena.auditor.delta import SOURCE
+from subpoena.auditor.delta import SOURCE, Attribution
 from subpoena.auditor.extractor import ClaimExtractor, RuleBasedExtractor, merge_claims
 from subpoena.auditor.findings import DEFAULT_POLICIES, Policy, policy_violations, unclaimed_writes
 from subpoena.auditor.seal import GENESIS, Sealer
@@ -204,6 +204,8 @@ class Auditor:
                 verdict = HANDLERS[claim.type].judge(claim, match, ctx)
             except AdapterUnavailable as exc:
                 verdict = unverifiable(claim, str(exc))
+            else:
+                verdict = _apply_attribution(claim, verdict, match, ctx)
         ctx.log("verdict", f"{claim.claim_id} ({claim.type}): {verdict.status.value}")
         return verdict
 
@@ -232,6 +234,61 @@ class Auditor:
             f.model_copy(update={"finding_id": f"{ctx.call.call_id}-f{i}"})
             for i, f in enumerate(found, start=1)
         )
+
+
+def _apply_attribution(
+    claim: Claim, verdict: Verdict, match: Match | None, ctx: AuditContext
+) -> Verdict:
+    """Every matched verdict carries its attribution strength; an ambiguous one
+    never stands as VERIFIED or MISMATCH.
+
+    A write correlated by shared agent identity plus time window does not show
+    *this* call made it once another call was in progress. The write is preserved
+    as evidence, but the verdict is UNVERIFIABLE: the promised outcome may exist,
+    yet which call caused it cannot be established.
+    """
+    if match is None or not match.changes:
+        return verdict
+    strength = ctx.match_attribution(match)
+    if strength is Attribution.DIRECT:
+        note = "Every backing write carries this call's own stamp."
+    elif strength is Attribution.SOLE:
+        note = (
+            "Attributed by shared agent identity and time window; no concurrent call "
+            "was observed in the journal."
+        )
+    else:
+        note = (
+            "Only shared agent identity plus an overlapping window links this write to "
+            "the call, and another call was in progress - which call wrote it cannot "
+            "be established."
+        )
+    check = Check(
+        name=CheckName.ATTRIBUTION,
+        passed=strength is not Attribution.AMBIGUOUS,
+        detail=note,
+    )
+    if strength is not Attribution.AMBIGUOUS:
+        return verdict.model_copy(update={"checks": verdict.checks + (check,)})
+    if verdict.status not in (VerdictStatus.VERIFIED, VerdictStatus.MISMATCH):
+        return verdict.model_copy(update={"checks": verdict.checks + (check,)})
+    return Verdict(
+        claim=claim,
+        status=VerdictStatus.UNVERIFIABLE,
+        severity=Severity.HIGH,
+        summary=(
+            "A write matching this claim exists, but it is attributed only to the shared "
+            "agent identity while another call was in progress. The promised outcome may "
+            "exist; that this call caused it cannot be proven."
+        ),
+        checks=verdict.checks + (check,),
+        diffs=verdict.diffs,
+        evidence=verdict.evidence,
+        remediation=(
+            "Re-run the audit once the calls no longer overlap, or have the platform "
+            "stamp writes with the call id so attribution is direct."
+        ),
+    )
 
 
 def _outcome(
