@@ -60,6 +60,16 @@ receipts eval
 ```
 
 ```bash
+receipts certify
+```
+
+`certify` writes a scorecard for the golden-set run, pinned to a fingerprint of the
+code that plays and grades the calls. The scorecard goes STALE the moment that code
+changes or 90 days pass, and `receipts certify --check` exits non-zero when it does -
+a standing scorecard would be a lie. Scorecards live in
+[evals/scorecards/](evals/scorecards/).
+
+```bash
 receipts serve
 ```
 

@@ -229,6 +229,31 @@ def unsafe_bind_reason(host: str, api_key: str | None) -> str | None:
     )
 
 
+def cmd_certify(args: argparse.Namespace, console: Console) -> int:
+    from receipts.evals import certify as cert
+
+    if args.check:
+        status, card = cert.check()
+        color = "green" if status == "CURRENT" else "red"
+        console.print(f"[{color}]{status}[/]")
+        if card is not None:
+            console.print(
+                f"  latest: certified {card.certified_at:%Y-%m-%d}, "
+                f"expires {card.expires_at:%Y-%m-%d}, fingerprint {card.fingerprint[:16]}..."
+            )
+        return 0 if status == "CURRENT" else 1
+    card = cert.certify()
+    console.print(
+        f"[green]CERTIFIED[/] strict accuracy {card.golden.strict_accuracy:.1%} "
+        f"over {card.golden.calls} golden calls"
+    )
+    console.print(
+        f"  scorecard written to {cert.DEFAULT_DIR} "
+        f"(fingerprint {card.fingerprint[:16]}..., valid {cert.VALIDITY_DAYS} days)"
+    )
+    return 0
+
+
 def cmd_serve(args: argparse.Namespace, console: Console) -> int:  # pragma: no cover
     import uvicorn
 
@@ -273,6 +298,16 @@ def build_parser() -> argparse.ArgumentParser:
     ev.add_argument("--json", help="write metrics as JSON")
     ev.add_argument("--report", help="write the Markdown eval report")
     ev.set_defaults(func=cmd_eval)
+
+    cert = sub.add_parser(
+        "certify", help="write a golden-set scorecard pinned to the current configuration"
+    )
+    cert.add_argument(
+        "--check",
+        action="store_true",
+        help="exit 1 if the latest scorecard is stale or missing",
+    )
+    cert.set_defaults(func=cmd_certify)
 
     serve = sub.add_parser("serve", help="run the API and replay view")
     serve.add_argument("--host", default="127.0.0.1")
