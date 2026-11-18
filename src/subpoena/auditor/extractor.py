@@ -241,6 +241,19 @@ def _provider_clash(a: Claim, b: Claim) -> bool:
     return pa is not None and pb is not None and norm_text(pa) != norm_text(pb)
 
 
+def _handoff_topic(claim: HandoffCreated) -> str:
+    """Compare literal topics in the ticket summary and the built-in spoken wording."""
+    summary = norm_text(claim.summary).rstrip(".")
+    for prefix in (
+        "caller needs help with ",
+        "i've created a ticket for the front desk about ",
+        "i've created an urgent ticket for the on-call dentist about ",
+    ):
+        if summary.startswith(prefix):
+            return summary.removeprefix(prefix)
+    return summary
+
+
 def _same_promise(spoken: Claim, logged: Claim) -> bool:
     """Do a spoken claim and a structured claim describe the same commitment?"""
     if _provider_clash(spoken, logged):
@@ -248,14 +261,31 @@ def _same_promise(spoken: Claim, logged: Claim) -> bool:
     if isinstance(spoken, AppointmentBooked) and isinstance(logged, AppointmentBooked):
         return spoken.start == logged.start
     if isinstance(spoken, Rescheduled) and isinstance(logged, Rescheduled):
-        return spoken.new_start == logged.new_start
+        return (
+            spoken.patient == logged.patient
+            and spoken.old_start == logged.old_start
+            and spoken.new_start == logged.new_start
+        )
     if isinstance(spoken, Cancelled) and isinstance(logged, Cancelled):
         return spoken.start == logged.start
-    return spoken.type == logged.type  # confirmations / handoffs: one per logged claim
+    if isinstance(spoken, ConfirmationSent) and isinstance(logged, ConfirmationSent):
+        return (
+            spoken.channel == logged.channel
+            and norm_text(spoken.to) == norm_text(logged.to)
+            and (spoken.about_start is None or spoken.about_start == logged.about_start)
+        )
+    if isinstance(spoken, HandoffCreated) and isinstance(logged, HandoffCreated):
+        topic = _handoff_topic(spoken)
+        return (
+            (spoken.patient is None or spoken.patient == logged.patient)
+            and (spoken.priority is None or spoken.priority == logged.priority)
+            and (not topic or topic == _handoff_topic(logged))
+        )
+    return False
 
 
 def _fully_equal(spoken: Claim, logged: Claim) -> bool:
-    """Same commitment, every shared detail identical, regardless of turn."""
+    """Cross-turn pairing requires a matching, explicit provider on both claims."""
     pa, pb = getattr(spoken, "provider", None), getattr(logged, "provider", None)
     if pa is None or pb is None:
         return False
@@ -267,7 +297,13 @@ def _spoken_key(claim: Claim) -> tuple | None:
     if isinstance(claim, AppointmentBooked):
         return ("AppointmentBooked", claim.start, norm_text(claim.provider or ""))
     if isinstance(claim, Rescheduled):
-        return ("Rescheduled", claim.old_start, claim.new_start)
+        return (
+            "Rescheduled",
+            claim.patient,
+            claim.old_start,
+            claim.new_start,
+            norm_text(claim.provider) if claim.provider is not None else None,
+        )
     if isinstance(claim, Cancelled):
         return ("Cancelled", claim.start)
     if isinstance(claim, ConfirmationSent):
@@ -278,38 +314,35 @@ def _spoken_key(claim: Claim) -> tuple | None:
 def merge_claims(structured: Sequence[Claim], spoken: Sequence[Claim]) -> tuple[Claim, ...]:
     """Structured claims, plus every spoken claim that no structured claim corroborates.
 
-    A spoken claim is corroborated by a structured claim made in the same turn
-    that describes the same commitment. Each structured claim corroborates at
-    most one spoken claim.
+    Prefer a structured claim from the same turn that describes the same
+    commitment. Each structured claim corroborates at most one spoken claim.
+    An unmatched recap of an identical earlier promise adds no commitment.
     """
     used: set[str] = set()
     extra: list[Claim] = []
-    seen_spoken: set[tuple] = set()
+    seen_spoken: dict[tuple, int] = {}
     for claim in spoken:
-        # A recap restates an earlier promise. Dropping it is safe only because a
-        # recap adds no new commitment: every field that identifies the promise
-        # is identical to the earlier statement.
         key = _spoken_key(claim)
-        if key is not None:
-            if key in seen_spoken:
-                continue
-            seen_spoken.add(key)
+        earlier_turn = seen_spoken.setdefault(key, claim.turn_index) if key is not None else None
         partner = next(
             (
                 s
                 for s in structured
                 if s.claim_id not in used
-                and (
-                    (s.turn_index == claim.turn_index and _same_promise(claim, s))
-                    or _fully_equal(claim, s)
-                )
+                and s.turn_index == claim.turn_index
+                and _same_promise(claim, s)
             ),
             None,
         )
-        if partner is None:
-            extra.append(claim)
-        else:
+        if partner is None and (earlier_turn is None or earlier_turn == claim.turn_index):
+            partner = next(
+                (s for s in structured if s.claim_id not in used and _fully_equal(claim, s)),
+                None,
+            )
+        if partner is not None:
             used.add(partner.claim_id)
+        elif earlier_turn is None or earlier_turn == claim.turn_index:
+            extra.append(claim)
     merged = [*structured, *extra]
     order = {c.claim_id: i for i, c in enumerate(merged)}
     return tuple(
