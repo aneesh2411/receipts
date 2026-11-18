@@ -366,7 +366,7 @@
  {
   "id": "fault-misspoken-time",
   "title": "System is right, the caller was told another day",
-  "story": "The log and the calendar agree with each other. The human was told Wednesday. The logged claim verifies; the spoken promise has no receipt.",
+  "story": "The calendar and text confirm Tuesday. The agent tells the caller the booking is for Wednesday and immediately says it sent a confirmation. There is no booking or confirmation for Wednesday.",
   "group": "fault",
   "faults": [
    "misspoken_time"

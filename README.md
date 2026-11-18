@@ -133,9 +133,9 @@ Golden set, 57 calls:
 
 | Metric | Subpoena | Naive lookup |
 |---|---|---|
-| False claims caught (recall) | 94.1% | 58.8% |
+| False claims caught (recall) | 94.3% | 57.1% |
 | False accusations (1 - precision) | 0% | 0% |
-| Exact verdict | 97.9% | 76.6% |
+| Exact verdict | 97.9% | 75.8% |
 | Unclaimed writes and policy (recall) | 100% | 0% |
 | Calls fully correct | 96.5% | 52.6% |
 

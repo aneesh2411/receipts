@@ -4,11 +4,11 @@
 
 - Call: `call-fault-misspoken-time` | Agent: `agent:receptionist` | Caller: Maya Chen
 - Window: 2026-03-02T09:05:00-05:00 to 2026-03-02T09:05:16-05:00
-- Claims: 3 | verified 2, mismatch 0, not found 1, unverifiable 0
-- Findings beyond claims: 0 | Claim trust score: 67% | Highest severity: `CRITICAL`
+- Claims: 4 | verified 2, mismatch 0, not found 2, unverifiable 0
+- Findings beyond claims: 0 | Claim trust score: 50% | Highest severity: `CRITICAL`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `0cd8c3cd9552d36bb74e77f3...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `9f85dd01e06dba2b78f6aa42...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -76,6 +76,22 @@ Checks:
 Evidence:
 - `journal` `calendar 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00`: 1 agent write(s) to calendar in the call window. None creates this booking.
 
+### 4. ConfirmationSent (said to caller, never logged): NO RECEIPT
+
+- **Status:** `NOT_FOUND` | **Severity:** `MEDIUM`
+- **Finding:** The agent claimed it sent an SMS confirmation to +15550101001, but the message log shows nothing sent during the call.
+- **What the caller heard (turn 2):** "I just texted you a confirmation."
+- **Fix:** Send the confirmation the caller was promised.
+
+Checks:
+- `existence`: FAIL. No write by the agent during the call corresponds to this claim.
+- `exactness`: n/a. Nothing to compare.
+- `side_effects`: n/a. Nothing to compare.
+- `coverage`: pass. The messages change history for the call window was fully observed.
+
+Evidence:
+- `journal` `messages 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00`: 1 agent write(s) to messages in the call window. None is this confirmation.
+
 ## Findings beyond claims
 
 None. Every write the agent made is accounted for by a claim.
@@ -86,17 +102,19 @@ None. Every write the agent made is accounted for by a claim.
 2. `evidence` crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 3. `evidence` messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
 4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
-5. `claims` 2 structured claim(s); 2 recovered from the transcript, 1 of them never logged by the agent
+5. `claims` 2 structured claim(s); 2 recovered from the transcript, 2 of them never logged by the agent
 6. `reconcile` call-fault-misspoken-time-c1 (AppointmentBooked): exact match -> apt_0001
 7. `reconcile` call-fault-misspoken-time-c2 (ConfirmationSent): exact match -> msg_0001
 8. `reconcile` call-fault-misspoken-time-t1 (AppointmentBooked): no write corresponds
-9. `verdict` call-fault-misspoken-time-c1 (AppointmentBooked): VERIFIED
-10. `verdict` call-fault-misspoken-time-c2 (ConfirmationSent): VERIFIED
-11. `verdict` call-fault-misspoken-time-t1 (AppointmentBooked): NOT_FOUND
-12. `verdict` Outcome: DISCREPANCIES
+9. `reconcile` call-fault-misspoken-time-t2 (ConfirmationSent): no write corresponds
+10. `verdict` call-fault-misspoken-time-c1 (AppointmentBooked): VERIFIED
+11. `verdict` call-fault-misspoken-time-c2 (ConfirmationSent): VERIFIED
+12. `verdict` call-fault-misspoken-time-t1 (AppointmentBooked): NOT_FOUND
+13. `verdict` call-fault-misspoken-time-t2 (ConfirmationSent): NOT_FOUND
+14. `verdict` Outcome: DISCREPANCIES
 
 ## Seal
 
-- content `47829cb97c43e3d23aaa046015ab90a4f6a5be44117e62e632b86508f373da10`
-- chain `0cd8c3cd9552d36bb74e77f3ef55e1d78277add46dd2908d70a9824acd0e81c8` (prev `0000000000000000...`)
+- content `3bf7ecb98cbe53c2f22f6456cde4bcf3af26fd1a07f4b3a2f78ee91274db8fe1`
+- chain `9f85dd01e06dba2b78f6aa428f066911aa1fce4641289d48e88d472cde0e07ce` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

@@ -3,15 +3,15 @@
     "label": "Subpoena",
     "calls": 57,
     "claim_level": {
-      "tp": 32,
+      "tp": 33,
       "fp": 0,
       "fn": 2,
       "tn": 60,
       "precision": 1.0,
-      "recall": 0.9412,
-      "f1": 0.9697
+      "recall": 0.9429,
+      "f1": 0.9706
     },
-    "claim_status_accuracy": 0.9787,
+    "claim_status_accuracy": 0.9789,
     "finding_level": {
       "tp": 7,
       "fp": 0,
@@ -44,13 +44,13 @@
     "claim_level": {
       "tp": 20,
       "fp": 0,
-      "fn": 14,
+      "fn": 15,
       "tn": 60,
       "precision": 1.0,
-      "recall": 0.5882,
-      "f1": 0.7407
+      "recall": 0.5714,
+      "f1": 0.7273
     },
-    "claim_status_accuracy": 0.766,
+    "claim_status_accuracy": 0.7579,
     "finding_level": {
       "tp": 0,
       "fp": 0,
@@ -182,7 +182,8 @@
       {
         "scenario": "fault-misspoken-time",
         "problems": [
-          "AppointmentBooked[1]: expected NOT_FOUND, auditor saw no claim"
+          "AppointmentBooked[1]: expected NOT_FOUND, auditor saw no claim",
+          "ConfirmationSent[1]: expected NOT_FOUND, auditor saw no claim"
         ]
       },
       {
@@ -236,13 +237,13 @@
       "claim_level": {
         "tp": 27,
         "fp": 0,
-        "fn": 7,
+        "fn": 8,
         "tn": 60,
         "precision": 1.0,
-        "recall": 0.7941,
-        "f1": 0.8852
+        "recall": 0.7714,
+        "f1": 0.871
       },
-      "claim_status_accuracy": 0.9255,
+      "claim_status_accuracy": 0.9158,
       "finding_level": {
         "tp": 7,
         "fp": 0,
@@ -271,7 +272,8 @@
         {
           "scenario": "fault-misspoken-time",
           "problems": [
-            "AppointmentBooked[1]: expected NOT_FOUND, auditor saw no claim"
+            "AppointmentBooked[1]: expected NOT_FOUND, auditor saw no claim",
+            "ConfirmationSent[1]: expected NOT_FOUND, auditor saw no claim"
           ]
         },
         {
@@ -298,15 +300,15 @@
       "label": "Subpoena without policy checks",
       "calls": 57,
       "claim_level": {
-        "tp": 32,
+        "tp": 33,
         "fp": 0,
         "fn": 2,
         "tn": 60,
         "precision": 1.0,
-        "recall": 0.9412,
-        "f1": 0.9697
+        "recall": 0.9429,
+        "f1": 0.9706
       },
-      "claim_status_accuracy": 0.9787,
+      "claim_status_accuracy": 0.9789,
       "finding_level": {
         "tp": 3,
         "fp": 0,
@@ -362,7 +364,7 @@
     "label": "Subpoena on 500 fuzzed calls",
     "calls": 500,
     "claim_level": {
-      "tp": 451,
+      "tp": 460,
       "fp": 0,
       "fn": 0,
       "tn": 512,

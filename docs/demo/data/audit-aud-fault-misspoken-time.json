@@ -304,6 +304,53 @@
     }
    ],
    "remediation": "Create the appointment or call the patient back before they show up."
+  },
+  {
+   "claim": {
+    "claim_id": "call-fault-misspoken-time-t2",
+    "turn_index": 2,
+    "source": "transcript",
+    "utterance": "I just texted you a confirmation.",
+    "type": "ConfirmationSent",
+    "channel": "sms",
+    "to": "+15550101001",
+    "about_start": "2026-03-04T14:30:00-05:00"
+   },
+   "status": "NOT_FOUND",
+   "severity": "MEDIUM",
+   "summary": "The agent claimed it sent an SMS confirmation to +15550101001, but the message log shows nothing sent during the call.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": false,
+     "detail": "No write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "coverage",
+     "passed": true,
+     "detail": "The messages change history for the call window was fully observed."
+    }
+   ],
+   "diffs": [],
+   "evidence": [
+    {
+     "source": "journal",
+     "ref": "messages 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00",
+     "note": "1 agent write(s) to messages in the call window. None is this confirmation.",
+     "record": null
+    }
+   ],
+   "remediation": "Send the confirmation the caller was promised."
   }
  ],
  "findings": [],
@@ -331,7 +378,7 @@
   {
    "seq": 5,
    "stage": "claims",
-   "message": "2 structured claim(s); 2 recovered from the transcript, 1 of them never logged by the agent"
+   "message": "2 structured claim(s); 2 recovered from the transcript, 2 of them never logged by the agent"
   },
   {
    "seq": 6,
@@ -350,33 +397,43 @@
   },
   {
    "seq": 9,
-   "stage": "verdict",
-   "message": "call-fault-misspoken-time-c1 (AppointmentBooked): VERIFIED"
+   "stage": "reconcile",
+   "message": "call-fault-misspoken-time-t2 (ConfirmationSent): no write corresponds"
   },
   {
    "seq": 10,
    "stage": "verdict",
-   "message": "call-fault-misspoken-time-c2 (ConfirmationSent): VERIFIED"
+   "message": "call-fault-misspoken-time-c1 (AppointmentBooked): VERIFIED"
   },
   {
    "seq": 11,
    "stage": "verdict",
-   "message": "call-fault-misspoken-time-t1 (AppointmentBooked): NOT_FOUND"
+   "message": "call-fault-misspoken-time-c2 (ConfirmationSent): VERIFIED"
   },
   {
    "seq": 12,
+   "stage": "verdict",
+   "message": "call-fault-misspoken-time-t1 (AppointmentBooked): NOT_FOUND"
+  },
+  {
+   "seq": 13,
+   "stage": "verdict",
+   "message": "call-fault-misspoken-time-t2 (ConfirmationSent): NOT_FOUND"
+  },
+  {
+   "seq": 14,
    "stage": "verdict",
    "message": "Outcome: DISCREPANCIES"
   }
  ],
  "stats": {
-  "claims": 3,
+  "claims": 4,
   "verified": 2,
   "mismatch": 0,
-  "not_found": 1,
+  "not_found": 2,
   "unverifiable": 0,
   "findings": 0,
-  "trust_score": 0.667,
+  "trust_score": 0.5,
   "max_severity": "CRITICAL"
  },
  "extraction": {
@@ -386,10 +443,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "47829cb97c43e3d23aaa046015ab90a4f6a5be44117e62e632b86508f373da10",
+  "content_hash": "3bf7ecb98cbe53c2f22f6456cde4bcf3af26fd1a07f4b3a2f78ee91274db8fe1",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "0cd8c3cd9552d36bb74e77f3ef55e1d78277add46dd2908d70a9824acd0e81c8",
-  "signature": "b3e00afece0badd4384d3d9dd46d61d3e7d7b99e39dbd7fc641d38e2697769bd",
+  "chain_hash": "9f85dd01e06dba2b78f6aa428f066911aa1fce4641289d48e88d472cde0e07ce",
+  "signature": "d9b449740fa90af34bbf2ed61c23fa7819be4f62db525bd79789690ebc6da072",
   "key_id": "6508b98a7ace"
  }
 }
