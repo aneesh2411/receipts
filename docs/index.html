@@ -1,5 +1,281 @@
 <!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=demo/">
-<title>Subpoena docs</title>
-<a href="demo/">Subpoena demo</a>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subpoena - every claim needs a receipt</title>
+<meta name="description" content="Subpoena is an independent auditor for AI voice agents: it checks every claimed action against the system of record and seals the evidence.">
+<style>
+:root {
+  --desk:#14161a; --panel:#1c1f26; --line:#2c313c; --ink:#e8e6df; --dim:#8b919e;
+  --paper:#f6f1e4; --paper-ink:#1d1b16; --ok:#1f9d55; --bad:#d03b3b; --accent:#4f8cff;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--desk); color:var(--ink); font:16px/1.6 var(--sans); }
+a { color:var(--accent); text-decoration:none; }
+
+.hero { position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#scene { position:absolute; inset:0; width:100%; height:100%; display:block; }
+.hero-inner { position:relative; z-index:2; text-align:center; padding:48px 40px; max-width:860px;
+  text-shadow: 0 2px 24px rgba(20,22,26,.9);
+  background: radial-gradient(closest-side, rgba(20,22,26,.92) 55%, rgba(20,22,26,.55) 80%, transparent);
+  border-radius: 40px; }
+.brand { font:700 clamp(44px, 9vw, 84px)/1 var(--mono); letter-spacing:.16em; margin:0; }
+.tag { color:var(--accent); font-size:clamp(18px, 3vw, 26px); margin:14px 0 0; letter-spacing:.02em; }
+.sub { color:var(--dim); font-size:clamp(15px, 2.2vw, 19px); max-width:640px; margin:22px auto 0; }
+.sub b { color:var(--ink); font-weight:600; }
+.cta { margin-top:36px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.btn { font:600 15px var(--sans); padding:13px 26px; border-radius:10px; border:1px solid var(--line);
+  background:var(--panel); color:var(--ink); transition:transform .15s ease, border-color .15s ease; }
+.btn:hover { transform:translateY(-2px); border-color:var(--accent); }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+.scroll-hint { position:absolute; bottom:22px; left:50%; transform:translateX(-50%); color:var(--dim);
+  font-size:13px; z-index:2; animation:bob 2.2s ease-in-out infinite; }
+@keyframes bob { 50% { transform:translate(-50%, 8px); } }
+
+section { max-width:1020px; margin:0 auto; padding:84px 24px; }
+h2 { font:700 30px var(--mono); letter-spacing:.06em; margin:0 0 8px; }
+.kicker { color:var(--dim); margin:0 0 40px; }
+.steps { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; }
+.step { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px;
+  transition:transform .2s ease, box-shadow .2s ease; transform-style:preserve-3d; }
+.step:hover { transform:translateY(-4px) rotateX(3deg) rotateY(-3deg); box-shadow:0 14px 34px rgba(0,0,0,.35); }
+.step h3 { margin:0 0 6px; font:700 15px var(--mono); letter-spacing:.08em; color:var(--accent); }
+.step p { margin:0; color:var(--dim); font-size:14px; }
+
+.verdict-strip { display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; }
+.stamp { font:700 13px var(--mono); letter-spacing:.08em; padding:8px 14px; border-radius:6px;
+  border:2px solid; transform:rotate(-2deg); }
+.stamp.ok { color:var(--ok); border-color:var(--ok); }
+.stamp.bad { color:var(--bad); border-color:var(--bad); }
+.stamp.warn { color:var(--accent); border-color:var(--accent); transform:rotate(1.5deg); }
+
+.stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; }
+.stat { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:24px; text-align:center; }
+.stat b { display:block; font:700 34px var(--mono); color:var(--accent); }
+.stat span { color:var(--dim); font-size:13px; }
+
+.arch { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:26px;
+  overflow-x:auto; }
+.arch pre { margin:0; font:13px/1.55 var(--mono); color:var(--ink); }
+
+footer { border-top:1px solid var(--line); padding:34px 24px; text-align:center; color:var(--dim);
+  font-size:14px; }
+footer a { margin:0 10px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas id="scene"></canvas>
+  <div class="hero-inner">
+    <h1 class="brand">SUBPOENA</h1>
+    <p class="tag">Every claim needs a receipt.</p>
+    <p class="sub">AI voice agents say they did the work. <b>Subpoena checks.</b>
+      An independent auditor that cross-examines every claimed action against the
+      system of record - and seals the evidence.</p>
+    <div class="cta">
+      <a class="btn primary" href="demo/">Watch it catch a liar</a>
+      <a class="btn" href="https://github.com/aneesh2411/subpoena">GitHub</a>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll</div>
+</header>
+
+<section id="how">
+  <h2>How it works</h2>
+  <p class="kicker">The transcript is testimony. The system of record is evidence.</p>
+  <div class="steps">
+    <div class="step"><h3>01 · CLAIMS</h3>
+      <p>Everything the agent said it did - booked, texted, filed, cancelled - parsed into
+      structured claims: action, patient, time.</p></div>
+    <div class="step"><h3>02 · EVIDENCE</h3>
+      <p>The auditor replays the call window against a journaled change feed of the calendar,
+      CRM, message log and ticket queue. Before and after images, actor, time.</p></div>
+    <div class="step"><h3>03 · VERDICTS</h3>
+      <p>Each claim gets a deterministic verdict. No model on the verdict path - an auditor
+      that can hallucinate is not an auditor.</p></div>
+    <div class="step"><h3>04 · SEALED</h3>
+      <p>The finished audit is hash-chained and signed. The trail itself is tamper-evident:
+      the auditor has its own receipts.</p></div>
+  </div>
+  <div class="verdict-strip">
+    <span class="stamp ok">RECEIPT FOUND</span>
+    <span class="stamp bad">RECEIPT DOES NOT MATCH</span>
+    <span class="stamp bad">NO RECEIPT</span>
+    <span class="stamp warn">UNVERIFIABLE</span>
+  </div>
+</section>
+
+<section id="proof">
+  <h2>It catches what politeness hides</h2>
+  <p class="kicker">A calm, fluent agent can be wrong three times in one call. The golden set
+    proves the auditor finds it - deterministically.</p>
+  <div class="stats">
+    <div class="stat"><b>57</b><span>golden scenarios</span></div>
+    <div class="stat"><b>25</b><span>fault modes</span></div>
+    <div class="stat"><b>280</b><span>tests green</span></div>
+    <div class="stat"><b>96.5%</b><span>strict accuracy, sealed in a scorecard</span></div>
+  </div>
+</section>
+
+<section id="architecture">
+  <h2>Architecture</h2>
+  <p class="kicker">Three parties, two trust levels. The suspect writes; the auditor only reads.</p>
+  <div class="arch"><pre>                 writes                          reads only
+  +-----------+ ---------&gt; +------------------+ &lt;--------- +-----------+
+  |  Suspect  |            | System of record |            |  Auditor  |
+  |  (agent)  |            |  calendar | CRM  |            |           |
+  +-----------+            |  messages | tix  |            +-----------+
+        |                  |  + change journal|                  |
+        | CallRecord       +------------------+                  | AuditReport
+        | (transcript + claims)                                  | (sealed)
+        +---------------------------&gt; POST /calls, /audit &lt;------+</pre></div>
+</section>
+
+<footer>
+  <a href="demo/">Live demo</a> ·
+  <a href="https://github.com/aneesh2411/subpoena">Source</a> ·
+  <a href="demo/subpoena-demo.mp4">70s video</a>
+  <div style="margin-top:8px">Built by Aneesh Kalisapudi. Every claim needs a receipt.</div>
+</footer>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x14161a, 9, 20);
+const camera = new THREE.PerspectiveCamera(50, 2, 0.1, 100);
+camera.position.set(0, 0, 9);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+const key = new THREE.DirectionalLight(0xfff4e0, 1.1);
+key.position.set(3, 5, 6);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0x4f8cff, 0.6);
+rim.position.set(-4, -2, -3);
+scene.add(rim);
+
+// A receipt card, drawn on a 2D canvas and used as a texture.
+function receiptTexture(stamp, stampColor, rows) {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 340;
+  const g = c.getContext('2d');
+  g.fillStyle = '#f6f1e4';
+  g.fillRect(0, 0, 256, 340);
+  g.strokeStyle = '#d9d0b8'; g.setLineDash([5, 4]); g.lineWidth = 2;
+  g.strokeRect(9, 9, 238, 322);
+  g.setLineDash([]);
+  g.fillStyle = '#6f6a5c';
+  g.font = '700 15px ui-monospace, Menlo, monospace';
+  g.fillText('SYSTEM OF RECORD', 24, 40);
+  g.fillStyle = '#1d1b16';
+  g.font = '12px ui-monospace, Menlo, monospace';
+  rows.forEach((row, i) => {
+    g.fillText(row[0], 24, 78 + i * 34);
+    g.fillStyle = '#6f6a5c';
+    g.fillText(row[1], 24, 94 + i * 34);
+    g.fillStyle = '#1d1b16';
+  });
+  // torn edge
+  g.fillStyle = '#14161a';
+  for (let x = 0; x < 256; x += 16) {
+    g.beginPath();
+    g.moveTo(x, 340); g.lineTo(x + 8, 332); g.lineTo(x + 16, 340);
+    g.fill();
+  }
+  // stamp
+  if (stamp) {
+    g.save();
+    g.translate(128, 268);
+    g.rotate(-0.18);
+    g.strokeStyle = stampColor; g.fillStyle = stampColor; g.lineWidth = 3;
+    g.font = '700 20px ui-monospace, Menlo, monospace';
+    const w = g.measureText(stamp).width;
+    g.strokeRect(-w / 2 - 12, -22, w + 24, 36);
+    g.fillText(stamp, -w / 2, 4);
+    g.restore();
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = 4;
+  return tex;
+}
+
+const CARDS = [
+  { stamp: 'NO RECEIPT', color: '#d03b3b', rows: [['ticket', 'claimed: created'], ['', 'record: none']] },
+  { stamp: 'RECEIPT FOUND', color: '#1f9d55', rows: [['cancelled', 'claimed: Mar 10 3:00 PM'], ['', 'record: Mar 10 3:00 PM']] },
+  { stamp: 'MISMATCH', color: '#d03b3b', rows: [['start', 'claimed: 2:30 PM'], ['', 'record: 3:30 PM']] },
+  { stamp: '', color: '#1d1b16', rows: [['journal #7', 'apt_0002 created'], ['actor', 'receptionist-agent']] },
+  { stamp: 'NO RECEIPT', color: '#d03b3b', rows: [['sms', 'claimed: sent'], ['', 'record: none']] },
+  { stamp: '', color: '#1d1b16', rows: [['journal #12', 'msg_0003 sent'], ['actor', 'receptionist-agent']] },
+];
+
+const group = new THREE.Group();
+scene.add(group);
+const cards = [];
+CARDS.forEach((def, i) => {
+  const tex = receiptTexture(def.stamp, def.color, def.rows);
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.5, 2),
+    new THREE.MeshStandardMaterial({ map: tex, side: THREE.DoubleSide, roughness: 0.9 })
+  );
+  const ring = i / CARDS.length * Math.PI * 2;
+  const radius = 5.4 + (i % 2) * 1.4;
+  mesh.position.set(
+    Math.cos(ring) * radius,
+    Math.sin(ring * 1.7) * 2.2,
+    -1.5 + Math.sin(ring) * 2.4
+  );
+  mesh.rotation.set((Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.9, (Math.random() - 0.5) * 0.2);
+  mesh.userData = { phase: Math.random() * Math.PI * 2, speed: 0.4 + Math.random() * 0.4, baseY: mesh.position.y };
+  group.add(mesh);
+  cards.push(mesh);
+});
+
+let mx = 0, my = 0;
+addEventListener('pointermove', (e) => {
+  mx = (e.clientX / innerWidth) * 2 - 1;
+  my = (e.clientY / innerHeight) * 2 - 1;
+});
+
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (canvas.width !== w || canvas.height !== h) {
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+}
+
+let visible = true;
+new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+
+const clock = new THREE.Clock();
+function frame() {
+  requestAnimationFrame(frame);
+  resize();
+  if (!visible) return;
+  const t = clock.getElapsedTime();
+  cards.forEach((m) => {
+    m.position.y = m.userData.baseY + Math.sin(t * m.userData.speed + m.userData.phase) * 0.35;
+    m.rotation.y += 0.0016;
+  });
+  group.rotation.y = t * 0.05;
+  camera.position.x += (mx * 1.1 - camera.position.x) * 0.04;
+  camera.position.y += (-my * 0.7 - camera.position.y) * 0.04;
+  camera.lookAt(0, 0, 0);
+  renderer.render(scene, camera);
+}
+frame();
+</script>
+</body>
+</html>
