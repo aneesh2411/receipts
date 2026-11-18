@@ -177,10 +177,15 @@ def test_spoken_only_promises_are_recovered_from_the_transcript():
 
 
 def test_misspoken_time_verifies_the_log_and_flags_what_the_caller_heard():
-    logged, confirmation, spoken = _report("fault-misspoken-time").verdicts
+    logged, confirmation, spoken, spoken_confirmation = _report("fault-misspoken-time").verdicts
     assert (logged.claim.source.value, logged.status) == ("structured", V)
-    assert confirmation.status is V
+    assert (confirmation.claim.source.value, confirmation.status) == ("structured", V)
     assert (spoken.claim.source.value, spoken.status) == ("transcript", NF)
+    assert (spoken_confirmation.claim.source.value, spoken_confirmation.status) == (
+        "transcript", NF,
+    )
+    assert confirmation.claim.about_start == logged.claim.start
+    assert spoken_confirmation.claim.about_start == spoken.claim.start
     assert spoken.claim.start != logged.claim.start
 
 

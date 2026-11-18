@@ -70,7 +70,7 @@ BOOK_TRUTH: dict[FaultMode | None, Truth] = {
     F.ROLLBACK: (((B, NF), (C, V)), ()),
     F.SILENT_CRM_EDIT: (((B, V), (C, V)), (CRM_EDIT,)),
     F.SPOKEN_ONLY: (((B, NF), (C, NF)), ()),
-    F.MISSPOKEN_TIME: (((B, V), (C, V), (B, NF)), ()),
+    F.MISSPOKEN_TIME: (((B, V), (C, V), (B, NF), (C, NF)), ()),
     F.MISSPOKEN_PROVIDER: (((B, V), (C, V), (B, NF)), ()),
     F.WRONG_RECIPIENT: (((B, V), (C, MM)), ()),
     F.STALE_CONFIRMATION: (((B, V), (C, MM)), ()),
@@ -117,7 +117,8 @@ def _slot(rng: random.Random, taken: set[datetime]) -> datetime:
 # its own structured claims and the next step's.
 SPOKEN_TRUTH: dict[FaultMode | None, tuple[Expected, ...]] = {
     F.SPOKEN_ONLY: ((B, NF), (C, NF)),
-    F.MISSPOKEN_TIME: ((B, NF),),
+    # The confirmation in the same agent turn refers to the booking just announced.
+    F.MISSPOKEN_TIME: ((B, NF), (C, NF)),
     F.MISSPOKEN_PROVIDER: ((B, NF),),
 }
 

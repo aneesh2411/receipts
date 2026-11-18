@@ -400,10 +400,11 @@ EXTENDED: tuple[Scenario, ...] = (
     Scenario(
         "fault-misspoken-time",
         "System is right, the caller was told another day",
-        "The log and the calendar agree with each other. The human was told Wednesday. "
-        "The logged claim verifies; the spoken promise has no receipt.",
+        "The calendar and text confirm Tuesday. The agent tells the caller the booking "
+        "is for Wednesday and immediately says it sent a confirmation. "
+        "There is no booking or confirmation for Wednesday.",
         (_book(),),
-        ((B, V), (C, V), (B, NF)),
+        ((B, V), (C, V), (B, NF), (C, NF)),
         faults=_on(0, F.MISSPOKEN_TIME),
     ),
     Scenario(

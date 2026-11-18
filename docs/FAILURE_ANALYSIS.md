@@ -133,6 +133,11 @@ False `VERIFIED`:
 4. **Spoken detail that differs from the log.** The caller was told one provider, the log
    said another, and the spoken claim was merged away because only the time was compared.
    Fixed: spoken and logged claims that disagree are audited as separate promises.
+   In `fault-misspoken-time`, the caller asks for Tuesday. The agent announces a Wednesday
+   booking and immediately says, “I just texted you a confirmation.” That confirmation
+   refers to the booking the agent just announced. The calendar and the text both name
+   Tuesday, so the structured booking and confirmation verify. Neither a Wednesday
+   booking nor a confirmation for Wednesday can be found.
    ([#4](https://github.com/aneesh2411/subpoena/issues/4),
    [PR #13](https://github.com/aneesh2411/subpoena/pull/13))
 5. **Two patients with the same name.** With no usable phone number, a booking for the
