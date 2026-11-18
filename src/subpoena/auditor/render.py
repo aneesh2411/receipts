@@ -74,6 +74,18 @@ def _render_extraction(extraction: ExtractionHealth) -> str:
     return line
 
 
+def _render_seal(report: AuditReport) -> str:
+    seal = report.seal
+    if seal is None:
+        return "- Seal: **unsealed** - nothing proves this report was not edited"
+    if seal.signature:
+        return f"- Seal: sha256 chain `{seal.chain_hash[:24]}...`, signed (key `{seal.key_id}`)"
+    return (
+        f"- Seal: sha256 chain `{seal.chain_hash[:24]}...`, "
+        "unsigned (tamper-evident, not authenticated)"
+    )
+
+
 def render_markdown(report: AuditReport) -> str:
     s, call = report.stats, report.call
     trust = "n/a" if s.trust_score is None else f"{s.trust_score:.0%}"
@@ -90,6 +102,7 @@ def render_markdown(report: AuditReport) -> str:
         f"Highest severity: `{s.max_severity.value}`",
         f"- Audited by `{report.auditor}` at {report.created_at.isoformat()}",
         _render_extraction(report.extraction),
+        _render_seal(report),
     ]
     if call.provenance is not None:
         prov = call.provenance

@@ -117,7 +117,9 @@ never becomes a pass.
 
 **Reports are sealed.** Each report is hashed, chained to the previous one in an
 append-only ledger, and signed when a key is configured. `subpoena verify report.json`
-detects any edit.
+detects any edit and reports integrity (unsealed / intact / altered) separately from
+authentication (unsigned / authenticated / unverifiable / invalid); `--strict` requires
+an authenticated signature.
 
 **The auditor has its own receipts.** See the next section.
 
@@ -206,7 +208,7 @@ subpoena serve
 | `GET /audit/{id}/report` | Sealed report. `?format=md` for Markdown. |
 | `GET /audits` | Recent audits. |
 | `GET /scorecard` | Per-agent claim honesty. |
-| `GET /ledger/verify` | Re-verify every seal and chain link. |
+| `GET /ledger/verify` | Re-verify every seal and chain link; `?strict=true` requires authenticated signatures. |
 | `POST /demo/scenarios/{id}/run` | Play a scenario in a sandbox and audit it. |
 | `POST /demo/scenarios/{id}/stage` | Load a scenario into the live store. |
 

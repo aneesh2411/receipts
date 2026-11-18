@@ -215,17 +215,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return _ok([_summary(r) for r in store().audits(limit=limit, newest_first=True)])
 
     @app.get("/ledger/verify", dependencies=guarded)
-    def verify_ledger() -> JSONResponse:
+    def verify_ledger(strict: bool = False) -> JSONResponse:
         sealer: Sealer = app.state.sealer
         prev, count = GENESIS, 0  # the first entry must link to genesis, or one was removed
         for rep in store().audits():
-            check = sealer.verify(rep, expected_prev=prev)
+            check = sealer.verify(rep, expected_prev=prev, strict=strict)
             if not check.ok:
                 return _ok({"ok": False, "checked": count, "broken_at": rep.audit_id,
-                            "reason": check.reason})  # fmt: skip
+                            "reason": check.reason,
+                            "integrity": check.integrity.value,
+                            "authentication": check.authentication.value})  # fmt: skip
             assert rep.seal is not None
             prev, count = rep.seal.chain_hash, count + 1
-        return _ok({"ok": True, "checked": count, "head": prev})
+        authentication = check.authentication.value if count else "unsigned"
+        return _ok({"ok": True, "checked": count, "head": prev,
+                    "integrity": "intact", "authentication": authentication})  # fmt: skip
 
     @app.get("/scorecard", dependencies=guarded)
     def scorecard() -> JSONResponse:

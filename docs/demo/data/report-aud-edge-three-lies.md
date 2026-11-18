@@ -8,6 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 25% | Highest severity: `CRITICAL`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:32-05:00
 - Extraction: `rules`
+- Seal: sha256 chain `30efb9f4a2db23a1eb994552...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims

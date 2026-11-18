@@ -15,10 +15,28 @@ import hashlib
 import hmac
 import json
 from dataclasses import dataclass
+from enum import StrEnum
 
 from subpoena.models import AuditReport, Seal
 
 GENESIS = "0" * 64
+
+
+class Integrity(StrEnum):
+    """Is the report the one that was sealed?"""
+
+    UNSEALED = "unsealed"
+    INTACT = "intact"
+    ALTERED = "altered"  # content, chain, or ledger link no longer matches
+
+
+class Authentication(StrEnum):
+    """Is the seal proven to come from the key holder?"""
+
+    UNSIGNED = "unsigned"  # no signature on the seal
+    AUTHENTICATED = "authenticated"  # signature checked against the configured key
+    UNVERIFIABLE = "unverifiable"  # signed, but no key configured to check against
+    INVALID = "invalid"  # a key is configured and the signature is missing or wrong
 
 
 def canonical_bytes(report: AuditReport) -> bytes:
@@ -34,6 +52,8 @@ def _sha256(data: bytes) -> str:
 class SealCheck:
     ok: bool
     reason: str
+    integrity: Integrity
+    authentication: Authentication
 
 
 class Sealer:
@@ -61,21 +81,55 @@ class Sealer:
         )
         return report.model_copy(update={"seal": seal})
 
-    def verify(self, report: AuditReport, expected_prev: str | None = None) -> SealCheck:
+    def verify(
+        self,
+        report: AuditReport,
+        expected_prev: str | None = None,
+        *,
+        strict: bool = False,
+    ) -> SealCheck:
+        """Check integrity (is this the sealed report?) and authentication (is it
+        from the key holder?) separately. Lenient mode keeps the historical bar:
+        intact content, and a valid signature only when a key is configured.
+        Strict mode requires an authenticated signature, so unsigned or
+        unverifiable reports fail even when intact.
+        """
         seal = report.seal
         if seal is None:
-            return SealCheck(False, "report is not sealed")
+            return SealCheck(False, "report is not sealed", Integrity.UNSEALED,
+                             Authentication.UNSIGNED)  # fmt: skip
+        altered = None
         if _sha256(canonical_bytes(report)) != seal.content_hash:
-            return SealCheck(False, "content does not match its hash: the report was altered")
-        if _sha256(f"{seal.prev_hash}:{seal.content_hash}".encode()) != seal.chain_hash:
-            return SealCheck(False, "chain hash is inconsistent")
-        if expected_prev is not None and seal.prev_hash != expected_prev:
-            return SealCheck(False, "report is not linked to the expected previous report")
+            altered = "content does not match its hash: the report was altered"
+        elif _sha256(f"{seal.prev_hash}:{seal.content_hash}".encode()) != seal.chain_hash:
+            altered = "chain hash is inconsistent"
+        elif expected_prev is not None and seal.prev_hash != expected_prev:
+            altered = "report is not linked to the expected previous report"
+
         if self._key:
             expected = self._sign(seal.chain_hash) or ""
-            if seal.signature is None or not hmac.compare_digest(expected, seal.signature):
-                return SealCheck(False, "signature is missing or invalid")
-            return SealCheck(True, "content, chain and signature verified")
-        if seal.signature is not None:
-            return SealCheck(True, "content and chain verified (signature not checked: no key)")
-        return SealCheck(True, "content and chain verified (unsigned)")
+            if seal.signature is None:
+                authentication, signed = Authentication.INVALID, "signature is missing"
+            elif not hmac.compare_digest(expected, seal.signature):
+                authentication, signed = Authentication.INVALID, "signature is invalid"
+            else:
+                authentication, signed = Authentication.AUTHENTICATED, "signature verified"
+        elif seal.signature is not None:
+            authentication = Authentication.UNVERIFIABLE
+            signed = "signature present but not checked: no key configured"
+        else:
+            authentication, signed = Authentication.UNSIGNED, "unsigned"
+
+        if altered is not None:
+            return SealCheck(False, altered, Integrity.ALTERED, authentication)
+        if authentication is Authentication.INVALID:
+            return SealCheck(False, signed, Integrity.INTACT, authentication)
+        if strict and authentication is not Authentication.AUTHENTICATED:
+            return SealCheck(
+                False,
+                f"strict mode requires an authenticated seal ({signed})",
+                Integrity.INTACT,
+                authentication,
+            )
+        return SealCheck(True, f"content and chain verified ({signed})", Integrity.INTACT,
+                         authentication)  # fmt: skip

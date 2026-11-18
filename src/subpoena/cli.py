@@ -273,10 +273,11 @@ def cmd_verify(args: argparse.Namespace, console: Console) -> int:
     except (OSError, ValueError) as exc:
         console.print(f"[red]Cannot read report: {exc}[/]")
         return 2
-    check = Sealer(_signing_key()).verify(report)
+    check = Sealer(_signing_key()).verify(report, strict=args.strict)
     console.print(
         f"[{'green' if check.ok else 'red'}]{'VALID' if check.ok else 'INVALID'}[/] "
-        f"{report.audit_id}: {check.reason}"
+        f"{report.audit_id}: {check.reason} "
+        f"(integrity: {check.integrity.value}, authentication: {check.authentication.value})"
     )
     return 0 if check.ok else 1
 
@@ -316,6 +317,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     verify = sub.add_parser("verify", help="check a saved report's seal")
     verify.add_argument("file")
+    verify.add_argument(
+        "--strict",
+        action="store_true",
+        help="require an authenticated seal: unsigned or unverifiable reports fail",
+    )
     verify.set_defaults(func=cmd_verify)
     return parser
 
