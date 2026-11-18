@@ -7,6 +7,7 @@
 - Claims: 1 | verified 1, mismatch 0, not found 0, unverifiable 0
 - Findings beyond claims: 1 | Claim trust score: 100% | Highest severity: `HIGH`
 - Audited by `receipts/0.1.0` at 2026-03-02T09:06:16-05:00
+- Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
 
@@ -55,6 +56,6 @@ Evidence:
 
 ## Seal
 
-- content `c5acb8389521b9953e8d0bb408154e0dd6d347076848a6cffb74cbcd84d3b7a7`
-- chain `c228843fecddfb4fbf63eec872151b044210f7a3b210764e46b5e599aae5b7f1` (prev `0000000000000000...`)
+- content `559be1dd4233e17a05e04b420729d630f21fb35694aea66ad82b26533662faad`
+- chain `4ec427fd548da74122d39af71288476abce162776bc30df584f37e222f2f57af` (prev `0000000000000000...`)
 - signed (key `952a7ab34a0a`)

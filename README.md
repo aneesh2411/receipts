@@ -189,7 +189,7 @@ receipts serve
 
 | Endpoint | Purpose |
 |---|---|
-| `POST /calls` | Ingest a call: transcript and claims. |
+| `POST /calls` | Ingest a call: transcript and claims, plus optional provenance (agent/model/prompt version, human handoffs). Provenance is platform-supplied and unverified, but it is sealed with the report, so a failure is attributable to a specific config. |
 | `POST /audit` | Audit a call against the system of record. |
 | `GET /audit/{id}/report` | Sealed report. `?format=md` for Markdown. |
 | `GET /audits` | Recent audits. |

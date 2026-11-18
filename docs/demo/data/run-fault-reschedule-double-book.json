@@ -52,7 +52,13 @@
     "new_start": "2026-03-05T11:00:00-05:00",
     "provider": "Dr. Patel"
    }
-  ]
+  ],
+  "provenance": {
+   "agent_version": "receptionist-sim/0.1.0",
+   "model": null,
+   "prompt_version": "narrator:standard",
+   "human_handoffs": []
+  }
  },
  "outcome": "DISCREPANCIES",
  "verdicts": [
@@ -235,10 +241,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "c5acb8389521b9953e8d0bb408154e0dd6d347076848a6cffb74cbcd84d3b7a7",
+  "content_hash": "559be1dd4233e17a05e04b420729d630f21fb35694aea66ad82b26533662faad",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "c228843fecddfb4fbf63eec872151b044210f7a3b210764e46b5e599aae5b7f1",
-  "signature": "65f0c9f06ee760b8f748c73d1eb3fcdad2092067cc3c8b72ede42b74403f5180",
+  "chain_hash": "4ec427fd548da74122d39af71288476abce162776bc30df584f37e222f2f57af",
+  "signature": "899e4958526990cca1356202b0689a3e4c6f3c9ea192aa1e2961b77a79e52a79",
   "key_id": "952a7ab34a0a"
  }
 }

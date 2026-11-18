@@ -176,6 +176,21 @@ class Turn(Frozen):
     at: AwareDatetime
 
 
+class Provenance(Frozen):
+    """How the platform says the call was run: which agent build, which model,
+    which prompt, and where a human took over.
+
+    Supplied alongside the transcript, so it is as untrusted as everything
+    else in ``CallRecord`` - but it is carried into the sealed report, so a
+    failure is attributable to a specific config instead of "the agent".
+    """
+
+    agent_version: str = Field(min_length=1, max_length=120)
+    model: str | None = Field(default=None, max_length=120)
+    prompt_version: str | None = Field(default=None, max_length=120)
+    human_handoffs: tuple[AwareDatetime, ...] = ()
+
+
 class CallRecord(Frozen):
     """Everything the auditor is given about a call. Nothing here is trusted."""
 
@@ -186,6 +201,7 @@ class CallRecord(Frozen):
     ended_at: AwareDatetime
     transcript: tuple[Turn, ...] = Field(default=(), max_length=500)
     claims: tuple[Claim, ...] = Field(default=(), max_length=200)
+    provenance: Provenance | None = None
 
     @model_validator(mode="after")
     def _window_is_ordered(self) -> CallRecord:

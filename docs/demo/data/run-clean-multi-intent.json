@@ -88,7 +88,13 @@
     "summary": "Caller needs help with a billing question about my last invoice",
     "priority": "normal"
    }
-  ]
+  ],
+  "provenance": {
+   "agent_version": "receptionist-sim/0.1.0",
+   "model": null,
+   "prompt_version": "narrator:standard",
+   "human_handoffs": []
+  }
  },
  "outcome": "CLEAN",
  "verdicts": [
@@ -393,10 +399,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "7f775bf93c54ba1d9756cb59323858e472fbae7c2bc4c20f0acf13a97aba35dc",
+  "content_hash": "5e07a168ce72c2a21733e67c729a2d3ad7053c57b9e76beaa83bc600aa1b0199",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "00d57a6b6cc4a39244a0e6d193df2326080f49a20b4be1387945d8edd2c41c71",
-  "signature": "c754008c2fa26aaefd4758eddfec558ca0e046aa0eb0055d90a97cd8d382c698",
+  "chain_hash": "59fbebc23a14af91a9da3ec413bff7900bcb62e60ffb685eb9732c7850d8b87c",
+  "signature": "2349b717478fc25edd52834b24fbfd423f62a3234b0d8bbfba052860276d093a",
   "key_id": "952a7ab34a0a"
  }
 }

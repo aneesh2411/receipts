@@ -51,7 +51,13 @@
     "summary": "Caller needs help with a knocked-out tooth",
     "priority": "urgent"
    }
-  ]
+  ],
+  "provenance": {
+   "agent_version": "receptionist-sim/0.1.0",
+   "model": null,
+   "prompt_version": "narrator:standard",
+   "human_handoffs": []
+  }
  },
  "outcome": "DISCREPANCIES",
  "verdicts": [
@@ -176,10 +182,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "38058a33df70a3c458e65547243ce12dcdeefb9291e350fb137e6852fb93fe2a",
+  "content_hash": "52514eaaa18fad0cc11e25057e8dfd0135c5b7fdc342b6066b5b523561216a57",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "1035d25c6f7a5e322dee0d15f47e483314ae459d9068080542fab4c1045dc1b7",
-  "signature": "800b6762de4aa6fb0ae15730299ec3a6f0bf3df9444bf903bb7a6ced59ff741f",
+  "chain_hash": "8cedb1b1205b1d9fe8e7caeab81a141bc87c025a4b27ad195216da02c14be732",
+  "signature": "d9c1bc8172b7e59c7fd2a10e88105b6d9b241c7b29dfb614445f97c99fa152a6",
   "key_id": "952a7ab34a0a"
  }
 }

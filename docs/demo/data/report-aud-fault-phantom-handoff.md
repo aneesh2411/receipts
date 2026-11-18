@@ -7,6 +7,7 @@
 - Claims: 1 | verified 0, mismatch 0, not found 1, unverifiable 0
 - Findings beyond claims: 0 | Claim trust score: 0% | Highest severity: `HIGH`
 - Audited by `receipts/0.1.0` at 2026-03-02T09:06:16-05:00
+- Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
 
@@ -42,6 +43,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `c6b14221eb2d40cbfd61d7ccf550798eeba9af6a056a3745a24f1165acd58edb`
-- chain `f76d7ca0460f607da85450009520a8751e36d12b680ab0120f8b73c90e796257` (prev `0000000000000000...`)
+- content `0e2f40ead1d2a55838f6065f13f86291bd46c2444d26b75d1e40880eaffe5dd8`
+- chain `291df12bf866da38156498f03971c883c98c2b04f7d13d34cd66da2cf61a1ff1` (prev `0000000000000000...`)
 - signed (key `952a7ab34a0a`)

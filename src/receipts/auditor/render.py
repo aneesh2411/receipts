@@ -82,6 +82,17 @@ def render_markdown(report: AuditReport) -> str:
         f"- Findings beyond claims: {s.findings} | Claim trust score: {trust} | "
         f"Highest severity: `{s.max_severity.value}`",
         f"- Audited by `{report.auditor}` at {report.created_at.isoformat()}",
+    ]
+    if call.provenance is not None:
+        prov = call.provenance
+        parts = [f"agent `{prov.agent_version}`"]
+        if prov.model:
+            parts.append(f"model `{prov.model}`")
+        if prov.prompt_version:
+            parts.append(f"prompt `{prov.prompt_version}`")
+        parts.append(f"human handoffs: {len(prov.human_handoffs)}")
+        lines.append("- Provenance (platform-supplied, unverified): " + " | ".join(parts))
+    lines += [
         "",
         "## Claims",
         "",

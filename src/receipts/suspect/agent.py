@@ -14,6 +14,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
+from receipts import __version__
 from receipts.models import (
     Appointment,
     AppointmentBooked,
@@ -25,6 +26,7 @@ from receipts.models import (
     Patient,
     PatientRef,
     Priority,
+    Provenance,
     Rescheduled,
     Turn,
 )
@@ -140,6 +142,7 @@ class ReceptionistAgent:
         clinic: ClinicConfig | None = None,
         faults: FaultPlan | None = None,
         agent_id: str = AGENT_ID,
+        provenance: Provenance | None = None,
     ) -> None:
         self.sor = sor
         self.clock = clock
@@ -147,6 +150,10 @@ class ReceptionistAgent:
         self.clinic = clinic or ClinicConfig()
         self.faults = faults or NoFaults()
         self.agent_id = agent_id
+        self.provenance = provenance or Provenance(
+            agent_version=f"receptionist-sim/{__version__}",
+            prompt_version="narrator:hard" if narrator.hard else "narrator:standard",
+        )
 
     def handle_call(self, call_id: str, caller: PatientRef, steps: Sequence[Step]) -> CallResult:
         return _Call(self, call_id, caller).run(steps)
@@ -190,6 +197,7 @@ class _Call:
             ended_at=self.a.clock.now(),
             transcript=tuple(self.turns),
             claims=tuple(self.claims),
+            provenance=self.a.provenance,
         )
         return CallResult(call=call, injected=tuple(self.injected))
 
@@ -394,12 +402,8 @@ class _Call:
             cal.reschedule_appointment(appt.id, new_start + timedelta(hours=1))
         elif _F.RESCHEDULE_REWRITE in modes:
             cal.reschedule_appointment(appt.id, new_start)
-            other = next(
-                p for p in ("Dr. Kim", "Dr. Osei", "Dr. Patel") if p != appt.provider
-            )
-            cal.update_appointment(
-                appt.id, provider=other, duration_min=appt.duration_min + 30
-            )
+            other = next(p for p in ("Dr. Kim", "Dr. Osei", "Dr. Patel") if p != appt.provider)
+            cal.update_appointment(appt.id, provider=other, duration_min=appt.duration_min + 30)
         elif step.recreate:
             cal.cancel_appointment(appt.id)
             cal.create_appointment(**recreated)

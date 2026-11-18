@@ -21,6 +21,10 @@ class Narrator:
         self._tz = tz
         self._hard = hard
 
+    @property
+    def hard(self) -> bool:
+        return self._hard
+
     def when(self, dt: datetime) -> str:
         return speak(dt, self._tz)
 

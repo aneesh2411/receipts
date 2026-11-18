@@ -37,7 +37,13 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
-  "claims": []
+  "claims": [],
+  "provenance": {
+   "agent_version": "receptionist-sim/0.1.0",
+   "model": null,
+   "prompt_version": "narrator:standard",
+   "human_handoffs": []
+  }
  },
  "outcome": "CLEAN",
  "verdicts": [],
@@ -86,10 +92,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "a0e8f1006ce905f7f12ca57c9d287b3d5106338358fd76349f5a6aee2328d76b",
+  "content_hash": "8319ec04947161ec1b694544f289a5c7579294e84e94801b85f684bb656fa718",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "2d0ac2c851b85e49e5f6f719fd78eb3c1c3d1ba93ed37aa768f6ee464a7b8d9e",
-  "signature": "efce089c64e23dd5df8a51903d6478e4f1c8c26c2ac9dbe2ece297816e665b72",
+  "chain_hash": "bc933e9a02722e471e30a5c0286d919fc224ab0258cd3d882c0338d5b8869814",
+  "signature": "cfbaae1d042aa5217f6317cd52151833d4f520e32f9a0227301c6f68958a8897",
   "key_id": "952a7ab34a0a"
  }
 }

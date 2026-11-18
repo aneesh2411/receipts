@@ -53,7 +53,13 @@
     "duration_min": 30,
     "reason": "cleaning"
    }
-  ]
+  ],
+  "provenance": {
+   "agent_version": "receptionist-sim/0.1.0",
+   "model": null,
+   "prompt_version": "narrator:standard",
+   "human_handoffs": []
+  }
  },
  "outcome": "DISCREPANCIES",
  "verdicts": [
@@ -160,10 +166,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "cb1b106568a615fde0fcfa3ee75e1390aa1d646dcd3ab57fa1601a29689fd602",
+  "content_hash": "a6219b1d5fa8605c4785b75a02cdb8e597fe7c11c57335d0976b6607d5288de9",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "6a6b96a6a5af2c1237ecf638f7fa1eef9f1f95041a1a9e810a4954e0c8d9f017",
-  "signature": "fbf1bee12a10b11747519a12101d8cf02e6b4d6c97834576511da4cf69fe187a",
+  "chain_hash": "94eb666958ad931166a34bced371018e5e1790107082c83211ae3a1f8410c8be",
+  "signature": "7976e4a78ff834302f213642d4d284bd87ac1729e17305b3c925430f01acf3e1",
   "key_id": "952a7ab34a0a"
  }
 }

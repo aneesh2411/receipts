@@ -63,7 +63,13 @@
     "to": "+15550101001",
     "about_start": "2026-03-03T14:30:00-05:00"
    }
-  ]
+  ],
+  "provenance": {
+   "agent_version": "receptionist-sim/0.1.0",
+   "model": null,
+   "prompt_version": "narrator:standard",
+   "human_handoffs": []
+  }
  },
  "outcome": "DISCREPANCIES",
  "verdicts": [
@@ -323,10 +329,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "6d6dbe08b4da1ca5418281aacde77500c3e65a9abc3bb1316e266fc6d61ed313",
+  "content_hash": "363e0079dd2015cc2e5ce3e11260d543e9912837f681564901e025e9e0bfd2a2",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "32d245938bb3c0d992eb829fbefd4d43414723d0c86e7271fd8a4b680a856af3",
-  "signature": "c0b69f54ecd1ed620465ef848eb429de6caa1392a92eac76c37fb58db43f659f",
+  "chain_hash": "680bb715ae0a483b50c3197e2d661d62b6bc76d160701179c883d148a9ac853b",
+  "signature": "7641da5cb06e1d99015eed83562c160cad0dd437af73270ef671b43a4920fddf",
   "key_id": "952a7ab34a0a"
  }
 }
