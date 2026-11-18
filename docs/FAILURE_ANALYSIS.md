@@ -1,30 +1,33 @@
 # Failure analysis
 
-Numbers here come from `subpoena eval` at the commit that added this file. Regenerate them
-with:
+Every number in a marked block is generated from the committed eval artifacts - never edit
+one by hand. Refresh the artifacts, then re-sync the docs:
 
 ```bash
 subpoena eval --report docs/EVAL_REPORT.md --json evals/results/latest.json
+python scripts/sync_docs.py
 ```
+
+`python scripts/sync_docs.py --check` fails on drift and runs as a test.
 
 ## 1. Results in one screen
 
+<!-- metrics:fa-results:start -->
 Golden set: 57 hand-labelled calls, 94 claims, 7 findings beyond claims.
 
 | Metric | Subpoena | Naive lookup |
 |---|---|---|
 | Claim precision | 100% | 100% |
-| Claim recall | 93.3% | 66.7% |
-| Exact verdict | 97.7% | 79.1% |
+| Claim recall | 94.1% | 58.8% |
+| Exact verdict | 97.9% | 76.6% |
 | Finding recall | 100% | 0% |
-| Call accuracy | 96.2% | 71.2% |
-| Calls fully correct | 96.2% | 55.8% |
+| Call accuracy | 96.5% | 66.7% |
+| Calls fully correct | 96.5% | 52.6% |
 
-Claim-level confusion for Subpoena: 28 true positives, 0 false positives, 2 false negatives,
-56 true negatives.
+Claim-level confusion for Subpoena: 32 true positives, 0 false positives, 2 false negatives, 60 true negatives.
 
-Fuzzed set: 500 generated calls, 732 claims, 87 findings. No disagreements with ground
-truth.
+Fuzzed set: 500 generated calls, 754 claims, 86 findings. No disagreements with ground truth.
+<!-- metrics:fa-results:end -->
 
 ## 2. The two failures
 
@@ -191,11 +194,13 @@ exists. It fails 27 of 57 calls under strict scoring (19 on the headline "does t
 
 Ablations switch off one capability of the real auditor:
 
+<!-- metrics:fa-ablations:start -->
 | Variant | Claim recall | Finding recall | Calls fully correct |
 |---|---|---|---|
-| Full | 93.3% | 100% | 96.2% |
-| No transcript reader | 80.0% | 100% | 90.4% |
-| No policy checks | 93.3% | 42.9% | 88.5% |
+| Full | 94.1% | 100% | 96.5% |
+| No transcript reader | 79.4% | 100% | 89.5% |
+| No policy checks | 94.1% | 42.9% | 89.5% |
+<!-- metrics:fa-ablations:end -->
 
 Each ablation costs what it should and nothing else. That is evidence the dataset exercises
 those capabilities and that the scorer can tell a worse auditor from a better one. A CLI
@@ -219,9 +224,9 @@ boundaries). It does not explore multi-intent calls, combinations of faults, or 
 known gaps, which are excluded from generation. Its expected outcomes come from a table
 written by the same author as the auditor.
 
-**Precision is measured on 56 true claims and 16 clean calls.** Zero false accusations in
-that sample is encouraging and not a guarantee. One false positive was found and fixed
-during the build (3.1) and another is open (section 4, item 6).
+**Precision is measured on a 57-call sample.** Zero false accusations in that sample is
+encouraging and not a guarantee. Both false positives found so far were caught and fixed
+during the build (3.1, and recaps in section 4, item 6); none are open.
 
 **The dataset is one clinic, one agent, non-overlapping calls.** Attribution by identity
 and time window is untested against two calls in progress at once under the same agent

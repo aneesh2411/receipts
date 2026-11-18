@@ -126,6 +126,7 @@ detects any edit.
 `subpoena eval` scores the auditor on 57 hand-labelled scenarios and 500 fuzzed calls, next
 to a naive "does a matching record exist" baseline.
 
+<!-- metrics:readme:start -->
 Golden set, 57 calls:
 
 | Metric | Subpoena | Naive lookup |
@@ -137,6 +138,7 @@ Golden set, 57 calls:
 | Calls fully correct | 96.5% | 52.6% |
 
 Fuzzed, 500 calls: 100% on every metric.
+<!-- metrics:readme:end -->
 
 The two golden failures are real limits, labelled as known gaps and counted against the
 score rather than excluded. Read [docs/FAILURE_ANALYSIS.md](docs/FAILURE_ANALYSIS.md) before
