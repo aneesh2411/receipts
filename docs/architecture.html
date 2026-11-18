@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture - Subpoena</title>
+<meta name="description" content="How Subpoena audits an AI voice agent: three parties, two trust levels, and a sealed audit trail.">
+<style>
+:root {
+  --desk:#14161a; --panel:#1c1f26; --line:#2c313c; --ink:#e8e6df; --dim:#8b919e;
+  --paper:#f6f1e4; --paper-ink:#1d1b16; --paper-dim:#6f6a5c; --paper-line:#d9d0b8;
+  --ok:#1f9d55; --bad:#d03b3b; --accent:#4f8cff;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--desk); color:var(--ink); font:16px/1.6 var(--sans); }
+a { color:var(--accent); text-decoration:none; }
+nav { display:flex; align-items:center; gap:22px; padding:18px 28px; border-bottom:1px solid var(--line);
+  position:sticky; top:0; background:rgba(20,22,26,.92); backdrop-filter:blur(8px); z-index:5; }
+nav .home { font:700 17px var(--mono); letter-spacing:.14em; color:var(--ink); margin-right:auto; }
+nav a { color:var(--dim); font-size:14px; }
+nav a:hover { color:var(--ink); }
+nav a.home:hover { color:var(--accent); }
+main { max-width:1020px; margin:0 auto; padding:64px 24px 90px; }
+h1 { font:700 34px var(--mono); letter-spacing:.06em; margin:0 0 8px; }
+h2 { font:700 21px var(--mono); letter-spacing:.06em; margin:56px 0 6px; }
+.kicker { color:var(--dim); margin:0 0 36px; max-width:720px; }
+.figure { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:28px; overflow-x:auto;
+  margin-top:22px; overflow-x:auto; }
+.figure svg { display:block; min-width:640px; width:100%; height:auto; margin:0 auto; }
+.cap { color:var(--dim); font-size:14px; margin:14px 4px 0; }
+.cap b { color:var(--ink); font-weight:600; }
+ul.points { color:var(--dim); padding-left:20px; margin:14px 0 0; }
+ul.points li { margin:7px 0; }
+ul.points b { color:var(--ink); font-weight:600; }
+footer { border-top:1px solid var(--line); padding:30px 24px; text-align:center; color:var(--dim); font-size:14px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="home" href="./">SUBPOENA</a>
+  <a href="demo/">Live demo</a>
+  <a href="https://github.com/aneesh2411/subpoena">GitHub</a>
+</nav>
+
+<main>
+  <h1>Architecture</h1>
+  <p class="kicker">Three parties, two trust levels. The suspect writes; the auditor only reads.
+    The change journal is written by triggers, not application code, so the suspect cannot
+    skip it or forge it.</p>
+
+  <h2>The trust model</h2>
+  <div class="figure">
+    <svg viewBox="0 0 980 420" role="img" aria-label="Trust model: suspect writes to the system of record, auditor reads it">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#8b919e"/>
+        </marker>
+        <marker id="arrAcc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#4f8cff"/>
+        </marker>
+      </defs>
+
+      <!-- suspect -->
+      <rect x="30" y="120" width="220" height="150" rx="14" fill="#1c1f26" stroke="#d03b3b" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <text x="140" y="168" text-anchor="middle" fill="#e8e6df" font-family="ui-monospace,Menlo,monospace" font-size="19" font-weight="700" letter-spacing="2">SUSPECT</text>
+      <text x="140" y="194" text-anchor="middle" fill="#8b919e" font-size="14">the voice agent</text>
+      <text x="140" y="218" text-anchor="middle" fill="#d03b3b" font-size="13">untrusted - everything it</text>
+      <text x="140" y="236" text-anchor="middle" fill="#d03b3b" font-size="13">hands over is a claim</text>
+
+      <!-- system of record -->
+      <rect x="360" y="70" width="290" height="280" rx="14" fill="#f6f1e4"/>
+      <text x="505" y="108" text-anchor="middle" fill="#1d1b16" font-family="ui-monospace,Menlo,monospace" font-size="19" font-weight="700" letter-spacing="2">SYSTEM OF RECORD</text>
+      <text x="505" y="132" text-anchor="middle" fill="#6f6a5c" font-size="14">ground truth</text>
+      <g font-family="ui-monospace,Menlo,monospace" font-size="13" font-weight="600" fill="#1d1b16">
+        <rect x="385" y="156" width="112" height="34" rx="7" fill="none" stroke="#d9d0b8" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <text x="441" y="178" text-anchor="middle">CALENDAR</text>
+        <rect x="513" y="156" width="112" height="34" rx="7" fill="none" stroke="#d9d0b8" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <text x="569" y="178" text-anchor="middle">CRM</text>
+        <rect x="385" y="202" width="112" height="34" rx="7" fill="none" stroke="#d9d0b8" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <text x="441" y="224" text-anchor="middle">MESSAGES</text>
+        <rect x="513" y="202" width="112" height="34" rx="7" fill="none" stroke="#d9d0b8" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <text x="569" y="224" text-anchor="middle">TICKETS</text>
+      </g>
+      <rect x="385" y="258" width="240" height="66" rx="9" fill="none" stroke="#4f8cff" stroke-width="1.6"/>
+      <text x="505" y="285" text-anchor="middle" fill="#4f8cff" font-family="ui-monospace,Menlo,monospace" font-size="13" font-weight="700" letter-spacing="1">CHANGE JOURNAL</text>
+      <text x="505" y="307" text-anchor="middle" fill="#6f6a5c" font-size="12.5">before &amp; after - actor - time</text>
+
+      <!-- auditor -->
+      <rect x="760" y="120" width="200" height="150" rx="14" fill="#1c1f26" stroke="#4f8cff" stroke-width="1.6"/>
+      <text x="860" y="168" text-anchor="middle" fill="#e8e6df" font-family="ui-monospace,Menlo,monospace" font-size="19" font-weight="700" letter-spacing="2">AUDITOR</text>
+      <text x="860" y="194" text-anchor="middle" fill="#8b919e" font-size="14">typed against reader</text>
+      <text x="860" y="214" text-anchor="middle" fill="#8b919e" font-size="14">protocols - it cannot</text>
+      <text x="860" y="234" text-anchor="middle" fill="#8b919e" font-size="14">write to what it audits</text>
+
+      <!-- arrows -->
+      <line x1="252" y1="180" x2="356" y2="180" stroke="#8b919e" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="304" y="168" text-anchor="middle" fill="#8b919e" font-size="13">writes</text>
+      <line x1="758" y1="180" x2="654" y2="180" stroke="#4f8cff" stroke-width="2" marker-end="url(#arrAcc)"/>
+      <text x="706" y="168" text-anchor="middle" fill="#4f8cff" font-size="13">reads only</text>
+
+      <!-- call record flow -->
+      <path d="M 140 272 L 140 396 L 830 396 L 830 274" fill="none" stroke="#8b919e" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arr)"/>
+      <rect x="300" y="380" width="380" height="32" rx="8" fill="#14161a" stroke="#2c313c"/>
+      <text x="490" y="401" text-anchor="middle" fill="#8b919e" font-size="13">CallRecord: transcript + claims - POST /calls, /audit</text>
+      <text x="660" y="378" text-anchor="middle" fill="#8b919e" font-size="13">AuditReport (sealed)</text>
+    </svg>
+  </div>
+  <ul class="points">
+    <li><b>The suspect is untrusted.</b> Transcript, claims, provenance - all testimony, all checkable.</li>
+    <li><b>The system of record is ground truth.</b> Its journal is written by triggers, not app code.</li>
+    <li><b>The auditor holds a read-only handle.</b> It is typed against <b>*Reader</b> protocols and cannot write to the systems it audits.</li>
+  </ul>
+
+  <h2>The audit pipeline</h2>
+  <div class="figure">
+    <svg viewBox="0 0 980 330" role="img" aria-label="Audit pipeline: transcript to claims to auditor over the journal to verdicts and a sealed audit">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#4f8cff"/>
+        </marker>
+      </defs>
+      <g font-family="ui-monospace,Menlo,monospace">
+        <!-- transcript -->
+        <rect x="20" y="110" width="150" height="100" rx="12" fill="#1c1f26" stroke="#2c313c"/>
+        <text x="95" y="152" text-anchor="middle" fill="#4f8cff" font-size="15" font-weight="700" letter-spacing="1">TRANSCRIPT</text>
+        <text x="95" y="176" text-anchor="middle" fill="#8b919e" font-size="12" font-family="system-ui,sans-serif">what the agent said</text>
+        <line x1="172" y1="160" x2="206" y2="160" stroke="#4f8cff" stroke-width="2" marker-end="url(#arr2)"/>
+
+        <!-- claims -->
+        <rect x="210" y="110" width="150" height="100" rx="12" fill="#1c1f26" stroke="#2c313c"/>
+        <text x="285" y="152" text-anchor="middle" fill="#4f8cff" font-size="15" font-weight="700" letter-spacing="1">CLAIMS</text>
+        <text x="285" y="176" text-anchor="middle" fill="#8b919e" font-size="12" font-family="system-ui,sans-serif">action - patient - time</text>
+        <line x1="362" y1="160" x2="396" y2="160" stroke="#4f8cff" stroke-width="2" marker-end="url(#arr2)"/>
+
+        <!-- auditor -->
+        <rect x="400" y="60" width="180" height="90" rx="12" fill="#1c1f26" stroke="#4f8cff" stroke-width="1.6"/>
+        <text x="490" y="98" text-anchor="middle" fill="#4f8cff" font-size="15" font-weight="700" letter-spacing="1">AUDITOR</text>
+        <text x="490" y="122" text-anchor="middle" fill="#8b919e" font-size="12" font-family="system-ui,sans-serif">deterministic - no model</text>
+        <line x1="490" y1="152" x2="490" y2="186" stroke="#4f8cff" stroke-width="2" marker-end="url(#arr2)"/>
+
+        <!-- journal -->
+        <rect x="400" y="190" width="180" height="110" rx="12" fill="#f6f1e4"/>
+        <text x="490" y="222" text-anchor="middle" fill="#1d1b16" font-size="13" font-weight="700" letter-spacing="1">CHANGE JOURNAL</text>
+        <text x="490" y="246" text-anchor="middle" fill="#6f6a5c" font-size="11.5" font-family="system-ui,sans-serif">before &amp; after images</text>
+        <text x="490" y="264" text-anchor="middle" fill="#6f6a5c" font-size="11.5" font-family="system-ui,sans-serif">actor - time - trigger-written</text>
+        <text x="490" y="288" text-anchor="middle" fill="#6f6a5c" font-size="11.5" font-family="system-ui,sans-serif">calendar - CRM - messages - tickets</text>
+
+        <line x1="582" y1="160" x2="616" y2="160" stroke="#4f8cff" stroke-width="2" marker-end="url(#arr2)"/>
+
+        <!-- verdicts -->
+        <rect x="620" y="60" width="160" height="210" rx="12" fill="#1c1f26" stroke="#2c313c"/>
+        <text x="700" y="92" text-anchor="middle" fill="#4f8cff" font-size="15" font-weight="700" letter-spacing="1">VERDICTS</text>
+        <g font-size="12" font-family="system-ui,sans-serif">
+          <rect x="640" y="112" width="120" height="26" rx="6" fill="none" stroke="#1f9d55" stroke-width="1.4"/>
+          <text x="700" y="129" text-anchor="middle" fill="#1f9d55">RECEIPT FOUND</text>
+          <rect x="640" y="148" width="120" height="26" rx="6" fill="none" stroke="#d03b3b" stroke-width="1.4"/>
+          <text x="700" y="165" text-anchor="middle" fill="#d03b3b">MISMATCH</text>
+          <rect x="640" y="184" width="120" height="26" rx="6" fill="none" stroke="#d03b3b" stroke-width="1.4"/>
+          <text x="700" y="201" text-anchor="middle" fill="#d03b3b">NO RECEIPT</text>
+          <rect x="640" y="220" width="120" height="26" rx="6" fill="none" stroke="#4f8cff" stroke-width="1.4"/>
+          <text x="700" y="237" text-anchor="middle" fill="#4f8cff">UNVERIFIABLE</text>
+        </g>
+        <line x1="782" y1="160" x2="816" y2="160" stroke="#4f8cff" stroke-width="2" marker-end="url(#arr2)"/>
+
+        <!-- sealed -->
+        <rect x="820" y="60" width="140" height="210" rx="12" fill="#1c1f26" stroke="#2c313c"/>
+        <text x="890" y="98" text-anchor="middle" fill="#4f8cff" font-size="15" font-weight="700" letter-spacing="1">SEALED</text>
+        <text x="890" y="118" text-anchor="middle" fill="#4f8cff" font-size="15" font-weight="700" letter-spacing="1">AUDIT</text>
+        <text x="890" y="150" text-anchor="middle" fill="#8b919e" font-size="12" font-family="system-ui,sans-serif">hash-chained</text>
+        <text x="890" y="170" text-anchor="middle" fill="#8b919e" font-size="12" font-family="system-ui,sans-serif">signed report</text>
+        <text x="890" y="190" text-anchor="middle" fill="#8b919e" font-size="12" font-family="system-ui,sans-serif">+ findings</text>
+        <text x="890" y="228" text-anchor="middle" fill="#8b919e" font-size="11.5" font-family="system-ui,sans-serif">tamper-evident:</text>
+        <text x="890" y="246" text-anchor="middle" fill="#8b919e" font-size="11.5" font-family="system-ui,sans-serif">the auditor has its</text>
+        <text x="890" y="262" text-anchor="middle" fill="#8b919e" font-size="11.5" font-family="system-ui,sans-serif">own receipts</text>
+      </g>
+    </svg>
+  </div>
+  <p class="cap">Claims are extracted from the transcript, replayed against the journaled window
+    (<b>before</b> and <b>after</b> every write), and scored deterministically. Writes the agent
+    never mentioned surface as <b>findings</b>, so quiet side effects cannot slip through.</p>
+
+  <h2>Systems of record</h2>
+  <ul class="points">
+    <li><b>SQLite</b> - the reference backend: one database, journal written by triggers.</li>
+    <li><b>Google Calendar</b> - the first real adapter: incremental sync tokens, a snapshot cache
+      for before-images, actor attribution via event properties.</li>
+    <li>Anything that can answer <b>"what changed between t0 and t1, and who changed it?"</b>
+      can sit behind the same reader protocols.</li>
+  </ul>
+</main>
+
+<footer>
+  <a href="./">Home</a> · <a href="demo/">Live demo</a> · <a href="https://github.com/aneesh2411/subpoena">Source</a>
+</footer>
+
+</body>
+</html>

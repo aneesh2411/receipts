@@ -34,6 +34,11 @@ a { color:var(--accent); text-decoration:none; }
 .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
 .scroll-hint { position:absolute; bottom:22px; left:50%; transform:translateX(-50%); color:var(--dim);
   font-size:13px; z-index:2; animation:bob 2.2s ease-in-out infinite; }
+nav { position:fixed; top:0; left:0; right:0; z-index:10; display:flex; align-items:center; gap:22px; white-space:nowrap;
+  padding:16px 26px; background:linear-gradient(rgba(20,22,26,.85), transparent); }
+nav .home { font:700 16px var(--mono); letter-spacing:.14em; color:var(--ink); margin-right:auto; }
+nav a { color:var(--dim); font-size:14px; }
+nav a:hover { color:var(--ink); }
 @keyframes bob { 50% { transform:translate(-50%, 8px); } }
 
 section { max-width:1020px; margin:0 auto; padding:84px 24px; }
@@ -68,6 +73,13 @@ footer a { margin:0 10px; }
 </style>
 </head>
 <body>
+
+<nav>
+  <a class="home" href="./">SUBPOENA</a>
+  <a href="demo/">Live demo</a>
+  <a href="architecture.html">Architecture</a>
+  <a href="https://github.com/aneesh2411/subpoena">GitHub</a>
+</nav>
 
 <header class="hero">
   <canvas id="scene"></canvas>
@@ -122,22 +134,11 @@ footer a { margin:0 10px; }
   </div>
 </section>
 
-<section id="architecture">
-  <h2>Architecture</h2>
-  <p class="kicker">Three parties, two trust levels. The suspect writes; the auditor only reads.</p>
-  <div class="arch"><pre>                 writes                          reads only
-  +-----------+ ---------&gt; +------------------+ &lt;--------- +-----------+
-  |  Suspect  |            | System of record |            |  Auditor  |
-  |  (agent)  |            |  calendar | CRM  |            |           |
-  +-----------+            |  messages | tix  |            +-----------+
-        |                  |  + change journal|                  |
-        | CallRecord       +------------------+                  | AuditReport
-        | (transcript + claims)                                  | (sealed)
-        +---------------------------&gt; POST /calls, /audit &lt;------+</pre></div>
-</section>
+
 
 <footer>
   <a href="demo/">Live demo</a> ·
+  <a href="architecture.html">Architecture</a> ·
   <a href="https://github.com/aneesh2411/subpoena">Source</a> ·
   <a href="demo/subpoena-demo.mp4">70s video</a>
   <div style="margin-top:8px">Built by Aneesh Kalisapudi. Every claim needs a receipt.</div>
