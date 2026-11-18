@@ -3,28 +3,63 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
+from shutil import copytree
+
+import pytest
 
 from subpoena.evals import certify as cert
 
 NOW = datetime(2026, 11, 18, 12, 0, tzinfo=UTC)
 
 
-def _root_with_inputs(tmp_path):
-    root = tmp_path / "repo"
-    for rel in cert.FINGERPRINT_INPUTS:
-        src = cert.repo_root() / rel
-        dst = root / rel
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        dst.write_bytes(src.read_bytes())
-    return root
+@pytest.fixture
+def root(tmp_path):
+    repo = tmp_path / "repo"
+    source = cert.repo_root()
+    copytree(source / "src" / "subpoena", repo / "src" / "subpoena")
+    (repo / "pyproject.toml").write_bytes((source / "pyproject.toml").read_bytes())
+    return repo
 
 
-def test_fingerprint_covers_every_input_file(tmp_path):
-    root = _root_with_inputs(tmp_path)
+@pytest.mark.parametrize(
+    "relative_path",
+    ["src/subpoena/auditor/extractor.py", "src/subpoena/scenarios/golden.py", "pyproject.toml"],
+)
+def test_fingerprint_changes_when_input_content_changes(root, relative_path):
     base = cert.fingerprint(root)
-    target = root / cert.FINGERPRINT_INPUTS[0]
-    target.write_bytes(target.read_bytes() + b"\n# a quiet config change\n")
+    target = root / relative_path
+    target.write_bytes(target.read_bytes() + b"\n# fingerprint input changed\n")
     assert cert.fingerprint(root) != base
+
+
+def test_fingerprint_tracks_source_addition_rename_and_removal(root):
+    base = cert.fingerprint(root)
+    assert cert.fingerprint(root) == base
+    new_source = root / "src" / "subpoena" / "auditor" / "new_module.py"
+    new_source.write_bytes(b"VALUE = 1\n")
+    added = cert.fingerprint(root)
+    assert added != base
+
+    renamed = new_source.with_name("renamed_module.py")
+    new_source.rename(renamed)
+    assert cert.fingerprint(root) not in {base, added}
+    renamed.unlink()
+    assert cert.fingerprint(root) == base
+
+
+def test_fingerprint_ignores_generated_files(root):
+    base = cert.fingerprint(root)
+    for relative_path in (
+        "src/subpoena/auditor/__pycache__/extractor.pyc",
+        "src/subpoena/auditor/__pycache__/generated.py",
+        "src/subpoena/build/lib/generated.py",
+        "src/subpoena/auditor/generated.json",
+        "evals/results/generated.json",
+    ):
+        target = root / relative_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(b"generated")
+    assert cert.fingerprint(root) == base
 
 
 def test_certify_writes_json_markdown_and_latest(tmp_path):
@@ -37,10 +72,12 @@ def test_certify_writes_json_markdown_and_latest(tmp_path):
     assert card.status(NOW, card.fingerprint) == "CURRENT"
 
 
-def test_scorecard_goes_stale_when_the_code_changes(tmp_path):
+def test_scorecard_goes_stale_when_the_code_changes(tmp_path, root):
     out = tmp_path / "scorecards"
-    card = cert.certify(out, now=NOW)
-    assert card.status(NOW, "0" * 64).startswith("STALE (configuration changed)")
+    cert.certify(out, now=NOW, root=root)
+    (root / "src" / "subpoena" / "auditor" / "extractor.py").write_bytes(b"# changed\n")
+    status, _ = cert.check(out, now=NOW, root=root)
+    assert status == "STALE (configuration changed)"
 
 
 def test_scorecard_expires(tmp_path):

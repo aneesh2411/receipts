@@ -28,18 +28,10 @@ from subpoena.scenarios import GOLDEN
 SCHEMA_VERSION = 1
 VALIDITY_DAYS = 90
 
-# The code a scorecard certifies: whatever plays the calls, grades them, and
-# defines the dataset. A change to any of these is a different agent.
-FINGERPRINT_INPUTS = (
-    "src/subpoena/scenarios/golden.py",
-    "src/subpoena/scenarios/world.py",
-    "src/subpoena/suspect/agent.py",
-    "src/subpoena/suspect/narrator.py",
-    "src/subpoena/suspect/faults.py",
-    "src/subpoena/auditor/engine.py",
-    "src/subpoena/auditor/verdicts.py",
-    "src/subpoena/auditor/findings.py",
-)
+_GENERATED_DIRS = {
+    "__pycache__", ".venv", ".pytest_cache", ".ruff_cache", ".receipts",
+    "build", "dist", "htmlcov",
+}
 
 DEFAULT_DIR = Path(__file__).resolve().parents[3] / "evals" / "scorecards"
 
@@ -49,13 +41,28 @@ def repo_root() -> Path:
 
 
 def fingerprint(root: Path | None = None) -> str:
-    """Content hash of the code and dataset being certified."""
+    """Hash the version, pyproject.toml, and Python sources under src/subpoena.
+
+    The package includes benchmark definitions and evaluation code. Generated
+    directories and egg-info are excluded, as are non-Python package files.
+    Inputs use sorted repository-relative POSIX paths and raw file bytes.
+    """
     root = root or repo_root()
+    package = root / "src" / "subpoena"
+    inputs = ["pyproject.toml"]
+    for path in package.rglob("*.py"):
+        directories = path.relative_to(package).parts[:-1]
+        if any(name in _GENERATED_DIRS or name.endswith(".egg-info") for name in directories):
+            continue
+        if path.is_file():
+            inputs.append(path.relative_to(root).as_posix())
+
     h = hashlib.sha256()
-    h.update(f"subpoena/{__version__}".encode())
-    for rel in FINGERPRINT_INPUTS:
+    h.update(f"subpoena/{__version__}\0".encode())
+    for rel in sorted(inputs):
         h.update(rel.encode())
-        h.update((root / rel).read_bytes())
+        h.update(b"\0")
+        h.update(hashlib.sha256((root / rel).read_bytes()).digest())
     return h.hexdigest()
 
 
@@ -172,7 +179,7 @@ def render_markdown(card: Scorecard, diff: dict[str, Any]) -> str:
         f"- Expires at: {card.expires_at.isoformat()} ({VALIDITY_DAYS} days, or any change "
         "to the certified code)",
         f"- Fingerprint: `{card.fingerprint[:16]}...` "
-        f"({len(FINGERPRINT_INPUTS)} source files + receipts/{__version__})",
+        f"(Python package + pyproject.toml + Subpoena {__version__})",
         "",
         "| calls | claim F1 | status accuracy | finding F1 | call accuracy | strict |",
         "|---|---|---|---|---|---|",
