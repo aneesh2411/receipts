@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from receipts.auditor.extractor import RuleBasedExtractor, merge_claims
 from receipts.models import AppointmentBooked, ClaimSource
-from receipts.scenarios.world import CALL_START, CLINIC, MAYA, PATEL, at
+from receipts.scenarios.world import CALL_START, CLINIC, MAYA, at
 
 
 def _booked(claim_id: str, turn: int, provider: str, **kw) -> AppointmentBooked:
@@ -66,8 +66,12 @@ def test_extractor_reads_a_recap_line() -> None:
     from receipts.models import Turn
 
     clinic_call.transcript = (
-        Turn(index=0, speaker="agent", text="To recap, you're booked with Dr. Patel on "
-             "Tuesday, March 3 at 2:30 PM.", at=CALL_START),
+        Turn(
+            index=0,
+            speaker="agent",
+            text="To recap, you're booked with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+            at=CALL_START,
+        ),
     )
     claims = RuleBasedExtractor().extract(clinic_call, CLINIC)
     assert len(claims) == 1 and claims[0].provider == "Dr. Patel"

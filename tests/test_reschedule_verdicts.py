@@ -32,9 +32,13 @@ def _reschedule_claim(**kw) -> Rescheduled:
 
 def _seed_appointment(clinic) -> str:
     patient = clinic.patient(MAYA)
-    return _seed(clinic).calendar.create_appointment(
-        patient_id=patient.id, provider=PATEL, start=at(1, 10), duration_min=30
-    ).id
+    return (
+        _seed(clinic)
+        .calendar.create_appointment(
+            patient_id=patient.id, provider=PATEL, start=at(1, 10), duration_min=30
+        )
+        .id
+    )
 
 
 def test_in_place_move_that_rewrites_the_record_is_a_mismatch(clinic) -> None:

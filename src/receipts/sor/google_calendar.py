@@ -177,10 +177,7 @@ class GoogleCalendarReader:
 
     def _list(self, calendar_id: str, **params: Any) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = []
-        request = (
-            self._service.events()
-            .list(calendarId=calendar_id, singleEvents=True, **params)
-        )
+        request = self._service.events().list(calendarId=calendar_id, singleEvents=True, **params)
         while request is not None:
             page = request.execute()
             items.extend(page.get("items", []))
@@ -192,11 +189,7 @@ class GoogleCalendarReader:
         candidates = [calendar_id] if calendar_id else list(self._calendars.values())
         for cal_id in candidates:
             try:
-                ev = (
-                    self._service.events()
-                    .get(calendarId=cal_id, eventId=appointment_id)
-                    .execute()
-                )
+                ev = self._service.events().get(calendarId=cal_id, eventId=appointment_id).execute()
             except Exception:
                 continue
             return event_to_appointment(self._provider_for(cal_id), ev)
@@ -217,9 +210,7 @@ class GoogleCalendarReader:
             params["showDeleted"] = True
         if patient_id:
             params["privateExtendedProperty"] = f"{PATIENT_PROPERTY}={patient_id}"
-        cal_ids = (
-            [self._calendars[provider]] if provider else list(self._calendars.values())
-        )
+        cal_ids = [self._calendars[provider]] if provider else list(self._calendars.values())
         out = []
         for cal_id in cal_ids:
             for ev in self._list(cal_id, **params):
@@ -259,9 +250,7 @@ class GoogleCalendarReader:
         """
         found: list[tuple[str, dict[str, Any], dict[str, Any] | None]] = []
         for cal_id in self._calendars.values():
-            events = self._list(
-                cal_id, updatedMin=_rfc3339(since), showDeleted=True
-            )
+            events = self._list(cal_id, updatedMin=_rfc3339(since), showDeleted=True)
             for ev in events:
                 if _parse(ev["updated"]) > until:
                     continue
@@ -279,16 +268,12 @@ class GoogleCalendarReader:
                     entity_id=apt.id,
                     op="insert" if before is None else "update",
                     before=(
-                        appointment_to_row(
-                            event_to_appointment(self._provider_for(cal_id), before)
-                        )
+                        appointment_to_row(event_to_appointment(self._provider_for(cal_id), before))
                         if before
                         else None
                     ),
                     after=appointment_to_row(apt),
-                    actor=props.get(
-                        ACTOR_PROPERTY, ev.get("creator", {}).get("email", "unknown")
-                    ),
+                    actor=props.get(ACTOR_PROPERTY, ev.get("creator", {}).get("email", "unknown")),
                     at=_parse(ev["updated"]),
                 )
             )
@@ -361,9 +346,7 @@ class GoogleCalendarAdapter(GoogleCalendarReader):
             patient_id=patient_id, start=start, duration_min=duration_min, reason=reason
         )
         ev = (
-            self._service.events()
-            .insert(calendarId=self._calendars[provider], body=body)
-            .execute()
+            self._service.events().insert(calendarId=self._calendars[provider], body=body).execute()
         )
         return event_to_appointment(provider, ev)
 
@@ -372,11 +355,7 @@ class GoogleCalendarAdapter(GoogleCalendarReader):
         candidates = [calendar_id] if calendar_id else list(self._calendars.values())
         for cal_id in candidates:
             try:
-                ev = (
-                    self._service.events()
-                    .get(calendarId=cal_id, eventId=appointment_id)
-                    .execute()
-                )
+                ev = self._service.events().get(calendarId=cal_id, eventId=appointment_id).execute()
                 return cal_id, ev  # type: ignore[return-value]
             except Exception:
                 continue
@@ -391,9 +370,9 @@ class GoogleCalendarAdapter(GoogleCalendarReader):
         duration = end - start
         ev["start"] = {"dateTime": _rfc3339(new_start)}
         ev["end"] = {"dateTime": _rfc3339(new_start + duration)}
-        ev.setdefault("extendedProperties", {}).setdefault("private", {})[
-            ACTOR_PROPERTY
-        ] = self._actor
+        ev.setdefault("extendedProperties", {}).setdefault("private", {})[ACTOR_PROPERTY] = (
+            self._actor
+        )
         updated = (
             self._service.events()
             .patch(calendarId=cal_id, eventId=appointment_id, body=ev)
@@ -450,15 +429,11 @@ class GoogleCalendarAdapter(GoogleCalendarReader):
         return event_to_appointment(provider, updated)
 
     def cancel_appointment(self, appointment_id: str) -> Appointment:
-        return self.update_appointment(
-            appointment_id, status=AppointmentStatus.CANCELLED.value
-        )
+        return self.update_appointment(appointment_id, status=AppointmentStatus.CANCELLED.value)
 
     def delete_appointment(self, appointment_id: str) -> None:
         cal_id, _ = self._find(appointment_id)
-        self._service.events().delete(
-            calendarId=cal_id, eventId=appointment_id
-        ).execute()
+        self._service.events().delete(calendarId=cal_id, eventId=appointment_id).execute()
 
     @classmethod
     def from_service_account_file(

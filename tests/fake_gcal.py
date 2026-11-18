@@ -7,8 +7,9 @@ Timestamps come from an injected clock so tests stay deterministic.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import UTC, datetime
-from typing import Any, Callable
+from typing import Any
 
 
 class HttpError404(Exception):
@@ -28,7 +29,7 @@ def _parse(ts: str) -> datetime:
 
 
 class _Events:
-    def __init__(self, service: "FakeCalendarService") -> None:
+    def __init__(self, service: FakeCalendarService) -> None:
         self._svc = service
 
     # -- reads --------------------------------------------------------------- #

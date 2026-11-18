@@ -175,6 +175,7 @@ def cmd_eval(args: argparse.Namespace, console: Console) -> int:
     for col in ("auditor", "calls", "claim P", "claim R", "exact status", "finding R",
                 "call acc", "call strict"):  # fmt: skip
         table.add_column(col)
+
     def pct(x: float | None) -> str:
         return f"{x:.1%}" if x is not None else "n/a"
 

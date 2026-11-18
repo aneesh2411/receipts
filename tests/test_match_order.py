@@ -11,8 +11,7 @@ from __future__ import annotations
 from dataclasses import replace
 
 from receipts.models import VerdictStatus
-from receipts.scenarios.world import PATEL, Scenario, at, build_world
-from receipts.scenarios.world import audit_call, run_suspect
+from receipts.scenarios.world import PATEL, Scenario, at, audit_call, build_world, run_suspect
 from receipts.suspect import Book
 
 SLOT = at(1, 14, 30)

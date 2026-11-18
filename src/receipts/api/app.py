@@ -19,8 +19,8 @@ from __future__ import annotations
 
 import hmac
 import logging
-import threading
 import os
+import threading
 import uuid
 from collections import defaultdict
 from dataclasses import dataclass

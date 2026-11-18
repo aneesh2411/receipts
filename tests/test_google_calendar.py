@@ -5,17 +5,16 @@ from __future__ import annotations
 from datetime import timedelta
 
 import pytest
+from fake_gcal import FakeCalendarService
 
 from receipts.models import AppointmentStatus, Entity
-from receipts.scenarios.world import CALL_START, PATEL, KIM, at
+from receipts.scenarios.world import CALL_START, KIM, PATEL, at
 from receipts.sor.base import RecordNotFound
 from receipts.sor.google_calendar import (
     GoogleCalendarAdapter,
     GoogleCalendarReader,
     SnapshotCache,
 )
-
-from fake_gcal import FakeCalendarService
 
 CALENDARS = {PATEL: "cal-patel", KIM: "cal-kim"}
 START = at(2, 14, 0)
@@ -37,7 +36,8 @@ def test_create_then_get_and_list_roundtrip():
     assert adapter.get_appointment(apt.id) == apt
     assert adapter.list_appointments(patient_id="pat_0001") == [apt]
     assert adapter.list_appointments(provider=KIM) == []
-    in_window = adapter.list_appointments(window=(START - timedelta(hours=1), START + timedelta(hours=2)))
+    window = (START - timedelta(hours=1), START + timedelta(hours=2))
+    in_window = adapter.list_appointments(window=window)
     assert in_window == [apt]
 
 
