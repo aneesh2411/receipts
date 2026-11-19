@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import sqlite3
 import threading
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 
 from subpoena.api import review_store
 from subpoena.api.review import Receipt, TransitionRequest
+from subpoena.api.webhook import SCHEMA as WEBHOOK_SCHEMA
+from subpoena.api.webhook import write_transaction
 from subpoena.auditor.seal import GENESIS, Sealer
 from subpoena.models import AuditReport, CallRecord
 
@@ -28,7 +30,7 @@ class AuditStore:
         self._conn = sqlite3.connect(path, check_same_thread=False, isolation_level=None)
         self._lock = threading.RLock()
         with self._lock:
-            self._conn.executescript(_SCHEMA + review_store.REVIEW_SCHEMA)
+            self._conn.executescript(_SCHEMA + review_store.REVIEW_SCHEMA + WEBHOOK_SCHEMA)
 
     def close(self) -> None:
         with self._lock:
@@ -61,9 +63,15 @@ class AuditStore:
             ).fetchone()
         return row[0] if row else GENESIS
 
-    def append(self, report: AuditReport, sealer: Sealer) -> AuditReport:
+    def append(
+        self,
+        report: AuditReport,
+        sealer: Sealer,
+        *,
+        enqueue: Callable[[sqlite3.Connection, AuditReport], None] | None = None,
+    ) -> AuditReport:
         """Seal ``report`` onto the end of the ledger and store it, atomically."""
-        with self._lock:
+        with self._lock, write_transaction(self._conn):
             sealed = sealer.seal(report, self.head())
             assert sealed.seal is not None
             self._conn.execute(
@@ -75,6 +83,8 @@ class AuditStore:
                     sealed.model_dump_json(),
                 ),
             )
+            if enqueue is not None:
+                enqueue(self._conn, sealed)
         return sealed
 
     def get_audit(self, audit_id: str) -> AuditReport | None:

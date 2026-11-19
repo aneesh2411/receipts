@@ -25,6 +25,7 @@ import os
 import threading
 import uuid
 from collections import defaultdict
+from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Annotated, Any
@@ -119,7 +120,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if settings.critical_webhook_url is not None
         else None
     )
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        if webhook is not None:
+            webhook.start()
+        try:
+            yield
+        finally:
+            if webhook is not None:
+                webhook.stop()
+
     app = FastAPI(
+        lifespan=lifespan,
         title="Subpoena",
         version=__version__,
         description="Every claim needs a receipt: outcome auditing for AI voice agents.",
@@ -136,10 +149,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return app.state.store
 
     def append_report(report: AuditReport) -> AuditReport:
-        sealed = store().append(report, app.state.sealer)
-        if webhook is not None:
-            webhook.deliver(sealed)
-        return sealed
+        return store().append(
+            report, app.state.sealer, enqueue=webhook.enqueue if webhook is not None else None
+        )
 
     def require_key(x_api_key: Annotated[str | None, Header()] = None) -> None:
         expected = settings.api_key

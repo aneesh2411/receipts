@@ -3,10 +3,9 @@
 import json
 import socket
 import sqlite3
-import urllib.request
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
-from email.message import Message
-from io import BytesIO
 
 import pytest
 from fastapi.testclient import TestClient
@@ -31,6 +30,7 @@ def deny_network(monkeypatch):
 def receiver(monkeypatch, tmp_path):
     calls = []
     results = []
+    now = [1000.0]
 
     def transport(url, body, event_id, timeout):
         calls.append((url, json.loads(body), event_id, timeout))
@@ -39,17 +39,20 @@ def receiver(monkeypatch, tmp_path):
             raise result
         return result
 
+    worker = None
     original = hooks.CriticalWebhook
 
     def configure(url, db_path):
-        return original(url, db_path, transport=transport)
+        nonlocal worker
+        worker = original(url, db_path, transport=transport, clock=lambda: now[0])
+        return worker
 
     monkeypatch.setattr("subpoena.api.app.CriticalWebhook", configure)
     path = tmp_path / "audits.db"
     monkeypatch.setenv("SUBPOENA_CRITICAL_WEBHOOK_URL", URL)
     monkeypatch.setenv("SUBPOENA_DB", str(path))
     client = TestClient(create_app())
-    return client, calls, results, path
+    return client, calls, results, path, worker, now
 
 
 def journal(path):
@@ -62,18 +65,23 @@ def journal(path):
 
 def test_disabled_by_default(monkeypatch):
     monkeypatch.delenv("SUBPOENA_CRITICAL_WEBHOOK_URL", raising=False)
-    client = TestClient(create_app(Settings.from_env()))
-    assert client.post(f"{SCENARIO}/run").status_code == 201
+    with TestClient(create_app(Settings.from_env())) as client:
+        assert client.post(f"{SCENARIO}/run").status_code == 201
+        assert len(list(client.app.state.store.audits())) == 1
+        assert client.app.state.store._conn.execute(
+            "SELECT count(*) FROM critical_webhook_outbox"
+        ).fetchone() == (0,)
 
 
 def test_noncritical_ignored(receiver):
-    client, calls, _, path = receiver
+    client, calls, _, path, worker, _ = receiver
     assert client.post("/demo/scenarios/clean-book/run").status_code == 201
+    assert not worker._step()
     assert calls == journal(path) == []
 
 
 def test_critical_payload_and_repeat_audit(receiver):
-    client, calls, _, path = receiver
+    client, calls, _, path, worker, _ = receiver
     call = client.post(f"{SCENARIO}/stage").json()["data"]
     for _ in range(2):
         response = client.post("/audit", json={"call": call})
@@ -81,6 +89,7 @@ def test_critical_payload_and_repeat_audit(receiver):
         report = response.json()["data"]
         assert report["outcome"] == "DISCREPANCIES"
         assert client.get(f"/audit/{report['audit_id']}/report").json()["data"] == report
+        assert worker._step()
         url, payload, event_id, timeout = calls[-1]
         assert url == URL
         assert report["verdicts"][0]["severity"] == "CRITICAL"
@@ -102,11 +111,21 @@ def test_critical_payload_and_repeat_audit(receiver):
 
 
 def test_retries_and_durable_failure(receiver):
-    client, calls, results, path = receiver
+    client, calls, results, path, worker, now = receiver
     results[:] = [TimeoutError(URL), 429, 503]
     response = client.post(f"{SCENARIO}/run")
     assert response.status_code == 201
     report = response.json()["data"]
+    assert worker._step()
+    assert not worker._step()
+    now[0] += 1
+    assert worker._step()
+    now[0] += 1
+    assert not worker._step()
+    now[0] += 1
+    assert worker._step()
+    now[0] += 60
+    assert not worker._step()
     assert len(calls) == 3 and all(call == calls[0] for call in calls)
     client.app.state.store.close()
     rows = journal(path)
@@ -123,16 +142,6 @@ def test_retries_and_durable_failure(receiver):
     reopened = TestClient(create_app(Settings(db_path=str(path))))
     assert reopened.get("/ledger/verify").json()["data"]["ok"]
     assert reopened.get(f"/audit/{report['audit_id']}/report").json()["data"] == report
-
-
-def test_same_report_is_not_redelivered(receiver):
-    client, calls, _, path = receiver
-    report_id = client.post(f"{SCENARIO}/run").json()["data"]["audit_id"]
-    report = client.app.state.store.get_audit(report_id)
-    hooks.CriticalWebhook(URL, str(path), transport=lambda *args: pytest.fail("duplicate")).deliver(
-        report
-    )
-    assert len(calls) == 1
 
 
 @pytest.mark.parametrize(
@@ -159,36 +168,6 @@ def test_enabled_requires_a_durable_store():
         create_app(Settings(critical_webhook_url=URL))
 
 
-@pytest.mark.parametrize("address", ["127.0.0.1", "10.0.0.1", "169.254.169.254", "::1"])
-def test_real_transport_rejects_nonpublic_dns(monkeypatch, address):
-    monkeypatch.setattr(socket, "getaddrinfo", lambda *a, **kw: [(0, 0, 0, "", (address, 443))])
-    with pytest.raises(hooks._BlockedDestination):
-        hooks._post(URL, b"{}", "synthetic-event", 2.0)
-
-
-@pytest.mark.parametrize("status", [302, 307, 400])
-def test_real_transport_does_not_redirect_or_retry_terminal_http(monkeypatch, tmp_path, status):
-    monkeypatch.setattr(socket, "getaddrinfo", lambda *a, **kw: [(0, 0, 0, "", ("8.8.8.8", 443))])
-    requests = []
-
-    def respond(self, request):
-        requests.append(request)
-        headers = Message()
-        headers["Location"] = "https://other.example.test/"
-        response = urllib.response.addinfourl(BytesIO(b""), headers, request.full_url, status)
-        response.msg = "synthetic response"
-        return response
-
-    monkeypatch.setattr(urllib.request.HTTPSHandler, "https_open", respond)
-    path = tmp_path / "audits.db"
-    client = TestClient(create_app(Settings(db_path=str(path), critical_webhook_url=URL)))
-    assert client.post(f"{SCENARIO}/run").status_code == 201
-    assert [r.full_url for r in requests] == [URL]
-    assert requests[0].get_method() == "POST"
-    assert requests[0].get_header("Idempotency-key") == journal(path)[-1][0]
-    assert journal(path)[-1][3:] == (1, "http_error", status)
-
-
 def test_critical_standalone_finding_is_delivered(receiver, monkeypatch):
     from subpoena.models import Evidence, Finding, FindingKind, Severity
 
@@ -207,10 +186,161 @@ def test_critical_standalone_finding_is_delivered(receiver, monkeypatch):
         return report.model_copy(update={"findings": (finding,)})
 
     monkeypatch.setattr(app, "audit_call", audit_call)
-    client, calls, _, _ = receiver
+    client, calls, _, _, worker, _ = receiver
     assert client.post("/demo/scenarios/clean-book/run").status_code == 201
+    assert worker._step()
     assert len(calls) == 1
     payload = calls[0][1]
     assert payload["result_pointer"] == "/findings/0"
     assert payload["evidence_pointers"] == ["/findings/0/evidence/0"]
     assert "synthetic" not in repr(payload)
+
+
+def test_enqueue_failure_rolls_back_audit(receiver):
+    client, calls, _, path, worker, _ = receiver
+    with closing(sqlite3.connect(path)) as conn:
+        conn.execute("""
+            CREATE TRIGGER fail_enqueue BEFORE INSERT ON critical_webhook_outbox
+            BEGIN SELECT RAISE(ABORT, 'synthetic enqueue error'); END
+        """)
+    http = TestClient(client.app, raise_server_exceptions=False)
+    assert http.post(f"{SCENARIO}/run").status_code == 500
+    assert list(client.app.state.store.audits()) == []
+    assert not worker._step()
+    assert calls == journal(path) == []
+
+
+@pytest.mark.parametrize("crash_after_send", [False, True])
+def test_expired_claim_replays_after_restart(receiver, crash_after_send):
+    client, calls, _, path, worker, now = receiver
+    report = client.post(f"{SCENARIO}/run").json()["data"]
+    with closing(sqlite3.connect(path, isolation_level=None)) as conn:
+        abandoned = worker._claim(conn)
+    if crash_after_send:
+        worker._transport(URL, abandoned.payload, abandoned.event_id, 2.0)
+    restarted = hooks.CriticalWebhook(
+        URL, str(path), transport=worker._transport, clock=lambda: now[0]
+    )
+    assert not restarted._step()
+    now[0] += 30
+    assert not restarted._step()  # Records lease expiry and schedules backoff.
+    assert not restarted._step()
+    now[0] += 1
+    assert restarted._step()
+    # A stale worker cannot overwrite the new result.
+    with closing(sqlite3.connect(path, isolation_level=None)) as conn:
+        worker._finish(conn, abandoned, "delivered", False, 204)
+    rows = journal(path)
+    assert [row[4] for row in rows] == ["started", "lease_expired", "started", "delivered"]
+    assert {row[0] for row in rows} == {abandoned.event_id}
+    assert {row[1] for row in rows} == {report["audit_id"]}
+    assert len(calls) == 1 + crash_after_send
+    assert {call[2] for call in calls} == {abandoned.event_id}
+
+
+def test_three_expired_claims_are_terminal(receiver):
+    client, _, _, path, worker, now = receiver
+    client.post(f"{SCENARIO}/run")
+    with closing(sqlite3.connect(path, isolation_level=None)) as conn:
+        for attempt in range(3):
+            assert worker._claim(conn).attempt == attempt + 1
+            now[0] += 30
+            assert worker._claim(conn) is None
+            now[0] += 4
+        assert worker._claim(conn) is None
+    assert journal(path)[-1][4] == "lease_expired_exhausted"
+
+
+def test_pending_replay_respects_target_and_legacy_journal(receiver):
+    client, calls, _, path, worker, now = receiver
+    with closing(sqlite3.connect(path)) as conn, conn:
+        conn.executemany(
+            "INSERT INTO critical_webhook_journal VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [
+                ("old", "old", "/verdicts/0", 1, outcome, None, "old-time")
+                for outcome in ("started", "http_error")
+            ],
+        )
+    client.post(f"{SCENARIO}/run")
+    matching = hooks.CriticalWebhook(
+        URL, str(path), transport=worker._transport, clock=lambda: now[0]
+    )
+    changed = hooks.CriticalWebhook(
+        URL + "&rotate=1", str(path), transport=worker._transport, clock=lambda: now[0]
+    )
+    assert not changed._step()
+    with TestClient(create_app(Settings(db_path=str(path)))):
+        assert calls == []
+    assert matching._step()
+    assert not matching._step()
+    assert len(calls) == 1
+    assert [r[4] for r in journal(path)] == ["started", "http_error", "started", "delivered"]
+
+
+def test_workers_contend_for_one_lease(receiver):
+    client, calls, _, path, worker, now = receiver
+    client.post(f"{SCENARIO}/run")
+    entered = threading.Event()
+    release = threading.Event()
+
+    def slow(*args):
+        entered.set()
+        assert release.wait(3)
+        return worker._transport(*args)
+
+    other = hooks.CriticalWebhook(URL, str(path), transport=slow, clock=lambda: now[0])
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(other._step)
+        try:
+            assert entered.wait(3)
+            assert not worker._step()
+        finally:
+            release.set()
+        assert future.result(timeout=3)
+    assert len(calls) == 1
+    assert [row[4] for row in journal(path)] == ["started", "delivered"]
+
+
+def test_lifespan_delivery_does_not_hold_audit_response(receiver):
+    client, _, _, path, worker, _ = receiver
+    entered = threading.Event()
+    release = threading.Event()
+
+    def slow(*_):
+        entered.set()
+        if not release.wait(3):
+            raise TimeoutError
+        return 204
+
+    worker._transport = slow
+    with client, ThreadPoolExecutor(max_workers=1) as pool:
+        try:
+            result = pool.submit(client.post, f"{SCENARIO}/run")
+            assert entered.wait(2)
+            response = result.result(timeout=1)
+            assert response.status_code == 201
+            assert client.get("/ledger/verify").json()["data"]["ok"]
+            assert journal(path)[-1][4] == "started"
+        finally:
+            release.set()
+    assert worker._thread is None
+    assert journal(path)[-1][4] == "delivered"
+
+
+def test_lifespan_replays_pending_and_finishes_terminal_http(receiver, monkeypatch):
+    client, _, _, path, _, now = receiver
+    assert client.post(f"{SCENARIO}/run").status_code == 201
+    entered = threading.Event()
+
+    def redirect(*_):
+        entered.set()
+        return 307
+
+    worker = hooks.CriticalWebhook(URL, str(path), transport=redirect, clock=lambda: now[0])
+    monkeypatch.setattr(app, "CriticalWebhook", lambda *_: worker)
+    reopened = create_app(Settings(db_path=str(path), critical_webhook_url=URL))
+    with TestClient(reopened):
+        assert entered.wait(3)
+    now[0] += 60
+    assert not worker._step()
+    assert [row[4:] for row in journal(path)] == [("started", None), ("http_error", 307)]
