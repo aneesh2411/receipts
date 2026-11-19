@@ -85,7 +85,33 @@ Deliberately deferred: multi-tenant auth and retention (real, but it is
 plumbing that demos badly), and more claim types (payments, records updates)
 until ingest exists to feed them real data.
 
-## 4. The wave
+## 4. What practitioners ask for (LinkedIn research, 2026-11-19)
+
+A sourced read of practitioner discussions (vendors and buyers of voice AI;
+failure rates self-reported, feature ranking is inference) lines up behind the
+same gap and sharpens the wave:
+
+1. "The agent said it booked; the calendar says otherwise" is the recurring
+   pain (calendar API 429s during peak, then a confident confirmation; evals
+   showing a tool call but no event created). This is Subpoena's core case.
+2. Corrections must bind to the final write: a caller correcting Thursday to
+   Tuesday must result in Tuesday on the record, with the stale value nowhere
+   reappearing - acknowledging the correction is not using it. New audit
+   capability: correction-aware claim chains (#TBD).
+3. Handoff success is context delivery, not a transfer attempt (a 69-comment
+   CX thread). This is our known gap gap-garbled-handoff: free-text ticket
+   summaries are where it bites.
+4. Every flag must be reviewable, and confirmed failures should become
+   regression cases tied to the agent version - supports #49 and #50.
+5. Transparent audit cost and a cheap test mode - cheap to keep in mind for
+   the API, not a feature yet.
+
+Sources: linkedin.com posts by Pritesh Kumar (Dograh), Vadym Marochok,
+Sajid Manzoor (Testiva), Nishant Sinha, Noreen Javed, Nick Brezonik,
+Mike Oeth, Antaripa Saha, Alex Pricopie, Skylar Bays, Frank Kish;
+parlance-labs.com/blog/posts/auto-evals. Retrieved 2026-11-19.
+
+## 5. The wave
 
 Sequenced so each piece lands independently:
 
@@ -99,6 +125,8 @@ Sequenced so each piece lands independently:
    journal, API.
 5. Honesty-over-time scorecards (#TBD) - per agent version and claim type.
 6. Critical-finding webhook (#TBD) - last, smallest.
+7. Correction binding (#TBD) - the last settled value must be what lands in
+   the write, for date, patient, phone and recipient claims.
 
 ## Sources
 
