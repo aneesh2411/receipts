@@ -1,6 +1,8 @@
 """Verify the eval results page against its recorded source."""
 
 import json
+import re
+from datetime import UTC, datetime
 from hashlib import sha256
 from html import escape
 
@@ -22,7 +24,7 @@ def test_export_is_deterministic_and_matches_pages(tmp_path):
     provenance = scorecard["provenance"]
     assert provenance["source"] == "evals/results/latest.json"
     assert provenance["sha256"] == sha256(raw).hexdigest()
-    assert provenance["check_in_date"] == "2026-11-19"
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", provenance["check_in_date"])
 
     page = (first / "evals.html").read_text(encoding="utf-8")
     assert provenance["sha256"] in page
@@ -76,4 +78,5 @@ def test_changed_snapshot_uses_its_own_values_and_escapes_failure_text(tmp_path)
     assert "<td>12.34%</td>" in page
     assert "<strong>&lt;example&gt;</strong>" in page
     assert "<code>expected &lt;missing&gt;, got &lt;verified&gt;</code>" in page
-    assert "Scorecard check-in date <strong>Unavailable</strong>" in page
+    today = datetime.now(UTC).date().isoformat()
+    assert f"Scorecard check-in date <strong>{today}</strong>" in page

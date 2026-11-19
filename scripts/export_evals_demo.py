@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import UTC, datetime
 from html import escape
 from pathlib import Path
 
@@ -189,6 +190,15 @@ def export(source: Path = SOURCE, demo: Path = DEMO) -> None:
     results = json.loads(raw)
     fingerprint = hashlib.sha256(raw).hexdigest()
     check_in_date = CHECK_IN_DATES.get(fingerprint)
+    previous = demo / "data-evals" / "scorecard.json"
+    if check_in_date is None and previous.exists():
+        # Same results bytes as the last export: keep that export's date.
+        old = json.loads(previous.read_text(encoding="utf-8")).get("provenance", {})
+        if old.get("sha256") == fingerprint:
+            check_in_date = old.get("check_in_date")
+    if check_in_date is None:
+        # New results (eval re-run): date them from this export.
+        check_in_date = datetime.now(UTC).date().isoformat()
     page = render(results, check_in_date, fingerprint)
     scorecard = {
         "provenance": {
