@@ -207,7 +207,7 @@ subpoena serve
 | `POST /audit` | Audit a call against the system of record. |
 | `GET /audit/{id}/report` | Sealed report. `?format=md` for Markdown. |
 | `GET /audits` | Recent audits. |
-| `GET /scorecard` | Per-agent claim honesty. |
+| `GET /scorecard` | Per-agent claim honesty: totals, per-version buckets ordered by first audit, a daily series, and regression flags. A flag fires when a version's verified-rate on a claim type drops at least 10 points below everything earlier, with at least 5 claims on both sides (policy constants in `src/subpoena/api/scorecard.py`). Version strings come from sealed provenance and are ordered by first audit, never parsed. |
 | `GET /ledger/verify` | Re-verify every seal and chain link; `?strict=true` requires authenticated signatures. |
 | `POST /demo/scenarios/{id}/run` | Play a scenario in a sandbox and audit it. |
 | `POST /demo/scenarios/{id}/stage` | Load a scenario into the live store. |

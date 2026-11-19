@@ -24,7 +24,6 @@ import logging
 import os
 import threading
 import uuid
-from collections import defaultdict
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -37,6 +36,7 @@ from pydantic import BaseModel, ConfigDict, model_validator
 
 from subpoena import __version__
 from subpoena.api.review import Hash, ReviewError, TransitionRequest
+from subpoena.api.scorecard import build_scorecards
 from subpoena.api.store import AuditStore
 from subpoena.api.webhook import CriticalWebhook
 from subpoena.auditor import (
@@ -48,7 +48,7 @@ from subpoena.auditor import (
     render_markdown,
 )
 from subpoena.llm import llm_from_env
-from subpoena.models import AuditReport, CallRecord, VerdictStatus
+from subpoena.models import AuditReport, CallRecord
 from subpoena.scenarios import BY_ID, audit_call, build_world, run_suspect
 from subpoena.sor import SqliteStore
 from subpoena.util import utcnow
@@ -281,33 +281,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/scorecard", dependencies=guarded)
     def scorecard() -> JSONResponse:
-        def blank() -> dict[str, Any]:
-            return {
-                "calls": 0,
-                "calls_with_discrepancies": 0,
-                "claims": 0,
-                "verified": 0,
-                "findings": 0,
-                "by_claim_type": defaultdict(lambda: {"claims": 0, "verified": 0}),
-            }
-
-        agents: dict[str, dict[str, Any]] = defaultdict(blank)
-        for rep in store().audits():
-            card = agents[rep.call.agent_id]
-            card["calls"] += 1
-            card["calls_with_discrepancies"] += rep.outcome.value == "DISCREPANCIES"
-            card["findings"] += len(rep.findings)
-            for v in rep.verdicts:
-                ok = v.status is VerdictStatus.VERIFIED
-                card["claims"] += 1
-                card["verified"] += ok
-                card["by_claim_type"][v.claim.type]["claims"] += 1
-                card["by_claim_type"][v.claim.type]["verified"] += ok
-        for card in agents.values():
-            card["claim_honesty"] = (
-                round(card["verified"] / card["claims"], 3) if card["claims"] else None
-            )
-        return _ok(agents)
+        # Totals as always, plus per-version buckets, a daily series, and
+        # regression flags (MIN_CLAIMS / REGRESSION_DROP policy in scorecard.py).
+        return _ok(build_scorecards(store().audits()))
 
     # -- demo --------------------------------------------------------------- #
 
