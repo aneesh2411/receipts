@@ -1,0 +1,339 @@
+{
+  "audit": {
+    "audit_id": "aud-twilio-ops",
+    "auditor": "subpoena/0.1.0",
+    "call": {
+      "agent_id": "brightside-reception-agent",
+      "call_id": "CA8f3e2d1c4b5a69708192a3b4c5d6e7f8",
+      "caller": {
+        "name": "Rosa Delgado",
+        "phone": "+14805550142"
+      },
+      "claims": [
+        {
+          "claim_id": "tool-log-7f3a",
+          "duration_min": 30,
+          "patient": {
+            "name": "Rosa Delgado",
+            "phone": "+14805550142"
+          },
+          "provider": "Dr. Patel",
+          "reason": "crown consultation",
+          "source": "structured",
+          "start": "2026-11-24T20:00:00Z",
+          "turn_index": 2,
+          "type": "AppointmentBooked",
+          "utterance": ""
+        },
+        {
+          "about_start": "2026-11-24T20:00:00Z",
+          "channel": "sms",
+          "claim_id": "tool-log-7f3b",
+          "source": "structured",
+          "to": "+14805550142",
+          "turn_index": 3,
+          "type": "ConfirmationSent",
+          "utterance": ""
+        }
+      ],
+      "ended_at": "2026-11-19T18:06:41Z",
+      "provenance": {
+        "agent_version": "v3.2.1",
+        "completion_callback_at": "2026-11-19T18:06:44Z",
+        "from_address": "+14805550142",
+        "human_handoffs": [],
+        "model": null,
+        "platform": "twilio",
+        "prompt_version": null,
+        "to_address": "+12125550100"
+      },
+      "raw_transcript": "You're all set for Tuesday, November 24th at 3 PM with Dr. Patel. I've just texted you the confirmation.",
+      "started_at": "2026-11-19T18:03:07Z",
+      "transcript": []
+    },
+    "created_at": "2026-11-19T18:07:41Z",
+    "extraction": {
+      "degraded": false,
+      "detail": null,
+      "extractor": "rules"
+    },
+    "findings": [],
+    "outcome": "DISCREPANCIES",
+    "seal": {
+      "algorithm": "sha256",
+      "chain_hash": "acc1cc3c09ac291855c8ab6ccc75146445abf3c24d6aff6ac587d46858e9b5e8",
+      "content_hash": "bcb44881dd749e7bc0e4595a2c6851fdbaace657479e5b092fd34d6c9df6d53a",
+      "key_id": "6508b98a7ace",
+      "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "3cde1bc92aeb840f89b8506d659d09ccaf3523827530fefa4ab2df1fe51cb241"
+    },
+    "stats": {
+      "claims": 2,
+      "findings": 0,
+      "max_severity": "CRITICAL",
+      "mismatch": 0,
+      "not_found": 2,
+      "trust_score": 0.0,
+      "unverifiable": 0,
+      "verified": 0
+    },
+    "trail": [
+      {
+        "message": "calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 1,
+        "stage": "evidence"
+      },
+      {
+        "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 2,
+        "stage": "evidence"
+      },
+      {
+        "message": "messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 3,
+        "stage": "evidence"
+      },
+      {
+        "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 4,
+        "stage": "evidence"
+      },
+      {
+        "message": "2 structured claim(s); 0 recovered from the transcript, 0 of them never logged by the agent",
+        "seq": 5,
+        "stage": "claims"
+      },
+      {
+        "message": "tool-log-7f3a (AppointmentBooked): no write corresponds",
+        "seq": 6,
+        "stage": "reconcile"
+      },
+      {
+        "message": "tool-log-7f3b (ConfirmationSent): no write corresponds",
+        "seq": 7,
+        "stage": "reconcile"
+      },
+      {
+        "message": "tool-log-7f3a (AppointmentBooked): NOT_FOUND",
+        "seq": 8,
+        "stage": "verdict"
+      },
+      {
+        "message": "tool-log-7f3b (ConfirmationSent): NOT_FOUND",
+        "seq": 9,
+        "stage": "verdict"
+      },
+      {
+        "message": "Outcome: DISCREPANCIES",
+        "seq": 10,
+        "stage": "verdict"
+      }
+    ],
+    "verdicts": [
+      {
+        "checks": [
+          {
+            "detail": "No write by the agent during the call corresponds to this claim.",
+            "name": "existence",
+            "passed": false
+          },
+          {
+            "detail": "Nothing to compare.",
+            "name": "exactness",
+            "passed": null
+          },
+          {
+            "detail": "Nothing to compare.",
+            "name": "side_effects",
+            "passed": null
+          },
+          {
+            "detail": "The calendar change history for the call window was fully observed.",
+            "name": "coverage",
+            "passed": true
+          }
+        ],
+        "claim": {
+          "claim_id": "tool-log-7f3a",
+          "duration_min": 30,
+          "patient": {
+            "name": "Rosa Delgado",
+            "phone": "+14805550142"
+          },
+          "provider": "Dr. Patel",
+          "reason": "crown consultation",
+          "source": "structured",
+          "start": "2026-11-24T20:00:00Z",
+          "turn_index": 2,
+          "type": "AppointmentBooked",
+          "utterance": ""
+        },
+        "diffs": [],
+        "evidence": [
+          {
+            "note": "0 agent write(s) to calendar in the call window. None creates this booking.",
+            "record": null,
+            "ref": "calendar 2026-11-19T18:03:07+00:00 .. 2026-11-19T18:07:11+00:00",
+            "source": "journal"
+          }
+        ],
+        "remediation": "Create the appointment or call the patient back before they show up.",
+        "severity": "CRITICAL",
+        "status": "NOT_FOUND",
+        "summary": "The agent claimed it booked Rosa Delgado on Tue Nov 24 2026, 3:00 PM EST, but no appointment was created during the call."
+      },
+      {
+        "checks": [
+          {
+            "detail": "No write by the agent during the call corresponds to this claim.",
+            "name": "existence",
+            "passed": false
+          },
+          {
+            "detail": "Nothing to compare.",
+            "name": "exactness",
+            "passed": null
+          },
+          {
+            "detail": "Nothing to compare.",
+            "name": "side_effects",
+            "passed": null
+          },
+          {
+            "detail": "The messages change history for the call window was fully observed.",
+            "name": "coverage",
+            "passed": true
+          }
+        ],
+        "claim": {
+          "about_start": "2026-11-24T20:00:00Z",
+          "channel": "sms",
+          "claim_id": "tool-log-7f3b",
+          "source": "structured",
+          "to": "+14805550142",
+          "turn_index": 3,
+          "type": "ConfirmationSent",
+          "utterance": ""
+        },
+        "diffs": [],
+        "evidence": [
+          {
+            "note": "0 agent write(s) to messages in the call window. None is this confirmation.",
+            "record": null,
+            "ref": "messages 2026-11-19T18:03:07+00:00 .. 2026-11-19T18:07:11+00:00",
+            "source": "journal"
+          }
+        ],
+        "remediation": "Send the confirmation the caller was promised.",
+        "severity": "MEDIUM",
+        "status": "NOT_FOUND",
+        "summary": "The agent claimed it sent an SMS confirmation to +14805550142, but the message log shows nothing sent during the call."
+      }
+    ]
+  },
+  "authentication": "authenticated",
+  "items": [
+    {
+      "audit_chain_hash": "acc1cc3c09ac291855c8ab6ccc75146445abf3c24d6aff6ac587d46858e9b5e8",
+      "audit_id": "aud-twilio-ops",
+      "head": "69690945825d6025f9fdde183ddb9a24d8f13a2e6f5826e2f80db03e0f33365b",
+      "item_id": "95535d5c99ffd7c32452dc64a493e7b5b0569edd7b2345b0265f3d705bbf2c2e",
+      "result_pointer": "/verdicts/0",
+      "state": "resolved"
+    },
+    {
+      "audit_chain_hash": "acc1cc3c09ac291855c8ab6ccc75146445abf3c24d6aff6ac587d46858e9b5e8",
+      "audit_id": "aud-twilio-ops",
+      "head": "3c5b3b573c9cb3befcfd34937952c99036b9d634910d5ae94dbc7d6c9adf0151",
+      "item_id": "435e326b23d87f41c1a9532f9e09d708f68f699ed11e09816d3366f6d89242fc",
+      "result_pointer": "/verdicts/1",
+      "state": "open"
+    }
+  ],
+  "journal": [
+    {
+      "actor": "reviewer",
+      "from_state": "open",
+      "hash": "813ee002421b1e56c731ed38aeaaea0ae4a385269fbeb0b190771d0746c8443f",
+      "item_id": "95535d5c99ffd7c32452dc64a493e7b5b0569edd7b2345b0265f3d705bbf2c2e",
+      "key_id": "6508b98a7ace",
+      "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "previous_item_head": "95535d5c99ffd7c32452dc64a493e7b5b0569edd7b2345b0265f3d705bbf2c2e",
+      "reason": "Checked the booking claim against the appointment ledger.",
+      "sequence": 1,
+      "signature": "ed3372ba585ceedb6e9373213de7f4b293ba90275901924ea51da5529c24e22d",
+      "timestamp": "2026-11-19T18:07:46.000000+00:00",
+      "to_state": "acknowledged",
+      "version": 1
+    },
+    {
+      "actor": "supervisor",
+      "from_state": "acknowledged",
+      "hash": "69690945825d6025f9fdde183ddb9a24d8f13a2e6f5826e2f80db03e0f33365b",
+      "item_id": "95535d5c99ffd7c32452dc64a493e7b5b0569edd7b2345b0265f3d705bbf2c2e",
+      "key_id": "6508b98a7ace",
+      "previous_hash": "813ee002421b1e56c731ed38aeaaea0ae4a385269fbeb0b190771d0746c8443f",
+      "previous_item_head": "813ee002421b1e56c731ed38aeaaea0ae4a385269fbeb0b190771d0746c8443f",
+      "reason": "Closed the finding after recording the missing booking.",
+      "sequence": 2,
+      "signature": "05c7238f9db5d27c16bfc6e7786ff48db8ca3c4849421cbcb5bc805c9d395061",
+      "timestamp": "2026-11-19T18:07:47.000000+00:00",
+      "to_state": "resolved",
+      "version": 1
+    },
+    {
+      "actor": "reviewer",
+      "from_state": "open",
+      "hash": "2129e1f0336db526516880f59324eb8cea2bd9d104f63142bed18e379e44b090",
+      "item_id": "435e326b23d87f41c1a9532f9e09d708f68f699ed11e09816d3366f6d89242fc",
+      "key_id": "6508b98a7ace",
+      "previous_hash": "69690945825d6025f9fdde183ddb9a24d8f13a2e6f5826e2f80db03e0f33365b",
+      "previous_item_head": "435e326b23d87f41c1a9532f9e09d708f68f699ed11e09816d3366f6d89242fc",
+      "reason": "Checked the confirmation claim against the message log.",
+      "sequence": 3,
+      "signature": "7043cb9c0ab24f00777d48d96a316a4327a4f1df0d792170699d1760b4cc4365",
+      "timestamp": "2026-11-19T18:07:49.000000+00:00",
+      "to_state": "acknowledged",
+      "version": 1
+    },
+    {
+      "actor": "supervisor",
+      "from_state": "acknowledged",
+      "hash": "6456192b775295c5f3c75fcaa5005d13bbcd9613d580b070f369769e61556974",
+      "item_id": "435e326b23d87f41c1a9532f9e09d708f68f699ed11e09816d3366f6d89242fc",
+      "key_id": "6508b98a7ace",
+      "previous_hash": "2129e1f0336db526516880f59324eb8cea2bd9d104f63142bed18e379e44b090",
+      "previous_item_head": "2129e1f0336db526516880f59324eb8cea2bd9d104f63142bed18e379e44b090",
+      "reason": "Requested a check of the provider's delivery records.",
+      "sequence": 4,
+      "signature": "ecfa1145b258689f45a976f49208907973de4c0e2da4759285017dcb7d8d2e23",
+      "timestamp": "2026-11-19T18:07:50.000000+00:00",
+      "to_state": "disputed",
+      "version": 1
+    },
+    {
+      "actor": "reviewer",
+      "from_state": "disputed",
+      "hash": "3c5b3b573c9cb3befcfd34937952c99036b9d634910d5ae94dbc7d6c9adf0151",
+      "item_id": "435e326b23d87f41c1a9532f9e09d708f68f699ed11e09816d3366f6d89242fc",
+      "key_id": "6508b98a7ace",
+      "previous_hash": "6456192b775295c5f3c75fcaa5005d13bbcd9613d580b070f369769e61556974",
+      "previous_item_head": "6456192b775295c5f3c75fcaa5005d13bbcd9613d580b070f369769e61556974",
+      "reason": "Returned the finding to the queue for follow-up.",
+      "sequence": 5,
+      "signature": "8bbc060ac477601ff70d7a41fd5f26ba317b242fafb9dd6221ea6988495158d6",
+      "timestamp": "2026-11-19T18:07:51.000000+00:00",
+      "to_state": "open",
+      "version": 1
+    }
+  ],
+  "journal_head": "3c5b3b573c9cb3befcfd34937952c99036b9d634910d5ae94dbc7d6c9adf0151",
+  "rejection": {
+    "after_sequence": 2,
+    "from_state": "resolved",
+    "item_id": "95535d5c99ffd7c32452dc64a493e7b5b0569edd7b2345b0265f3d705bbf2c2e",
+    "message": "invalid review state transition",
+    "status": 409,
+    "to_state": "open"
+  }
+}

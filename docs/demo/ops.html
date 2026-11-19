@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subpoena | operations demo</title>
+<style>
+  :root {
+    --desk: #14161a; --panel: #1c1f26; --line: #2c313c; --ink: #e8e6df; --dim: #8b919e;
+    --paper: #f6f1e4; --paper-ink: #1d1b16; --paper-dim: #6f6a5c; --paper-line: #d9d0b8;
+    --ok: #1f9d55; --warn: #c77800; --bad: #d03b3b; --unk: #8a52c7; --accent: #4f8cff;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--desk); color: var(--ink); font: 15px/1.5 var(--sans); }
+  header { border-bottom: 1px solid var(--line); padding: 12px 16px; }
+  main, .bar { max-width: 1180px; margin: 0 auto; }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .brand { font: 700 18px var(--mono); letter-spacing: .14em; }
+  a { color: var(--accent); }
+  a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+  main { padding: 24px 16px 48px; }
+  h1 { margin: 8px 0 28px; font-size: clamp(28px, 5vw, 44px); line-height: 1.12; }
+  h2 { margin: 0; font-size: 24px; }
+  h3 { margin: 0; font-size: 17px; }
+  p { margin: 6px 0 12px; }
+  section + section { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); }
+  .story, .meta { color: var(--dim); }
+  .meta { font: 12px/1.5 var(--mono); overflow-wrap: anywhere; }
+  .columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px; min-width: 0; }
+  .verdict, .outcome { font-family: var(--mono); font-weight: 700; }
+  .verdict, .error { color: #ff9595; }
+  .timeline { list-style: none; padding: 0 0 0 12px; margin: 12px 0 0;
+    border-left: 1px solid var(--line); display: grid; gap: 8px; }
+  .timeline li { background: var(--desk); border-radius: 6px; padding: 10px; }
+  .timeline li:target { outline: 2px solid var(--accent); }
+  .label { color: var(--dim); }
+  .delivery { display: grid; gap: 12px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
+  th, td { padding: 8px; text-align: left; vertical-align: top;
+    border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  th { font: 700 12px var(--mono); color: var(--dim); }
+  th:nth-child(1) { width: 25%; }
+  th:nth-child(2) { width: 10%; }
+  th:nth-child(3) { width: 25%; }
+  td:first-child { font: 12px/1.5 var(--mono); }
+  tr:last-child td { border-bottom: 0; }
+  .delivered { color: #72d6a3; }
+  @media (max-width: 700px) {
+    .columns { grid-template-columns: 1fr; }
+    .panel { padding: 12px; }
+    th, td { padding: 6px 3px; font-size: 12px; }
+    th, td:first-child, td.outcome { font-size: 11px; }
+    .date { display: block; }
+    th:nth-child(1) { width: 24%; }
+    th:nth-child(2) { width: 17%; }
+    th:nth-child(3) { width: 30%; }
+  }
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="brand">SUBPOENA</div>
+  <a href="./">Back to audit demo</a>
+</div></header>
+<main>
+  <h1>From audit to action</h1>
+  <p id="status" role="status">Loading the recorded walkthrough…</p>
+  <section aria-labelledby="review-heading">
+    <h2 id="review-heading">Human review</h2>
+    <p class="story">The Twilio demo call is replayed against an empty system of record.
+      The auditor checks the two claims from the fixture: a booking and a confirmation text.</p>
+    <p id="audit" class="meta"></p>
+    <div id="reviews" class="columns"></div>
+  </section>
+  <section aria-labelledby="delivery-heading">
+    <h2 id="delivery-heading">Durable alert delivery</h2>
+    <p class="story">The sealed audit and critical alert enter SQLite in one transaction.
+      The journal starts when a worker claims the alert. A simulated clock and transport
+      show timeout recovery and replay after a worker crash. Retries have a finite budget.</p>
+    <div id="delivery" class="delivery"></div>
+  </section>
+</main>
+<script>
+  const add = (parent, tag, value, className) => {
+    const element = document.createElement(tag);
+    if (value != null) element.textContent = value;
+    if (className) element.className = className;
+    parent.append(element);
+    return element;
+  };
+
+  const field = (parent, label, value) => {
+    const line = add(parent, "div", null, "meta");
+    add(line, "span", label + " · ", "label");
+    return add(line, "span", value);
+  };
+
+  function renderReview(review) {
+    document.getElementById("audit").textContent =
+      "Sealed audit · " + review.audit.audit_id + " · " + review.audit.seal.chain_hash;
+    const root = document.getElementById("reviews");
+    for (const item of review.items) {
+      const [, collection, index] = item.result_pointer.split("/");
+      const verdict = review.audit[collection][index];
+      const panel = add(root, "article", null, "panel");
+      add(panel, "h3", verdict.claim.type);
+      add(panel, "p", verdict.severity + " · " + verdict.status, "verdict");
+      add(panel, "p", verdict.summary);
+      field(panel, "Result", item.result_pointer);
+      field(panel, "Current state", item.state);
+      const timeline = add(panel, "ol", null, "timeline");
+
+      review.journal.forEach((receipt, position) => {
+        if (receipt.item_id !== item.item_id) return;
+        const row = add(timeline, "li");
+        row.id = "receipt-" + position;
+        add(row, "strong", receipt.from_state + " → " + receipt.to_state);
+        add(row, "div", receipt.timestamp, "meta");
+        add(row, "p", receipt.actor + " · " + receipt.reason);
+        field(row, "Signature", review.authentication);
+        field(row, "Receipt hash", receipt.hash);
+        const previous = field(row, "Previous journal hash");
+        if (position > 0 && review.journal[position - 1].hash === receipt.previous_hash) {
+          const link = add(previous, "a", receipt.previous_hash);
+          link.href = "#receipt-" + (position - 1);
+        } else {
+          previous.textContent = receipt.previous_hash;
+        }
+
+        const error = review.rejection;
+        if (error.item_id === item.item_id && error.after_sequence === receipt.sequence) {
+          const rejection = add(timeline, "li", null, "error");
+          add(rejection, "strong", error.from_state + " → " + error.to_state + " · rejected");
+          add(rejection, "div", "ReviewError " + error.status + " · " + error.message);
+        }
+      });
+    }
+  }
+
+  const utc = (seconds) => new Date(seconds * 1000).toISOString();
+  function showTime(parent, timestamp) {
+    const [date, time] = timestamp.split("T");
+    add(parent, "span", date, "date");
+    add(parent, "span", " " + time.slice(0, 8));
+  }
+
+  function renderDelivery(delivery) {
+    const root = document.getElementById("delivery");
+    for (const event of delivery.enqueued) {
+      const panel = add(root, "article", null, "panel");
+      add(panel, "h3", event.audit_id);
+      field(panel, "Event ID", event.event_id);
+      field(panel, "Result", event.result_pointer);
+
+      const table = add(panel, "table");
+      const heading = add(add(table, "thead"), "tr");
+      for (const label of ["Time (UTC)", "Attempt", "Outcome", "Details"]) {
+        add(heading, "th", label).scope = "col";
+      }
+      const body = add(table, "tbody");
+      const enqueue = add(body, "tr");
+      showTime(add(enqueue, "td"), utc(event.due_at));
+      add(enqueue, "td", "—");
+      add(enqueue, "td", "Enqueued", "outcome");
+      add(enqueue, "td", "Committed with sealed audit");
+
+      let previousOutcome;
+      for (const {entry, outbox} of delivery.journal) {
+        if (entry.event_id !== event.event_id) continue;
+        const row = add(body, "tr");
+        showTime(add(row, "td"), entry.recorded_at);
+        add(row, "td", entry.attempt);
+        const outcome = add(row, "td", entry.outcome, "outcome");
+        const details = add(row, "td");
+        if (outbox?.terminal) {
+          outcome.classList.add("delivered");
+          details.textContent = "HTTP " + entry.http_status + " · terminal";
+        } else if (outbox) {
+          const backoff = outbox.due_at - Date.parse(entry.recorded_at) / 1000;
+          add(details, "div", "Retry scheduled · " + backoff + " s backoff");
+          showTime(add(details, "div", null, "meta"), utc(outbox.due_at));
+        } else if (previousOutcome === "lease_expired") {
+          details.textContent = "Replay claimed";
+        } else {
+          details.textContent = entry.attempt > 1 ? "Retry claimed" : "Lease acquired";
+        }
+        previousOutcome = entry.outcome;
+      }
+    }
+  }
+
+  async function load(path) {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error("Unable to fetch demo data");
+    return response.json();
+  }
+
+  Promise.all([load("data-ops/review.json"), load("data-ops/delivery.json")])
+    .then(([review, delivery]) => {
+      renderReview(review);
+      renderDelivery(delivery);
+      document.getElementById("status").hidden = true;
+    })
+    .catch(() => {
+      document.getElementById("status").textContent = "The walkthrough data could not be loaded.";
+    });
+</script>
+</body>
+</html>

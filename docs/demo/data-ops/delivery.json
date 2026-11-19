@@ -1,0 +1,130 @@
+{
+  "enqueued": [
+    {
+      "audit_id": "aud-twilio-ops",
+      "due_at": 1795111661.0,
+      "event_id": "5de9647b33e0ded1d7e0b97b908491eecb1983eb9d160c6aaf087bb59a811c9e",
+      "result_pointer": "/verdicts/0"
+    },
+    {
+      "audit_id": "aud-twilio-ops-replay",
+      "due_at": 1795111672.0,
+      "event_id": "c0c9753df21eb8ef8ddab96335eb996076e590bfb3867a194d0a04705c9b8536",
+      "result_pointer": "/verdicts/0"
+    }
+  ],
+  "journal": [
+    {
+      "entry": {
+        "attempt": 1,
+        "audit_id": "aud-twilio-ops",
+        "event_id": "5de9647b33e0ded1d7e0b97b908491eecb1983eb9d160c6aaf087bb59a811c9e",
+        "http_status": null,
+        "outcome": "started",
+        "recorded_at": "2026-11-19T18:07:42+00:00",
+        "result_pointer": "/verdicts/0"
+      },
+      "outbox": null
+    },
+    {
+      "entry": {
+        "attempt": 1,
+        "audit_id": "aud-twilio-ops",
+        "event_id": "5de9647b33e0ded1d7e0b97b908491eecb1983eb9d160c6aaf087bb59a811c9e",
+        "http_status": null,
+        "outcome": "timeout",
+        "recorded_at": "2026-11-19T18:07:44+00:00",
+        "result_pointer": "/verdicts/0"
+      },
+      "outbox": {
+        "due_at": 1795111665.0,
+        "lease_until": null,
+        "terminal": 0
+      }
+    },
+    {
+      "entry": {
+        "attempt": 2,
+        "audit_id": "aud-twilio-ops",
+        "event_id": "5de9647b33e0ded1d7e0b97b908491eecb1983eb9d160c6aaf087bb59a811c9e",
+        "http_status": null,
+        "outcome": "started",
+        "recorded_at": "2026-11-19T18:07:45+00:00",
+        "result_pointer": "/verdicts/0"
+      },
+      "outbox": null
+    },
+    {
+      "entry": {
+        "attempt": 2,
+        "audit_id": "aud-twilio-ops",
+        "event_id": "5de9647b33e0ded1d7e0b97b908491eecb1983eb9d160c6aaf087bb59a811c9e",
+        "http_status": 204,
+        "outcome": "delivered",
+        "recorded_at": "2026-11-19T18:07:45+00:00",
+        "result_pointer": "/verdicts/0"
+      },
+      "outbox": {
+        "due_at": 1795111667.0,
+        "lease_until": null,
+        "terminal": 1
+      }
+    },
+    {
+      "entry": {
+        "attempt": 1,
+        "audit_id": "aud-twilio-ops-replay",
+        "event_id": "c0c9753df21eb8ef8ddab96335eb996076e590bfb3867a194d0a04705c9b8536",
+        "http_status": null,
+        "outcome": "started",
+        "recorded_at": "2026-11-19T18:07:53+00:00",
+        "result_pointer": "/verdicts/0"
+      },
+      "outbox": null
+    },
+    {
+      "entry": {
+        "attempt": 1,
+        "audit_id": "aud-twilio-ops-replay",
+        "event_id": "c0c9753df21eb8ef8ddab96335eb996076e590bfb3867a194d0a04705c9b8536",
+        "http_status": null,
+        "outcome": "lease_expired",
+        "recorded_at": "2026-11-19T18:08:23+00:00",
+        "result_pointer": "/verdicts/0"
+      },
+      "outbox": {
+        "due_at": 1795111704.0,
+        "lease_until": null,
+        "terminal": 0
+      }
+    },
+    {
+      "entry": {
+        "attempt": 2,
+        "audit_id": "aud-twilio-ops-replay",
+        "event_id": "c0c9753df21eb8ef8ddab96335eb996076e590bfb3867a194d0a04705c9b8536",
+        "http_status": null,
+        "outcome": "started",
+        "recorded_at": "2026-11-19T18:08:24+00:00",
+        "result_pointer": "/verdicts/0"
+      },
+      "outbox": null
+    },
+    {
+      "entry": {
+        "attempt": 2,
+        "audit_id": "aud-twilio-ops-replay",
+        "event_id": "c0c9753df21eb8ef8ddab96335eb996076e590bfb3867a194d0a04705c9b8536",
+        "http_status": 204,
+        "outcome": "delivered",
+        "recorded_at": "2026-11-19T18:08:24+00:00",
+        "result_pointer": "/verdicts/0"
+      },
+      "outbox": {
+        "due_at": 1795111706.0,
+        "lease_until": null,
+        "terminal": 1
+      }
+    }
+  ]
+}
