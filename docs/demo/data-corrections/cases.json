@@ -1,0 +1,556 @@
+[
+  {
+    "acknowledgment": {
+      "claim_id": "call-pages-correction-honored-t2",
+      "corrects_prior": true,
+      "duration_min": null,
+      "patient": {
+        "name": "Maya Chen",
+        "phone": "+15550101001"
+      },
+      "provider": null,
+      "reason": null,
+      "source": "transcript",
+      "start": "2026-03-03T14:30:00-05:00",
+      "turn_index": 4,
+      "type": "AppointmentBooked",
+      "utterance": "I've booked you for Tuesday, March 3 at 2:30 PM instead."
+    },
+    "audit": {
+      "audit_id": "aud-pages-correction-honored",
+      "auditor": "subpoena/0.1.0",
+      "call": {
+        "agent_id": "agent:receptionist",
+        "call_id": "call-pages-correction-honored",
+        "caller": {
+          "name": "Maya Chen",
+          "phone": "+15550101001"
+        },
+        "claims": [
+          {
+            "claim_id": "call-pages-correction-honored-c1",
+            "corrects_prior": false,
+            "duration_min": 30,
+            "patient": {
+              "name": "Maya Chen",
+              "phone": "+15550101001"
+            },
+            "provider": "Dr. Patel",
+            "reason": "cleaning",
+            "source": "structured",
+            "start": "2026-03-04T14:30:00-05:00",
+            "turn_index": 2,
+            "type": "AppointmentBooked",
+            "utterance": "Okay, I've got you down with Dr. Patel on Wednesday, March 4 at 2:30 PM."
+          },
+          {
+            "claim_id": "call-pages-correction-honored-c2",
+            "corrects_prior": true,
+            "duration_min": null,
+            "patient": {
+              "name": "Maya Chen",
+              "phone": "+15550101001"
+            },
+            "provider": "Dr. Patel",
+            "reason": null,
+            "source": "structured",
+            "start": "2026-03-03T14:30:00-05:00",
+            "turn_index": 4,
+            "type": "AppointmentBooked",
+            "utterance": "No problem at all. I've booked you for Tuesday, March 3 at 2:30 PM instead."
+          }
+        ],
+        "ended_at": "2026-03-02T09:05:24-05:00",
+        "provenance": {
+          "agent_version": "receptionist-sim/0.1.0",
+          "completion_callback_at": null,
+          "from_address": null,
+          "human_handoffs": [],
+          "model": null,
+          "platform": null,
+          "prompt_version": "narrator:standard",
+          "to_address": null
+        },
+        "raw_transcript": null,
+        "started_at": "2026-03-02T09:05:00-05:00",
+        "transcript": [
+          {
+            "at": "2026-03-02T09:05:04-05:00",
+            "index": 0,
+            "speaker": "agent",
+            "text": "Thank you for calling Brightside Dental. How can I help?"
+          },
+          {
+            "at": "2026-03-02T09:05:08-05:00",
+            "index": 1,
+            "speaker": "caller",
+            "text": "Hi, I'd like to book a cleaning with Dr. Patel on Wednesday, March 4 at 2:30 PM."
+          },
+          {
+            "at": "2026-03-02T09:05:12-05:00",
+            "index": 2,
+            "speaker": "agent",
+            "text": "Okay, I've got you down with Dr. Patel on Wednesday, March 4 at 2:30 PM."
+          },
+          {
+            "at": "2026-03-02T09:05:16-05:00",
+            "index": 3,
+            "speaker": "caller",
+            "text": "Actually, could we make that Tuesday, March 3 at 2:30 PM instead?"
+          },
+          {
+            "at": "2026-03-02T09:05:20-05:00",
+            "index": 4,
+            "speaker": "agent",
+            "text": "No problem at all. I've booked you for Tuesday, March 3 at 2:30 PM instead."
+          },
+          {
+            "at": "2026-03-02T09:05:24-05:00",
+            "index": 5,
+            "speaker": "agent",
+            "text": "Is there anything else? Have a great day."
+          }
+        ]
+      },
+      "created_at": "2026-03-02T09:06:24-05:00",
+      "extraction": {
+        "degraded": false,
+        "detail": null,
+        "extractor": "rules"
+      },
+      "findings": [],
+      "outcome": "CLEAN",
+      "seal": {
+        "algorithm": "sha256",
+        "chain_hash": "9963f59d95d1ead3a2b8b3e2cda72b6bc3e654aa3c2801b6925a424aba89836c",
+        "content_hash": "1367cc3bb5bb10742421d8da50698cb414570c9d2495ec8eaa9a0c77cca42b82",
+        "key_id": "6508b98a7ace",
+        "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "signature": "372f008c0770a7a53d6c704e4386028e22c65b765695f411aed5cfb0c4303b98"
+      },
+      "stats": {
+        "claims": 1,
+        "findings": 0,
+        "max_severity": "INFO",
+        "mismatch": 0,
+        "not_found": 0,
+        "trust_score": 1.0,
+        "unverifiable": 0,
+        "verified": 1
+      },
+      "trail": [
+        {
+          "message": "calendar: 2 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+          "seq": 1,
+          "stage": "evidence"
+        },
+        {
+          "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+          "seq": 2,
+          "stage": "evidence"
+        },
+        {
+          "message": "messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+          "seq": 3,
+          "stage": "evidence"
+        },
+        {
+          "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+          "seq": 4,
+          "stage": "evidence"
+        },
+        {
+          "message": "2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent",
+          "seq": 5,
+          "stage": "claims"
+        },
+        {
+          "message": "call-pages-correction-honored-c2 corrects call-pages-correction-honored-c1 (turn 4); the earlier AppointmentBooked claim is withdrawn, the corrected value is what the caller is owed",
+          "seq": 6,
+          "stage": "claims"
+        },
+        {
+          "message": "call-pages-correction-honored-c2 (AppointmentBooked): exact match -> apt_0001",
+          "seq": 7,
+          "stage": "reconcile"
+        },
+        {
+          "message": "call-pages-correction-honored-c2 (AppointmentBooked): VERIFIED",
+          "seq": 8,
+          "stage": "verdict"
+        },
+        {
+          "message": "Outcome: CLEAN",
+          "seq": 9,
+          "stage": "verdict"
+        }
+      ],
+      "verdicts": [
+        {
+          "checks": [
+            {
+              "detail": "A write by the agent during the call corresponds to this claim.",
+              "name": "existence",
+              "passed": true
+            },
+            {
+              "detail": "All fields match.",
+              "name": "exactness",
+              "passed": true
+            },
+            {
+              "detail": "Not applicable.",
+              "name": "side_effects",
+              "passed": null
+            },
+            {
+              "detail": "Every backing write carries this call's own stamp.",
+              "name": "attribution",
+              "passed": true
+            },
+            {
+              "detail": "The calendar change history for the call window was fully observed.",
+              "name": "coverage",
+              "passed": true
+            }
+          ],
+          "claim": {
+            "claim_id": "call-pages-correction-honored-c2",
+            "corrects_prior": true,
+            "duration_min": null,
+            "patient": {
+              "name": "Maya Chen",
+              "phone": "+15550101001"
+            },
+            "provider": "Dr. Patel",
+            "reason": null,
+            "source": "structured",
+            "start": "2026-03-03T14:30:00-05:00",
+            "turn_index": 4,
+            "type": "AppointmentBooked",
+            "utterance": "No problem at all. I've booked you for Tuesday, March 3 at 2:30 PM instead."
+          },
+          "diffs": [
+            {
+              "actual": "Maya Chen (+15550101001)",
+              "claimed": "Maya Chen (+15550101001)",
+              "field": "patient",
+              "match": true
+            },
+            {
+              "actual": "Tue Mar 3 2026, 2:30 PM EST",
+              "claimed": "Tue Mar 3 2026, 2:30 PM EST",
+              "field": "start",
+              "match": true
+            },
+            {
+              "actual": "Dr. Patel",
+              "claimed": "Dr. Patel",
+              "field": "provider",
+              "match": true
+            }
+          ],
+          "evidence": [
+            {
+              "note": "Appointment written by the agent during the call (journal #6, #7; net: created)",
+              "record": {
+                "duration_min": 30,
+                "id": "apt_0001",
+                "patient_id": "pat_0001",
+                "provider": "Dr. Patel",
+                "reason": "cleaning",
+                "start": "2026-03-03T19:30:00+00:00",
+                "status": "booked"
+              },
+              "ref": "apt_0001",
+              "source": "calendar"
+            }
+          ],
+          "remediation": null,
+          "severity": "INFO",
+          "status": "VERIFIED",
+          "summary": "Booking for Maya Chen on Tue Mar 3 2026, 2:30 PM EST exists exactly as claimed (apt_0001)."
+        }
+      ]
+    },
+    "story": "The agent updates the calendar to Tuesday.",
+    "title": "Correction honored"
+  },
+  {
+    "acknowledgment": {
+      "claim_id": "call-pages-correction-stale-write-t2",
+      "corrects_prior": true,
+      "duration_min": null,
+      "patient": {
+        "name": "Maya Chen",
+        "phone": "+15550101001"
+      },
+      "provider": null,
+      "reason": null,
+      "source": "transcript",
+      "start": "2026-03-03T14:30:00-05:00",
+      "turn_index": 4,
+      "type": "AppointmentBooked",
+      "utterance": "I've booked you for Tuesday, March 3 at 2:30 PM instead."
+    },
+    "audit": {
+      "audit_id": "aud-pages-correction-stale-write",
+      "auditor": "subpoena/0.1.0",
+      "call": {
+        "agent_id": "agent:receptionist",
+        "call_id": "call-pages-correction-stale-write",
+        "caller": {
+          "name": "Maya Chen",
+          "phone": "+15550101001"
+        },
+        "claims": [
+          {
+            "claim_id": "call-pages-correction-stale-write-c1",
+            "corrects_prior": false,
+            "duration_min": 30,
+            "patient": {
+              "name": "Maya Chen",
+              "phone": "+15550101001"
+            },
+            "provider": "Dr. Patel",
+            "reason": "cleaning",
+            "source": "structured",
+            "start": "2026-03-04T14:30:00-05:00",
+            "turn_index": 2,
+            "type": "AppointmentBooked",
+            "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Wednesday, March 4 at 2:30 PM."
+          },
+          {
+            "claim_id": "call-pages-correction-stale-write-c2",
+            "corrects_prior": true,
+            "duration_min": null,
+            "patient": {
+              "name": "Maya Chen",
+              "phone": "+15550101001"
+            },
+            "provider": "Dr. Patel",
+            "reason": null,
+            "source": "structured",
+            "start": "2026-03-03T14:30:00-05:00",
+            "turn_index": 4,
+            "type": "AppointmentBooked",
+            "utterance": "No problem at all. I've booked you for Tuesday, March 3 at 2:30 PM instead."
+          }
+        ],
+        "ended_at": "2026-03-02T09:05:24-05:00",
+        "provenance": {
+          "agent_version": "receptionist-sim/0.1.0",
+          "completion_callback_at": null,
+          "from_address": null,
+          "human_handoffs": [],
+          "model": null,
+          "platform": null,
+          "prompt_version": "narrator:standard",
+          "to_address": null
+        },
+        "raw_transcript": null,
+        "started_at": "2026-03-02T09:05:00-05:00",
+        "transcript": [
+          {
+            "at": "2026-03-02T09:05:04-05:00",
+            "index": 0,
+            "speaker": "agent",
+            "text": "Thank you for calling Brightside Dental. How can I help?"
+          },
+          {
+            "at": "2026-03-02T09:05:08-05:00",
+            "index": 1,
+            "speaker": "caller",
+            "text": "Hi, I'd like to book a cleaning with Dr. Patel on Wednesday, March 4 at 2:30 PM."
+          },
+          {
+            "at": "2026-03-02T09:05:12-05:00",
+            "index": 2,
+            "speaker": "agent",
+            "text": "You're all set. I've booked your cleaning with Dr. Patel on Wednesday, March 4 at 2:30 PM."
+          },
+          {
+            "at": "2026-03-02T09:05:16-05:00",
+            "index": 3,
+            "speaker": "caller",
+            "text": "Actually, could we make that Tuesday, March 3 at 2:30 PM instead?"
+          },
+          {
+            "at": "2026-03-02T09:05:20-05:00",
+            "index": 4,
+            "speaker": "agent",
+            "text": "No problem at all. I've booked you for Tuesday, March 3 at 2:30 PM instead."
+          },
+          {
+            "at": "2026-03-02T09:05:24-05:00",
+            "index": 5,
+            "speaker": "agent",
+            "text": "Is there anything else? Have a great day."
+          }
+        ]
+      },
+      "created_at": "2026-03-02T09:06:24-05:00",
+      "extraction": {
+        "degraded": false,
+        "detail": null,
+        "extractor": "rules"
+      },
+      "findings": [],
+      "outcome": "DISCREPANCIES",
+      "seal": {
+        "algorithm": "sha256",
+        "chain_hash": "38ea441e936c1e29cf3f92b3eb019800db534e71b9fb7fb9af131d6acd942a20",
+        "content_hash": "eb9a24cff8ab1195d9b2c33b04b396ef9ba7b8f3942e5bc6511f71d017f6bcf7",
+        "key_id": "6508b98a7ace",
+        "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "signature": "8cc000f23b511d3bc2c691a73aea278369327e8631a92f285955a513f8a83fe7"
+      },
+      "stats": {
+        "claims": 1,
+        "findings": 0,
+        "max_severity": "CRITICAL",
+        "mismatch": 1,
+        "not_found": 0,
+        "trust_score": 0.0,
+        "unverifiable": 0,
+        "verified": 0
+      },
+      "trail": [
+        {
+          "message": "calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+          "seq": 1,
+          "stage": "evidence"
+        },
+        {
+          "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+          "seq": 2,
+          "stage": "evidence"
+        },
+        {
+          "message": "messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+          "seq": 3,
+          "stage": "evidence"
+        },
+        {
+          "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+          "seq": 4,
+          "stage": "evidence"
+        },
+        {
+          "message": "2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent",
+          "seq": 5,
+          "stage": "claims"
+        },
+        {
+          "message": "call-pages-correction-stale-write-c2 corrects call-pages-correction-stale-write-c1 (turn 4); the earlier AppointmentBooked claim is withdrawn, the corrected value is what the caller is owed",
+          "seq": 6,
+          "stage": "claims"
+        },
+        {
+          "message": "call-pages-correction-stale-write-c2 (AppointmentBooked): partial match -> apt_0001",
+          "seq": 7,
+          "stage": "reconcile"
+        },
+        {
+          "message": "call-pages-correction-stale-write-c2 (AppointmentBooked): MISMATCH",
+          "seq": 8,
+          "stage": "verdict"
+        },
+        {
+          "message": "Outcome: DISCREPANCIES",
+          "seq": 9,
+          "stage": "verdict"
+        }
+      ],
+      "verdicts": [
+        {
+          "checks": [
+            {
+              "detail": "A write by the agent during the call corresponds to this claim.",
+              "name": "existence",
+              "passed": true
+            },
+            {
+              "detail": "Differs on: start.",
+              "name": "exactness",
+              "passed": false
+            },
+            {
+              "detail": "Not applicable.",
+              "name": "side_effects",
+              "passed": null
+            },
+            {
+              "detail": "Every backing write carries this call's own stamp.",
+              "name": "attribution",
+              "passed": true
+            },
+            {
+              "detail": "The calendar change history for the call window was fully observed.",
+              "name": "coverage",
+              "passed": true
+            }
+          ],
+          "claim": {
+            "claim_id": "call-pages-correction-stale-write-c2",
+            "corrects_prior": true,
+            "duration_min": null,
+            "patient": {
+              "name": "Maya Chen",
+              "phone": "+15550101001"
+            },
+            "provider": "Dr. Patel",
+            "reason": null,
+            "source": "structured",
+            "start": "2026-03-03T14:30:00-05:00",
+            "turn_index": 4,
+            "type": "AppointmentBooked",
+            "utterance": "No problem at all. I've booked you for Tuesday, March 3 at 2:30 PM instead."
+          },
+          "diffs": [
+            {
+              "actual": "Maya Chen (+15550101001)",
+              "claimed": "Maya Chen (+15550101001)",
+              "field": "patient",
+              "match": true
+            },
+            {
+              "actual": "Wed Mar 4 2026, 2:30 PM EST",
+              "claimed": "Tue Mar 3 2026, 2:30 PM EST",
+              "field": "start",
+              "match": false
+            },
+            {
+              "actual": "Dr. Patel",
+              "claimed": "Dr. Patel",
+              "field": "provider",
+              "match": true
+            }
+          ],
+          "evidence": [
+            {
+              "note": "Appointment written by the agent during the call (journal #6; net: created)",
+              "record": {
+                "duration_min": 30,
+                "id": "apt_0001",
+                "patient_id": "pat_0001",
+                "provider": "Dr. Patel",
+                "reason": "cleaning",
+                "start": "2026-03-04T19:30:00+00:00",
+                "status": "booked"
+              },
+              "ref": "apt_0001",
+              "source": "calendar"
+            }
+          ],
+          "remediation": "Correct the appointment to match what the caller was told, or call them back with the real details.",
+          "severity": "CRITICAL",
+          "status": "MISMATCH",
+          "summary": "A booking was written (apt_0001) but it is not what the caller was told. start: claimed Tue Mar 3 2026, 2:30 PM EST, actual Wed Mar 4 2026, 2:30 PM EST. The calendar holds Wed Mar 4 2026, 2:30 PM EST, the exact value the caller corrected away from at turn 2."
+        }
+      ]
+    },
+    "story": "The agent confirms Tuesday and leaves Wednesday booked.",
+    "title": "Stale write"
+  }
+]

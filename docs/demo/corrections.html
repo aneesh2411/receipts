@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subpoena | correction binding</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --desk: #14161a; --panel: #1c1f26; --line: #353b49; --ink: #e8e6df; --dim: #b0b6c3;
+    --accent: #90b8ff; --ok: #72d6a3; --bad: #ff9595;
+    --mono: ui-monospace, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--desk); color: var(--ink); font: 15px/1.5 system-ui; }
+  header { border-bottom: 1px solid var(--line); padding: 12px 16px; }
+  main, .bar { max-width: 1080px; margin: 0 auto; }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .brand { font: 700 18px var(--mono); letter-spacing: .14em; }
+  a { color: var(--accent); }
+  a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+  main { padding: 24px 16px 48px; }
+  h1 { margin: 0; font-size: clamp(30px, 5vw, 44px); }
+  h2, h3, p { margin: 0 0 8px; }
+  .intro, .label, dt, .meta { color: var(--dim); }
+  .columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px; min-width: 0; }
+  .transcript { padding: 0 0 0 12px; border-left: 1px solid var(--line); list-style: none; }
+  .transcript li { margin: 10px 0; }
+  .label { display: block; font: 12px/1.5 var(--mono); text-transform: capitalize; }
+  .correction .label { color: var(--accent); }
+  .values { border-block: 1px solid var(--line); padding: 10px 0; }
+  dt { margin-top: 6px; }
+  dd { margin: 0; }
+  .verdict, .meta { font-family: var(--mono); }
+  .meta { font-size: 12px; overflow-wrap: anywhere; }
+  .verified { color: var(--ok); }
+  .mismatch, .error { color: var(--bad); }
+  @media (max-width: 720px) {
+    .columns { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="brand">SUBPOENA</div>
+  <a href="./">Back to audit demo</a>
+</div></header>
+<main>
+  <h1>“Actually, Tuesday”</h1>
+  <p class="intro">A caller moves a Brightside Dental appointment from Wednesday to Tuesday.
+    The auditor replaces the earlier commitment with Tuesday and checks what the calendar recorded.</p>
+  <p id="status" role="status">Loading the recorded walkthrough…</p>
+  <noscript>The walkthrough needs JavaScript to display the recorded audits.</noscript>
+  <div id="cases" class="columns"></div>
+  <p><a href="data-corrections/cases.json">Download the recorded audits</a></p>
+</main>
+<script>
+  const add = (parent, tag, text, className) => {
+    const element = document.createElement(tag);
+    if (text != null) element.textContent = text;
+    if (className) element.className = className;
+    parent.append(element);
+    return element;
+  };
+
+  const clinicTime = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York", weekday: "long", month: "long", day: "numeric",
+    hour: "numeric", minute: "2-digit", timeZoneName: "short"
+  });
+
+  function renderCase(parent, {title, story, acknowledgment, audit}) {
+    const [verdict] = audit.verdicts;
+    const {claim} = verdict;
+    const {seal} = audit;
+    const write = verdict.evidence.find(item => item.source === "calendar");
+    const panel = add(parent, "section", null, "panel");
+    add(panel, "h2", title);
+    add(panel, "p", story, "intro");
+    add(panel, "h3", "Call excerpt");
+    const transcript = add(panel, "ol", null, "transcript");
+    for (const turn of audit.call.transcript.slice(1, acknowledgment.turn_index + 1)) {
+      const correction = turn.index === acknowledgment.turn_index - 1;
+      const line = add(transcript, "li", null, correction ? "correction" : "");
+      const speaker = correction ? "Caller correction" : turn.speaker;
+      add(line, "span", `Turn ${turn.index} · ${speaker}`, "label");
+      add(line, "span", turn.text);
+    }
+
+    const values = add(panel, "dl", null, "values");
+    for (const [label, start] of [
+      ["Agent acknowledged", acknowledgment.start],
+      ["Auditor bound to", claim.start],
+      ["System-of-record booking", write.record.start]
+    ]) {
+      add(values, "dt", label);
+      const value = add(values, "dd");
+      add(value, "time", clinicTime.format(new Date(start))).dateTime = start;
+    }
+    add(values, "dd", `${write.ref} · ${write.note}`, "meta");
+
+    add(panel, "h3", verdict.status, "verdict " + verdict.status.toLowerCase());
+    add(panel, "p", verdict.summary);
+    add(panel, "p", "Audit " + audit.audit_id, "meta");
+    add(panel, "p", "Receipt hash (SHA-256 chain) · " + seal.chain_hash, "meta");
+    add(panel, "p", seal.signature ? "Seal · Signed (demo key " + seal.key_id + ")" :
+      "Seal · Unsigned", "meta");
+  }
+
+  const status = document.getElementById("status");
+  fetch("data-corrections/cases.json")
+    .then(response => {
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      return response.json();
+    })
+    .then(cases => {
+      const content = document.createDocumentFragment();
+      for (const scenario of cases) renderCase(content, scenario);
+      document.getElementById("cases").append(content);
+      status.hidden = true;
+    })
+    .catch(() => {
+      status.textContent = "The recorded audits could not be loaded. Reload the page to try again.";
+      status.classList.add("error");
+    });
+</script>
+</body>
+</html>
