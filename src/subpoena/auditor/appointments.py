@@ -213,6 +213,11 @@ def candidates_rescheduled(
         new_ok = appt.start == claim.new_start
         if strict and not new_ok:
             continue
+        # A new booking that matches nothing the claim says - not the new time,
+        # no released old record beside it - is not a reschedule gone wrong;
+        # it is someone else's write, and leaving it unclaimed is the answer.
+        if not new_ok and old is None:
+            continue
         candidates.append((2 * new_ok + 2 * (old is not None), Match(primary=nc, secondary=old)))
 
     # Shape C: the old record was released and nothing replaced it. Always

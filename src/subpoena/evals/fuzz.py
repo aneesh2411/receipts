@@ -11,10 +11,11 @@ Expected outcomes come from one table per intent and compose per step: each
 step contributes its structured claims, then its spoken-derived claims (the
 order the auditor's claim merge produces: by turn, structured before spoken),
 findings as a multiset. One fault per step keeps each step's truth unambiguous,
-and a multi-intent call chains two or three *distinct* intents: steps of the
-same kind share one evidence pool per claim type, which makes fault composition
-order-sensitive. Two faults stay out of multi-intent calls for the same reason:
-SILENT_CRM_EDIT rewrites the caller's identity mid-call, and
+and a multi-intent call chains two or three intents, kinds free to repeat:
+reconcile pairs each evidence pool by assignment (#39), so same-kind
+composition no longer depends on claim order.
+Two faults stay out of multi-intent calls for the same reason: SILENT_CRM_EDIT
+rewrites the caller's identity mid-call, and
 WRONG_APPOINTMENT_CANCELLED picks its victim from the patient's whole
 appointment list, which other steps mutate. The two known gaps (vague spoken
 promises, free-text ticket summaries) are excluded here and measured in the
@@ -203,13 +204,14 @@ def generate(n: int, seed: int = 0) -> list[Scenario]:
         taken: set[datetime] = set()
         topics: set[str] = set()
         k = 1 if rng.random() < 0.7 else rng.choice((2, 2, 3))
-        # Distinct kinds per call: steps of one kind share the per-type evidence
-        # pool, and greedy reconcile would make their fault composition depend
-        # on claim order.
+        # Kinds may repeat: reconcile pairs each evidence pool by assignment
+        # (#39), so same-kind fault composition no longer depends on claim order.
         kinds = (
             (rng.choice(("book", "book", "reschedule", "cancel", "handoff")),)
             if k == 1
-            else tuple(rng.sample(("book", "reschedule", "cancel", "handoff"), k))
+            else tuple(
+                rng.choice(("book", "reschedule", "cancel", "handoff")) for _ in range(k)
+            )
         )
         steps: list[Step] = []
         seeds: list[SeedAppointment] = []

@@ -26,7 +26,7 @@ Golden set: 57 hand-labelled calls, 95 claims, 7 findings beyond claims.
 
 Claim-level confusion for Subpoena: 33 true positives, 0 false positives, 2 false negatives, 60 true negatives.
 
-Fuzzed set: 500 generated calls, 972 claims, 87 findings. No disagreements with ground truth.
+Fuzzed set: 500 generated calls, 970 claims, 79 findings. No disagreements with ground truth.
 <!-- metrics:fa-results:end -->
 
 ## 2. The two failures
@@ -227,8 +227,10 @@ of day, phrasing variant and fault mode. About 30% of calls chain two or three i
 (book, reschedule, cancel, handoff) with a fault drawn per step, so one call can mix
 honest and dishonest requests. It shows the verdicts do not depend on hand-picked dates
 and slots (it crosses the daylight-saving change and month boundaries). Multi-intent calls
-chain only distinct intents: steps of one kind share the per-type evidence pool, and the
-greedy reconcile makes same-kind fault composition order-sensitive (#39).
+chain two or three intents with kinds free to repeat: steps of one kind share the
+per-type evidence pool, and reconcile pairs each pool by assignment instead of claim
+order (#39, `tests/test_reconcile_assignment.py`), so same-kind fault composition is
+covered rather than excluded.
 `wrong_appointment_cancelled` and `silent_crm_edit` never fire in a multi-intent call
 (their blast radius is the whole call, not the step), and the two known gaps are excluded
 from generation. Expected outcomes come from a table written by the same author as the
@@ -256,6 +258,4 @@ works.
    scenario.
 2. Measure the model-backed reader on real, messy transcripts, with precision tracked
    separately from recall.
-3. Re-admit same-kind intent chains to the fuzzer now that reconcile pairs by
-   assignment (#39 landed); then structured topics for handoffs.
-4. Structured topics for handoffs, to close gap 2.2 without a model on the verdict path.
+3. Structured topics for handoffs, to close gap 2.2 without a model on the verdict path.
