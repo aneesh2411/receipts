@@ -35,13 +35,25 @@ Reason = Annotated[
 class ReviewState(StrEnum):
     OPEN = "open"
     ACKNOWLEDGED = "acknowledged"
+    PENDING_VERIFICATION = "pending_verification"
     RESOLVED = "resolved"
     DISPUTED = "disputed"
 
 
 EDGES = {
     ReviewState.OPEN: {ReviewState.ACKNOWLEDGED},
-    ReviewState.ACKNOWLEDGED: {ReviewState.RESOLVED, ReviewState.DISPUTED},
+    ReviewState.ACKNOWLEDGED: {
+        ReviewState.PENDING_VERIFICATION,
+        ReviewState.RESOLVED,
+        ReviewState.DISPUTED,
+    },
+    # A claimed fix waits for a second matching evidence snapshot (auditor.resolution).
+    # An unverified or inconclusive recheck returns the item to ACKNOWLEDGED.
+    ReviewState.PENDING_VERIFICATION: {
+        ReviewState.RESOLVED,
+        ReviewState.ACKNOWLEDGED,
+        ReviewState.DISPUTED,
+    },
     ReviewState.RESOLVED: set(),
     ReviewState.DISPUTED: {ReviewState.OPEN},
 }

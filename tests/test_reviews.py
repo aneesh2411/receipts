@@ -19,10 +19,11 @@ from subpoena.api.store import AuditStore
 from subpoena.auditor.seal import GENESIS
 
 KEY = b"review-test-key"
-STATES = ("open", "acknowledged", "resolved", "disputed")
+STATES = ("open", "acknowledged", "pending_verification", "resolved", "disputed")
 PATHS = {
     "open": (),
     "acknowledged": ("acknowledged",),
+    "pending_verification": ("acknowledged", "pending_verification"),
     "resolved": ("acknowledged", "resolved"),
     "disputed": ("acknowledged", "disputed"),
 }
@@ -30,6 +31,10 @@ ALLOWED = {
     ("open", "acknowledged"),
     ("acknowledged", "resolved"),
     ("acknowledged", "disputed"),
+    ("acknowledged", "pending_verification"),
+    ("pending_verification", "resolved"),
+    ("pending_verification", "acknowledged"),
+    ("pending_verification", "disputed"),
     ("disputed", "open"),
 }
 
@@ -105,7 +110,17 @@ def test_list_sources_lifecycle_and_immutable_audit(client):
 
     previous = GENESIS
     for seq, state in enumerate(
-        ("acknowledged", "disputed", "open", "acknowledged", "resolved"), 1
+        (
+            "acknowledged",
+            "disputed",
+            "open",
+            "acknowledged",
+            "pending_verification",
+            "acknowledged",
+            "pending_verification",
+            "resolved",
+        ),
+        1,
     ):
         start = datetime.now(UTC)
         receipt = _data(_transition(client, item, state, actor="Operator A", reason="Reason é"))
