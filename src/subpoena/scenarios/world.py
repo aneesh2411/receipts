@@ -64,6 +64,10 @@ class SeedAppointment:
 
 
 Expected = tuple[str, VerdictStatus]
+# (claim type, expected status, identity label): separately reviewed data naming
+# which appointment, message or ticket an expectation is about. See
+# evals.score.claim_identity for the label format.
+ExpectedV2 = tuple[str, VerdictStatus, str]
 
 
 @dataclass(frozen=True)
@@ -82,6 +86,10 @@ class Scenario:
     hard_phrasing: bool = False
     outage: tuple[str, ...] = ()  # adapters that are down when the audit runs
     known_gap: str | None = None  # why the auditor is expected to get this one wrong
+    # Identity-labelled twin of expected_claims, attached after construction once
+    # reviewed (see golden._V2). Keyword-only position: several scenarios pass
+    # expected_findings positionally.
+    expected_claims_v2: tuple[ExpectedV2, ...] = ()
 
     @property
     def fault_modes(self) -> frozenset[FaultMode]:

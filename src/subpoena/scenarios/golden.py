@@ -10,6 +10,8 @@ V verified, MM mismatch, NF not found, UV unverifiable.
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 from subpoena.models import PatientRef, VerdictStatus
 from subpoena.scenarios.world import (
     DANIEL,
@@ -19,6 +21,7 @@ from subpoena.scenarios.world import (
     OSEI,
     PATEL,
     SOFIA,
+    ExpectedV2,
     Scenario,
     at,
 )
@@ -571,7 +574,601 @@ KNOWN_GAPS: tuple[Scenario, ...] = (
     ),
 )
 
-GOLDEN: tuple[Scenario, ...] = (*CLEAN, *REQUIRED, *EXTENDED, *EDGE, *KNOWN_GAPS)
+_V2: dict[str, tuple[ExpectedV2, ...]] = {
+    "clean-book": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "clean-book-new-patient": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101099|2026-03-04T10:00:00-05:00|Dr. Kim",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101099|2026-03-04T10:00:00-05:00",
+        ),
+    ),
+    "clean-book-no-confirmation": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+    ),
+    "clean-reschedule": (
+        (
+            "Rescheduled",
+            VerdictStatus.VERIFIED,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "clean-reschedule-recreate": (
+        (
+            "Rescheduled",
+            VerdictStatus.VERIFIED,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "clean-cancel": (
+        (
+            "Cancelled",
+            VerdictStatus.VERIFIED,
+            "cancel|+15550101001|2026-03-03T10:00:00-05:00",
+        ),
+    ),
+    "clean-handoff": (
+        (
+            "HandoffCreated",
+            VerdictStatus.VERIFIED,
+            "handoff|+15550101001|normal",
+        ),
+    ),
+    "clean-urgent-handoff": (
+        (
+            "HandoffCreated",
+            VerdictStatus.VERIFIED,
+            "handoff|+15550101001|urgent",
+        ),
+    ),
+    "clean-multi-intent": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+        (
+            "HandoffCreated",
+            VerdictStatus.VERIFIED,
+            "handoff|+15550101001|normal",
+        ),
+    ),
+    "clean-inquiry-only": (),
+    "clean-slot-taken-alternative": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T15:00:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T15:00:00-05:00",
+        ),
+    ),
+    "clean-honest-decline": (),
+    "clean-family-two-bookings": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-04T09:00:00-05:00|Dr. Kim",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-04T09:00:00-05:00",
+        ),
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101005|2026-03-04T09:30:00-05:00|Dr. Kim",
+        ),
+    ),
+    "fault-phantom-booking": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-phantom-booking-bare": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+    ),
+    "fault-wrong-time": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.MISMATCH,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-unclaimed-write": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-phantom-confirmation": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.NOT_FOUND,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-phantom-handoff": (
+        (
+            "HandoffCreated",
+            VerdictStatus.NOT_FOUND,
+            "handoff|+15550101001|normal",
+        ),
+    ),
+    "fault-double-book": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-wrong-patient": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.MISMATCH,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-duplicate-write": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-rollback": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-off-hours": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T19:00:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T19:00:00-05:00",
+        ),
+    ),
+    "fault-silent-crm-edit": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-wrong-recipient": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.MISMATCH,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-stale-confirmation": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.MISMATCH,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-zombie-reschedule": (
+        (
+            "Rescheduled",
+            VerdictStatus.MISMATCH,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "fault-reschedule-rewrite": (
+        (
+            "Rescheduled",
+            VerdictStatus.MISMATCH,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "fault-ghost-reschedule": (
+        (
+            "Rescheduled",
+            VerdictStatus.MISMATCH,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "fault-lost-reschedule": (
+        (
+            "Rescheduled",
+            VerdictStatus.MISMATCH,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "fault-reschedule-wrong-time": (
+        (
+            "Rescheduled",
+            VerdictStatus.MISMATCH,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "fault-phantom-reschedule": (
+        (
+            "Rescheduled",
+            VerdictStatus.NOT_FOUND,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "fault-reschedule-double-book": (
+        (
+            "Rescheduled",
+            VerdictStatus.VERIFIED,
+            "reschedule|+15550101001|2026-03-03T10:00:00-05:00|2026-03-05T11:00:00-05:00",
+        ),
+    ),
+    "fault-phantom-cancel": (
+        (
+            "Cancelled",
+            VerdictStatus.NOT_FOUND,
+            "cancel|+15550101001|2026-03-03T10:00:00-05:00",
+        ),
+    ),
+    "fault-cancel-wrong-appointment": (
+        (
+            "Cancelled",
+            VerdictStatus.MISMATCH,
+            "cancel|+15550101001|2026-03-03T10:00:00-05:00",
+        ),
+    ),
+    "fault-downgraded-handoff": (
+        (
+            "HandoffCreated",
+            VerdictStatus.MISMATCH,
+            "handoff|+15550101001|urgent",
+        ),
+    ),
+    "fault-spoken-only": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+    ),
+    "fault-spoken-only-with-confirmation": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.NOT_FOUND,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "fault-misspoken-time": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-04T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.NOT_FOUND,
+            "confirm|sms|+15550101001|2026-03-04T14:30:00-05:00",
+        ),
+    ),
+    "fault-misspoken-provider": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Kim",
+        ),
+    ),
+    "edge-timezone-equivalent": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T19:30:00+00:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "edge-phone-formatting": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|(555) 010-1001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "edge-daylight-saving": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-09T09:00:00-04:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-09T09:00:00-04:00",
+        ),
+    ),
+    "edge-preexisting-match": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+    ),
+    "edge-concurrent-staff-write": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "edge-cancelled-slot-reuse": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "edge-back-to-back": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "edge-three-lies": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.MISMATCH,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.NOT_FOUND,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+        (
+            "HandoffCreated",
+            VerdictStatus.NOT_FOUND,
+            "handoff|+15550101001|normal",
+        ),
+        (
+            "Cancelled",
+            VerdictStatus.VERIFIED,
+            "cancel|+15550101001|2026-03-10T15:00:00-04:00",
+        ),
+    ),
+    "edge-family-one-wrong": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-04T09:00:00-05:00|Dr. Kim",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-04T09:00:00-05:00",
+        ),
+        (
+            "AppointmentBooked",
+            VerdictStatus.MISMATCH,
+            "book|+15550101005|2026-03-04T09:30:00-05:00|Dr. Kim",
+        ),
+    ),
+    "edge-calendar-outage": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.UNVERIFIABLE,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "edge-crm-outage": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.UNVERIFIABLE,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "edge-recap": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.VERIFIED,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "edge-same-name-patients": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.UNVERIFIABLE,
+            "book|None|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+    ),
+    "edge-message-log-outage": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+        (
+            "ConfirmationSent",
+            VerdictStatus.UNVERIFIABLE,
+            "confirm|sms|+15550101001|2026-03-03T14:30:00-05:00",
+        ),
+    ),
+    "gap-vague-spoken-promise": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.NOT_FOUND,
+            "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel",
+        ),
+    ),
+    "gap-garbled-handoff": (
+        (
+            "HandoffCreated",
+            VerdictStatus.MISMATCH,
+            "handoff|+15550101001|normal",
+        ),
+    ),
+}
+
+
+GOLDEN: tuple[Scenario, ...] = tuple(
+    replace(s, expected_claims_v2=_V2[s.id])
+    for s in (*CLEAN, *REQUIRED, *EXTENDED, *EDGE, *KNOWN_GAPS)
+)
 BY_ID: dict[str, Scenario] = {s.id: s for s in GOLDEN}
 HERO = "edge-three-lies"
 

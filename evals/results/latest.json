@@ -38,6 +38,45 @@
       }
     ]
   },
+  "golden_v2_semantic": {
+    "label": "Subpoena (v2 semantic pairing)",
+    "calls": 55,
+    "claim_level": {
+      "tp": 33,
+      "fp": 0,
+      "fn": 2,
+      "tn": 60,
+      "precision": 1.0,
+      "recall": 0.9429,
+      "f1": 0.9706
+    },
+    "claim_status_accuracy": 0.9789,
+    "finding_level": {
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "call_accuracy": 0.9636,
+    "call_strict_accuracy": 0.9636,
+    "failures": [
+      {
+        "scenario": "gap-vague-spoken-promise",
+        "problems": [
+          "book|+15550101001|2026-03-03T14:30:00-05:00|Dr. Patel: expected NOT_FOUND, auditor saw no claim"
+        ]
+      },
+      {
+        "scenario": "gap-garbled-handoff",
+        "problems": [
+          "handoff|+15550101001|normal: expected MISMATCH, got VERIFIED"
+        ]
+      }
+    ]
+  },
   "baseline_naive_existence_check": {
     "label": "Naive existence check",
     "calls": 57,

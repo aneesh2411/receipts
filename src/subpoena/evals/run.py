@@ -8,7 +8,7 @@ from typing import Any, Literal
 
 from subpoena.auditor import ClaimExtractor
 from subpoena.evals.fuzz import generate
-from subpoena.evals.score import EvalSummary, RunScore, score_run
+from subpoena.evals.score import EvalSummary, RunScore, score_run, score_run_v2
 from subpoena.scenarios import GOLDEN, Scenario, run_scenario
 from subpoena.suspect import FaultMode
 
@@ -30,6 +30,28 @@ def evaluate(
             score_run(scenario.id, scenario.expected_claims, scenario.expected_findings, report)
         )
     return EvalSummary.of(label, runs)
+
+
+def evaluate_v2(
+    scenarios: Sequence[Scenario], *, extractor: ClaimExtractor | None = None
+) -> EvalSummary | None:
+    """Score the scenarios that carry reviewed identity labels, semantically.
+
+    Returns None when nothing is labelled, so the report can say so instead of
+    printing an empty second verdict.
+    """
+    labelled = [s for s in scenarios if s.expected_claims_v2]
+    if not labelled:
+        return None
+    runs: list[RunScore] = []
+    for scenario in labelled:
+        report = run_scenario(scenario, extractor=extractor).report
+        runs.append(
+            score_run_v2(
+                scenario.id, scenario.expected_claims_v2, scenario.expected_findings, report
+            )
+        )
+    return EvalSummary.of("Subpoena (v2 semantic pairing)", runs)
 
 
 @dataclass(frozen=True)
@@ -56,10 +78,12 @@ class EvalResult:
     faults: tuple[FaultRow, ...]
     fuzz_seed: int
     ablations: tuple[EvalSummary, ...] = ()
+    golden_v2: EvalSummary | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
             "golden": self.golden.as_dict(),
+            "golden_v2_semantic": self.golden_v2.as_dict() if self.golden_v2 else None,
             "baseline_naive_existence_check": self.baseline.as_dict(),
             "ablations": [a.as_dict() for a in self.ablations],
             "fuzz": {**self.fuzz.as_dict(), "seed": self.fuzz_seed},
@@ -87,7 +111,15 @@ def run_all(
     ablations = tuple(
         evaluate(GOLDEN, label=label, options=options) for label, options in ABLATIONS.items()
     )
-    return EvalResult(golden, baseline, fuzz, tuple(by_fault(GOLDEN, golden)), fuzz_seed, ablations)
+    return EvalResult(
+        golden,
+        baseline,
+        fuzz,
+        tuple(by_fault(GOLDEN, golden)),
+        fuzz_seed,
+        ablations,
+        golden_v2=evaluate_v2(GOLDEN, extractor=extractor),
+    )
 
 
 # ------------------------------- reporting --------------------------------- #
@@ -126,6 +158,24 @@ def render_markdown(result: EvalResult) -> str:
         _row(result.baseline),
         *[_row(a) for a in result.ablations],
         "",
+    ]
+    if result.golden_v2 is not None:
+        lines += [
+            "## Semantic pairing (v2)",
+            "",
+            "The headline pairs expected and predicted claims positionally. The v2 scorer",
+            "pairs them by reviewed identity labels (which appointment, message or ticket",
+            "the expectation is about), one-to-one, so a right verdict on the wrong target",
+            "cannot read as correct. v2 is reported beside v1 until it earns the headline;",
+            "historical scorecards remain valid as positional-v1 cards.",
+            "",
+            "| Auditor | Calls | Claim precision | Claim recall | Claim F1 | Exact status | "
+            "Finding precision | Finding recall | Call accuracy | Call strict |",
+            "|---|---|---|---|---|---|---|---|---|---|",
+            _row(result.golden_v2),
+            "",
+        ]
+    lines += [
         "- **Claim precision / recall**: flagging false claims (any status other than VERIFIED).",
         "- **Exact status**: the precise verdict (VERIFIED / MISMATCH / NOT_FOUND / UNVERIFIABLE).",
         "- **Finding precision / recall**: unclaimed writes and policy violations.",
@@ -150,6 +200,13 @@ def render_markdown(result: EvalResult) -> str:
         lines.append(f"- `{run.scenario_id}` ({tag}): {'; '.join(run.problems)}")
         if run.scenario_id in known:
             lines.append(f"  - Why: {known[run.scenario_id]}")
+    if result.golden_v2 is not None:
+        lines += ["", "## Failures (golden, v2 semantic pairing)", ""]
+        if not result.golden_v2.failures:
+            lines.append("None.")
+        for run in result.golden_v2.failures:
+            tag = "known gap" if run.scenario_id in known else "**UNEXPECTED**"
+            lines.append(f"- `{run.scenario_id}` ({tag}): {'; '.join(run.problems)}")
     lines += ["", f"## Failures (fuzz, seed {result.fuzz_seed})", ""]
     if not result.fuzz.failures:
         lines.append("None.")
