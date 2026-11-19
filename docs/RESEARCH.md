@@ -97,7 +97,7 @@ same gap and sharpens the wave:
 2. Corrections must bind to the final write: a caller correcting Thursday to
    Tuesday must result in Tuesday on the record, with the stale value nowhere
    reappearing - acknowledging the correction is not using it. New audit
-   capability: correction-aware claim chains (#TBD).
+   capability: correction-aware claim chains (#55).
 3. Handoff success is context delivery, not a transfer attempt (a 69-comment
    CX thread). This is our known gap gap-garbled-handoff: free-text ticket
    summaries are where it bites.
@@ -125,7 +125,7 @@ Sequenced so each piece lands independently:
    journal, API.
 5. Honesty-over-time scorecards (#TBD) - per agent version and claim type.
 6. Critical-finding webhook (#TBD) - last, smallest.
-7. Correction binding (#TBD) - the last settled value must be what lands in
+7. Correction binding (#55) - the last settled value must be what lands in
    the write, for date, patient, phone and recipient claims.
 
 ## Sources
