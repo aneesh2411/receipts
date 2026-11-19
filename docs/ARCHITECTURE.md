@@ -136,6 +136,11 @@ seal and link, starting from genesis.
 Without a key, a seal detects accidental or naive edits but can be recomputed by anyone.
 With a key, a forged seal fails verification.
 
+## Human review
+
+The private review API derives items from sealed audit results and stores human
+dispositions in a separate journal. [API and verification contract](REVIEW_WORKFLOW.md)
+
 ## Determinism
 
 - The suspect runs on a simulated clock. Record ids come from per-entity counters.

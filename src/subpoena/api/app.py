@@ -7,6 +7,8 @@ Core:
 
 Supporting:
     GET  /audits                 recent audits
+    GET  /reviews                review items and sealed transition history
+    POST /reviews/{id}/transition   transition one review item
     GET  /scorecard              per-agent honesty numbers
     GET  /ledger/verify          re-verify every seal and the hash chain
     GET  /demo/scenarios         the golden scenarios
@@ -33,6 +35,7 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from subpoena import __version__
+from subpoena.api.review import Hash, ReviewError, TransitionRequest
 from subpoena.api.store import AuditStore
 from subpoena.api.webhook import CriticalWebhook
 from subpoena.auditor import (
@@ -244,6 +247,25 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         authentication = check.authentication.value if count else "unsigned"
         return _ok({"ok": True, "checked": count, "head": prev,
                     "integrity": "intact", "authentication": authentication})  # fmt: skip
+
+    @app.get("/reviews", dependencies=guarded)
+    def list_reviews(checkpoint: Hash | None = None) -> JSONResponse:
+        try:
+            return _ok(store().list_reviews(settings.signing_key, checkpoint))
+        except ReviewError as exc:
+            return _fail(str(exc), exc.status)
+
+    @app.post("/reviews/{item_id}/transition", dependencies=guarded)
+    def transition_review(
+        item_id: str,
+        request: TransitionRequest,
+        checkpoint: Hash | None = None,
+    ) -> JSONResponse:
+        try:
+            receipt = store().transition_review(settings.signing_key, item_id, request, checkpoint)
+        except ReviewError as exc:
+            return _fail(str(exc), exc.status)
+        return _ok(receipt.model_dump(mode="json"))
 
     @app.get("/scorecard", dependencies=guarded)
     def scorecard() -> JSONResponse:

@@ -6,6 +6,8 @@ import sqlite3
 import threading
 from collections.abc import Iterator
 
+from subpoena.api import review_store
+from subpoena.api.review import Receipt, TransitionRequest
 from subpoena.auditor.seal import GENESIS, Sealer
 from subpoena.models import AuditReport, CallRecord
 
@@ -26,7 +28,7 @@ class AuditStore:
         self._conn = sqlite3.connect(path, check_same_thread=False, isolation_level=None)
         self._lock = threading.RLock()
         with self._lock:
-            self._conn.executescript(_SCHEMA)
+            self._conn.executescript(_SCHEMA + review_store.REVIEW_SCHEMA)
 
     def close(self) -> None:
         with self._lock:
@@ -92,3 +94,17 @@ class AuditStore:
             rows = self._conn.execute(sql, params).fetchall()
         for (body,) in rows:
             yield AuditReport.model_validate_json(body)
+
+    def list_reviews(self, key: bytes | None, checkpoint: str | None = None) -> dict:
+        with self._lock:
+            return review_store.list_reviews(self._conn, key, checkpoint)
+
+    def transition_review(
+        self,
+        key: bytes | None,
+        item_id: str,
+        request: TransitionRequest,
+        checkpoint: str | None = None,
+    ) -> Receipt:
+        with self._lock:
+            return review_store.transition_review(self._conn, key, item_id, request, checkpoint)
