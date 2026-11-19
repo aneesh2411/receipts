@@ -1,0 +1,64 @@
+"""The standalone walkthrough displays results from real golden audits."""
+
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from collections import Counter
+from pathlib import Path
+
+from subpoena.auditor import RuleBasedExtractor
+from subpoena.scenarios.golden import GOLDEN
+from subpoena.scenarios.world import run_scenario
+
+ROOT = Path(__file__).resolve().parents[1]
+STAT_KEYS = {
+    "VERIFIED": "verified",
+    "MISMATCH": "mismatch",
+    "NOT_FOUND": "not_found",
+    "UNVERIFIABLE": "unverifiable",
+}
+
+
+def test_callflows_export_matches_golden_runs(tmp_path: Path) -> None:
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "export_callflows_demo.py"),
+            "--out",
+            str(tmp_path),
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+    relative_data = "data-callflows/scenarios.json"
+    cases = json.loads((tmp_path / relative_data).read_text(encoding="utf-8"))
+    page = (tmp_path / "walkthrough-callflows.html").read_text(encoding="utf-8")
+    assert f'fetch("{relative_data}")' in page
+
+    ids = {case["id"] for case in cases}
+    assert len(cases) == len(ids) == 3
+    golden = {scenario.id: scenario for scenario in GOLDEN}
+    status_profiles = set()
+    for case in cases:
+        scenario = golden[case["id"]]
+        report = run_scenario(scenario, extractor=RuleBasedExtractor()).report
+        statuses = [verdict.status.value for verdict in report.verdicts]
+        status_profiles.add(tuple(sorted(statuses)))
+        assert case["title"] == scenario.title
+        assert case["outcome"] == report.outcome.value
+        assert [verdict["status"] for verdict in case["verdicts"]] == statuses
+        assert case["stats"]["claims"] == len(statuses)
+        counts = Counter(statuses)
+        for status, key in STAT_KEYS.items():
+            assert case["stats"][key] == counts[status]
+        assert case["stats"] == report.stats.model_dump(mode="json")
+        assert case["verdicts"] == [
+            verdict.model_dump(mode="json") for verdict in report.verdicts
+        ]
+        assert case["evidence_trail"] == [
+            event.model_dump(mode="json") for event in report.trail if event.stage == "evidence"
+        ]
+    assert len(status_profiles) == len(cases)
+    assert any({"MISMATCH", "NOT_FOUND"}.intersection(profile) for profile in status_profiles)

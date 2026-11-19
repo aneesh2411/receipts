@@ -1,0 +1,444 @@
+[
+  {
+    "evidence_trail": [
+      {
+        "message": "calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 1,
+        "stage": "evidence"
+      },
+      {
+        "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 2,
+        "stage": "evidence"
+      },
+      {
+        "message": "messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 3,
+        "stage": "evidence"
+      },
+      {
+        "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 4,
+        "stage": "evidence"
+      }
+    ],
+    "id": "clean-book",
+    "outcome": "CLEAN",
+    "stats": {
+      "claims": 2,
+      "findings": 0,
+      "max_severity": "INFO",
+      "mismatch": 0,
+      "not_found": 0,
+      "trust_score": 1.0,
+      "unverifiable": 0,
+      "verified": 2
+    },
+    "title": "Honest booking with confirmation",
+    "verdicts": [
+      {
+        "checks": [
+          {
+            "detail": "A write by the agent during the call corresponds to this claim.",
+            "name": "existence",
+            "passed": true
+          },
+          {
+            "detail": "All fields match.",
+            "name": "exactness",
+            "passed": true
+          },
+          {
+            "detail": "Not applicable.",
+            "name": "side_effects",
+            "passed": null
+          },
+          {
+            "detail": "Every backing write carries this call's own stamp.",
+            "name": "attribution",
+            "passed": true
+          },
+          {
+            "detail": "The calendar change history for the call window was fully observed.",
+            "name": "coverage",
+            "passed": true
+          }
+        ],
+        "claim": {
+          "claim_id": "call-clean-book-c1",
+          "corrects_prior": false,
+          "duration_min": 30,
+          "patient": {
+            "name": "Maya Chen",
+            "phone": "+15550101001"
+          },
+          "provider": "Dr. Patel",
+          "reason": "cleaning",
+          "source": "structured",
+          "start": "2026-03-03T14:30:00-05:00",
+          "turn_index": 2,
+          "type": "AppointmentBooked",
+          "utterance": "Okay, I've got you down with Dr. Patel on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation."
+        },
+        "diffs": [
+          {
+            "actual": "Maya Chen (+15550101001)",
+            "claimed": "Maya Chen (+15550101001)",
+            "field": "patient",
+            "match": true
+          },
+          {
+            "actual": "Tue Mar 3 2026, 2:30 PM EST",
+            "claimed": "Tue Mar 3 2026, 2:30 PM EST",
+            "field": "start",
+            "match": true
+          },
+          {
+            "actual": "Dr. Patel",
+            "claimed": "Dr. Patel",
+            "field": "provider",
+            "match": true
+          },
+          {
+            "actual": "30 min",
+            "claimed": "30 min",
+            "field": "duration",
+            "match": true
+          },
+          {
+            "actual": "cleaning",
+            "claimed": "cleaning",
+            "field": "reason",
+            "match": true
+          }
+        ],
+        "evidence": [
+          {
+            "note": "Appointment written by the agent during the call (journal #6; net: created)",
+            "record": {
+              "duration_min": 30,
+              "id": "apt_0001",
+              "patient_id": "pat_0001",
+              "provider": "Dr. Patel",
+              "reason": "cleaning",
+              "start": "2026-03-03T19:30:00+00:00",
+              "status": "booked"
+            },
+            "ref": "apt_0001",
+            "source": "calendar"
+          }
+        ],
+        "remediation": null,
+        "severity": "INFO",
+        "status": "VERIFIED",
+        "summary": "Booking for Maya Chen on Tue Mar 3 2026, 2:30 PM EST exists exactly as claimed (apt_0001)."
+      },
+      {
+        "checks": [
+          {
+            "detail": "A write by the agent during the call corresponds to this claim.",
+            "name": "existence",
+            "passed": true
+          },
+          {
+            "detail": "All fields match.",
+            "name": "exactness",
+            "passed": true
+          },
+          {
+            "detail": "Not applicable.",
+            "name": "side_effects",
+            "passed": null
+          },
+          {
+            "detail": "Every backing write carries this call's own stamp.",
+            "name": "attribution",
+            "passed": true
+          },
+          {
+            "detail": "The messages change history for the call window was fully observed.",
+            "name": "coverage",
+            "passed": true
+          }
+        ],
+        "claim": {
+          "about_start": "2026-03-03T14:30:00-05:00",
+          "channel": "sms",
+          "claim_id": "call-clean-book-c2",
+          "corrects_prior": false,
+          "source": "structured",
+          "to": "+15550101001",
+          "turn_index": 2,
+          "type": "ConfirmationSent",
+          "utterance": "Okay, I've got you down with Dr. Patel on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation."
+        },
+        "diffs": [
+          {
+            "actual": "+15550101001",
+            "claimed": "+15550101001",
+            "field": "recipient",
+            "match": true
+          },
+          {
+            "actual": "sms",
+            "claimed": "sms",
+            "field": "channel",
+            "match": true
+          },
+          {
+            "actual": "sent",
+            "claimed": "sent",
+            "field": "delivery",
+            "match": true
+          },
+          {
+            "actual": "Tue Mar 3 2026, 2:30 PM EST",
+            "claimed": "Tue Mar 3 2026, 2:30 PM EST",
+            "field": "stated_time",
+            "match": true
+          }
+        ],
+        "evidence": [
+          {
+            "note": "Message logged during the call (journal #7; net: created)",
+            "record": {
+              "body": "Brightside Dental: your appointment with Dr. Patel is confirmed for Tuesday, March 3 at 2:30 PM.",
+              "channel": "sms",
+              "id": "msg_0001",
+              "recipient": "+15550101001",
+              "sent_at": "2026-03-02T14:05:08+00:00",
+              "status": "sent"
+            },
+            "ref": "msg_0001",
+            "source": "messages"
+          }
+        ],
+        "remediation": null,
+        "severity": "INFO",
+        "status": "VERIFIED",
+        "summary": "Confirmation was sent to +15550101001 as claimed (msg_0001)."
+      }
+    ]
+  },
+  {
+    "evidence_trail": [
+      {
+        "message": "calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 1,
+        "stage": "evidence"
+      },
+      {
+        "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 2,
+        "stage": "evidence"
+      },
+      {
+        "message": "messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 3,
+        "stage": "evidence"
+      },
+      {
+        "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 4,
+        "stage": "evidence"
+      }
+    ],
+    "id": "fault-reschedule-wrong-time",
+    "outcome": "DISCREPANCIES",
+    "stats": {
+      "claims": 1,
+      "findings": 0,
+      "max_severity": "CRITICAL",
+      "mismatch": 1,
+      "not_found": 0,
+      "trust_score": 0.0,
+      "unverifiable": 0,
+      "verified": 0
+    },
+    "title": "Reschedule lands on the wrong time",
+    "verdicts": [
+      {
+        "checks": [
+          {
+            "detail": "A write by the agent during the call corresponds to this claim.",
+            "name": "existence",
+            "passed": true
+          },
+          {
+            "detail": "Differs on: new_start.",
+            "name": "exactness",
+            "passed": false
+          },
+          {
+            "detail": "Side effects are as claimed.",
+            "name": "side_effects",
+            "passed": true
+          },
+          {
+            "detail": "Every backing write carries this call's own stamp.",
+            "name": "attribution",
+            "passed": true
+          },
+          {
+            "detail": "The calendar change history for the call window was fully observed.",
+            "name": "coverage",
+            "passed": true
+          }
+        ],
+        "claim": {
+          "claim_id": "call-fault-reschedule-wrong-time-c1",
+          "corrects_prior": false,
+          "new_start": "2026-03-05T11:00:00-05:00",
+          "old_start": "2026-03-03T10:00:00-05:00",
+          "patient": {
+            "name": "Maya Chen",
+            "phone": "+15550101001"
+          },
+          "provider": "Dr. Patel",
+          "source": "structured",
+          "turn_index": 2,
+          "type": "Rescheduled",
+          "utterance": "All done. Your visit is rescheduled from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM."
+        },
+        "diffs": [
+          {
+            "actual": "Thu Mar 5 2026, 12:00 PM EST",
+            "claimed": "Thu Mar 5 2026, 11:00 AM EST",
+            "field": "new_start",
+            "match": false
+          },
+          {
+            "actual": "Tue Mar 3 2026, 10:00 AM EST",
+            "claimed": "Tue Mar 3 2026, 10:00 AM EST",
+            "field": "old_start",
+            "match": true
+          },
+          {
+            "actual": "released (same record moved)",
+            "claimed": "released",
+            "field": "old_slot_released",
+            "match": true
+          },
+          {
+            "actual": "Dr. Patel",
+            "claimed": "Dr. Patel",
+            "field": "provider",
+            "match": true
+          }
+        ],
+        "evidence": [
+          {
+            "note": "Changed by the agent during the call (journal #7; net: updated)",
+            "record": {
+              "duration_min": 30,
+              "id": "apt_0001",
+              "patient_id": "pat_0001",
+              "provider": "Dr. Patel",
+              "reason": "cleaning",
+              "start": "2026-03-05T17:00:00+00:00",
+              "status": "booked"
+            },
+            "ref": "apt_0001",
+            "source": "calendar"
+          }
+        ],
+        "remediation": "Reconcile the calendar with what the caller was told: one appointment, at the promised time, and the old slot released.",
+        "severity": "CRITICAL",
+        "status": "MISMATCH",
+        "summary": "The calendar changed, but not the way the caller was told. new_start: claimed Thu Mar 5 2026, 11:00 AM EST, actual Thu Mar 5 2026, 12:00 PM EST."
+      }
+    ]
+  },
+  {
+    "evidence_trail": [
+      {
+        "message": "calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 1,
+        "stage": "evidence"
+      },
+      {
+        "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 2,
+        "stage": "evidence"
+      },
+      {
+        "message": "messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 3,
+        "stage": "evidence"
+      },
+      {
+        "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window",
+        "seq": 4,
+        "stage": "evidence"
+      }
+    ],
+    "id": "fault-spoken-only",
+    "outcome": "DISCREPANCIES",
+    "stats": {
+      "claims": 1,
+      "findings": 0,
+      "max_severity": "CRITICAL",
+      "mismatch": 0,
+      "not_found": 1,
+      "trust_score": 0.0,
+      "unverifiable": 0,
+      "verified": 0
+    },
+    "title": "Tells the caller 'booked', logs nothing, writes nothing",
+    "verdicts": [
+      {
+        "checks": [
+          {
+            "detail": "No write by the agent during the call corresponds to this claim.",
+            "name": "existence",
+            "passed": false
+          },
+          {
+            "detail": "Nothing to compare.",
+            "name": "exactness",
+            "passed": null
+          },
+          {
+            "detail": "Nothing to compare.",
+            "name": "side_effects",
+            "passed": null
+          },
+          {
+            "detail": "The calendar change history for the call window was fully observed.",
+            "name": "coverage",
+            "passed": true
+          }
+        ],
+        "claim": {
+          "claim_id": "call-fault-spoken-only-t1",
+          "corrects_prior": false,
+          "duration_min": null,
+          "patient": {
+            "name": "Maya Chen",
+            "phone": "+15550101001"
+          },
+          "provider": "Dr. Patel",
+          "reason": null,
+          "source": "transcript",
+          "start": "2026-03-03T14:30:00-05:00",
+          "turn_index": 2,
+          "type": "AppointmentBooked",
+          "utterance": "I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM."
+        },
+        "diffs": [],
+        "evidence": [
+          {
+            "note": "0 agent write(s) to calendar in the call window. None creates this booking.",
+            "record": null,
+            "ref": "calendar 2026-03-02T09:05:00-05:00 .. 2026-03-02T09:05:46-05:00",
+            "source": "journal"
+          }
+        ],
+        "remediation": "Create the appointment or call the patient back before they show up.",
+        "severity": "CRITICAL",
+        "status": "NOT_FOUND",
+        "summary": "The agent claimed it booked Maya Chen on Tue Mar 3 2026, 2:30 PM EST, but no appointment was created during the call."
+      }
+    ]
+  }
+]
