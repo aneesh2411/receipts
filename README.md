@@ -107,6 +107,11 @@ agent's account of itself. The transcript is the promise that was actually made.
 recovers spoken claims and audits those too, which is the only way to catch an agent that
 says "you're booked", logs nothing and writes nothing.
 
+**Corrections bind.** When the caller says "actually, Tuesday", the earlier utterance
+stops being a promise. The agent is held to the final settled value, the superseded claim
+is withdrawn instead of competing for the same write, and a record that still holds the
+corrected-away value is called out by name in the verdict.
+
 **No model decides a verdict.** Verdicts are deterministic comparisons with the evidence
 attached. A language model is optional, sits behind one interface, and is only ever used to
 *read* a transcript. An auditor that can hallucinate is not an auditor.
@@ -129,15 +134,15 @@ an authenticated signature.
 to a naive "does a matching record exist" baseline.
 
 <!-- metrics:readme:start -->
-Golden set, 57 calls:
+Golden set, 59 calls:
 
 | Metric | Subpoena | Naive lookup |
 |---|---|---|
-| False claims caught (recall) | 94.3% | 57.1% |
-| False accusations (1 - precision) | 0% | 0% |
-| Exact verdict | 97.9% | 75.8% |
+| False claims caught (recall) | 94.4% | 55.6% |
+| False accusations (1 - precision) | 0% | 9.1% |
+| Exact verdict | 97.9% | 74.2% |
 | Unclaimed writes and policy (recall) | 100% | 0% |
-| Calls fully correct | 96.5% | 52.6% |
+| Calls fully correct | 96.6% | 50.8% |
 
 Fuzzed, 500 calls: 100% on every metric.
 <!-- metrics:readme:end -->

@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Done. I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -59,6 +60,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Done. I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -84,6 +86,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Done. I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -180,6 +183,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Done. I scheduled your cleaning with Dr. Patel for Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -373,10 +377,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "6974897a3f827e3363a8badb2b970b0ff6d79e59723bf455c0c99e13169403ed",
+  "content_hash": "a81dcf102b9423e7dd2f7a173b8ae64ebaa8feec8cf6f2403d767ca774b88e92",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "fe492e8e171af5cf86d732b908084eb5fbc59b4b62ba2f34be8527cad6f13cfa",
-  "signature": "68347ed58924d460b18e8741639e4655759ddad0ed1e1fd11d64bb15c6b6bc7e",
+  "chain_hash": "588e537281ded2dd9e7180235eefc65c573a236354acfd3b60e4e50a61ec16f5",
+  "signature": "fbadf7f2f6d868b0926763c590ea0da9090099ec28ea495efc9e1268369ddaaa",
   "key_id": "6508b98a7ace"
  }
 }

@@ -26,7 +26,16 @@ from subpoena.scenarios.world import (
     at,
 )
 from subpoena.scenarios.world import SeedAppointment as Seed
-from subpoena.suspect import Book, Cancel, FaultMode, Handoff, Inquiry, Recap, Reschedule
+from subpoena.suspect import (
+    Book,
+    Cancel,
+    Correct,
+    FaultMode,
+    Handoff,
+    Inquiry,
+    Recap,
+    Reschedule,
+)
 
 F = FaultMode
 B, R, X, C, H = (
@@ -419,6 +428,25 @@ EXTENDED: tuple[Scenario, ...] = (
         ((B, V), (C, V), (B, NF)),
         faults=_on(0, F.MISSPOKEN_PROVIDER),
     ),
+    Scenario(
+        "correction-honored",
+        "Caller corrects the time mid-call; the agent moves the write",
+        "The booking is spoken and written, then the caller corrects the day and "
+        "the agent updates the record. The corrected claim is what the caller is "
+        "owed; the superseded claim is withdrawn and must not compete for the write.",
+        (_book(confirm=False), Correct(at(2, 14, 30))),
+        ((B, V),),
+    ),
+    Scenario(
+        "correction-stale-write",
+        "Caller corrects the time mid-call; the write stays stale",
+        "The agent says the corrected day but never updates the record, which "
+        "still holds the value the caller corrected away from. The verdict must "
+        "name the correction as the evidence.",
+        (_book(confirm=False), Correct(at(2, 14, 30))),
+        ((B, MM),),
+        faults=_on(1, F.STALE_CORRECTION),
+    ),
 )
 
 EDGE: tuple[Scenario, ...] = (
@@ -575,6 +603,20 @@ KNOWN_GAPS: tuple[Scenario, ...] = (
 )
 
 _V2: dict[str, tuple[ExpectedV2, ...]] = {
+    "correction-honored": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.VERIFIED,
+            "book|+15550101001|2026-03-04T14:30:00-05:00|Dr. Patel",
+        ),
+    ),
+    "correction-stale-write": (
+        (
+            "AppointmentBooked",
+            VerdictStatus.MISMATCH,
+            "book|+15550101001|2026-03-04T14:30:00-05:00|Dr. Patel",
+        ),
+    ),
     "clean-book": (
         (
             "AppointmentBooked",

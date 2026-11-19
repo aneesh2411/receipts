@@ -34,6 +34,7 @@ from subpoena.sor.base import SystemOfRecord
 from subpoena.suspect.faults import (
     BOOK_FAULTS,
     CANCEL_FAULTS,
+    CORRECT_FAULTS,
     HANDOFF_FAULTS,
     RESCHEDULE_FAULTS,
     FaultMode,
@@ -79,6 +80,14 @@ class Book:
 
 
 @dataclass(frozen=True)
+class Correct:
+    """The caller corrects the visit arranged earlier in the same call."""
+
+    new_start: datetime
+    patient: PatientRef | None = None  # defaults to the caller
+
+
+@dataclass(frozen=True)
 class Reschedule:
     old_start: datetime
     new_start: datetime
@@ -114,7 +123,7 @@ class Inquiry:
     answer: str
 
 
-Step = Book | Reschedule | Cancel | Handoff | Recap | Inquiry
+Step = Book | Reschedule | Cancel | Handoff | Recap | Inquiry | Correct
 
 
 @dataclass(frozen=True)
@@ -169,6 +178,7 @@ class _Call:
         self.turns: list[Turn] = []
         self.claims: list[Claim] = []
         self.injected: list[InjectedFault] = []
+        self._last_written: Appointment | None = None
 
     # -- plumbing ----------------------------------------------------------- #
 
@@ -177,6 +187,7 @@ class _Call:
         self._say("agent", f"Thank you for calling {self.a.clinic.name}. How can I help?")
         handlers = {
             Book: (self._book, BOOK_FAULTS),
+            Correct: (self._correct, CORRECT_FAULTS),
             Reschedule: (self._reschedule, RESCHEDULE_FAULTS),
             Cancel: (self._cancel, CANCEL_FAULTS),
             Handoff: (self._handoff, HANDOFF_FAULTS),
@@ -293,6 +304,7 @@ class _Call:
                 "reason": step.reason,
             }
             appt = cal.create_appointment(**details)
+            self._last_written = appt
             if _F.DUPLICATE_WRITE in modes:
                 cal.create_appointment(**details)
             if _F.ROLLBACK in modes:
@@ -345,6 +357,26 @@ class _Call:
         self.claims.append(
             ConfirmationSent(**self._claim_meta(line), channel="sms", to=to, about_start=start)
         )
+
+    def _correct(self, step: Correct, modes: frozenset[FaultMode]) -> None:
+        n, cal = self.a.narrator, self.a.sor.calendar
+        ref = step.patient or self.caller
+        self._say("caller", n.correct_booking(step.new_start))
+        line = n.booking_corrected(step.new_start)
+        self.claims.append(
+            AppointmentBooked(
+                **self._claim_meta(line),
+                patient=ref,
+                start=step.new_start,
+                provider=self._last_written.provider if self._last_written else None,
+                corrects_prior=True,
+            )
+        )
+        self._say("agent", line)
+        if _F.STALE_CORRECTION in modes:
+            return  # says the corrected time, leaves the write holding the old one
+        if self._last_written is not None:
+            cal.reschedule_appointment(self._last_written.id, step.new_start)
 
     def _reschedule(self, step: Reschedule, modes: frozenset[FaultMode]) -> None:
         n, cal = self.a.narrator, self.a.sor.calendar

@@ -56,6 +56,9 @@ _CONFIRMATION = re.compile(r"\b(?:confirmation|text|email)\b", re.IGNORECASE)
 _HANDOFF = re.compile(r"\b(?:ticket|flagged|escalated)\b", re.IGNORECASE)
 _URGENT = re.compile(r"\b(?:urgent|right away|emergency)\b", re.IGNORECASE)
 _PROVIDER = re.compile(r"\bDr\.\s+[A-Z][A-Za-z'-]+")
+_CORRECTION = re.compile(
+    r"\b(?:actually|i meant|instead|no,? wait|make that|change that)\b", re.IGNORECASE
+)
 
 
 class RuleBasedExtractor:
@@ -66,8 +69,13 @@ class RuleBasedExtractor:
 
     def extract(self, call: CallRecord, clinic: ClinicConfig) -> list[Claim]:
         claims: list[Claim] = []
+        corrected = False  # the caller just corrected an earlier commitment
         for turn in call.transcript:
             if turn.speaker != "agent":
+                if _CORRECTION.search(turn.text) and find_times(
+                    turn.text, ref=call.started_at, tz=clinic.zone
+                ):
+                    corrected = True
                 continue
             last_time: datetime | None = None
             for sentence in _SENTENCE.split(turn.text):
@@ -81,25 +89,36 @@ class RuleBasedExtractor:
                     "utterance": sentence,
                 }
                 if _RESCHEDULED.search(sentence) and len(times) >= 2:
+                    if corrected:
+                        # The caller re-stated a value; this replaces the earlier claim.
+                        meta["corrects_prior"] = True
                     claims.append(
                         Rescheduled(
                             **meta, patient=call.caller, old_start=times[0], new_start=times[1]
                         )
                     )
                     last_time = times[1]
+                    corrected = False
                 elif _CANCELLED.search(sentence) and times:
+                    if corrected:
+                        meta["corrects_prior"] = True
                     claims.append(Cancelled(**meta, patient=call.caller, start=times[0]))
+                    corrected = False
                 elif _BOOKED.search(sentence) and times:
                     provider = _PROVIDER.search(sentence)
+                    start = times[-1] if _CORRECTION.search(sentence) else times[0]
+                    if corrected or start is not times[0]:
+                        meta["corrects_prior"] = True
                     claims.append(
                         AppointmentBooked(
                             **meta,
                             patient=call.caller,
-                            start=times[0],
+                            start=start,
                             provider=provider.group(0) if provider else None,
                         )
                     )
-                    last_time = times[0]
+                    last_time = start
+                    corrected = False
                 elif _SENT.search(sentence) and _CONFIRMATION.search(sentence):
                     email = "email" in sentence.lower()
                     if call.caller.phone or email:
@@ -320,6 +339,7 @@ def merge_claims(structured: Sequence[Claim], spoken: Sequence[Claim]) -> tuple[
     """
     used: set[str] = set()
     extra: list[Claim] = []
+    flagged: set[str] = set()  # structured claims a spoken correction corroborates
     seen_spoken: dict[tuple, int] = {}
     for claim in spoken:
         key = _spoken_key(claim)
@@ -341,9 +361,15 @@ def merge_claims(structured: Sequence[Claim], spoken: Sequence[Claim]) -> tuple[
             )
         if partner is not None:
             used.add(partner.claim_id)
+            if claim.corrects_prior:
+                flagged.add(partner.claim_id)
         elif earlier_turn is None or earlier_turn == claim.turn_index:
             extra.append(claim)
-    merged = [*structured, *extra]
+    merged = [
+        c.model_copy(update={"corrects_prior": True}) if c.claim_id in flagged else c
+        for c in structured
+    ]
+    merged.extend(extra)
     order = {c.claim_id: i for i, c in enumerate(merged)}
     return tuple(
         sorted(

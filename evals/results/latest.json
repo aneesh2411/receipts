@@ -1,17 +1,17 @@
 {
   "golden": {
     "label": "Subpoena",
-    "calls": 57,
+    "calls": 59,
     "claim_level": {
-      "tp": 33,
+      "tp": 34,
       "fp": 0,
       "fn": 2,
-      "tn": 60,
+      "tn": 61,
       "precision": 1.0,
-      "recall": 0.9429,
-      "f1": 0.9706
+      "recall": 0.9444,
+      "f1": 0.9714
     },
-    "claim_status_accuracy": 0.9789,
+    "claim_status_accuracy": 0.9794,
     "finding_level": {
       "tp": 7,
       "fp": 0,
@@ -21,8 +21,8 @@
       "recall": 1.0,
       "f1": 1.0
     },
-    "call_accuracy": 0.9649,
-    "call_strict_accuracy": 0.9649,
+    "call_accuracy": 0.9661,
+    "call_strict_accuracy": 0.9661,
     "failures": [
       {
         "scenario": "gap-vague-spoken-promise",
@@ -40,17 +40,17 @@
   },
   "golden_v2_semantic": {
     "label": "Subpoena (v2 semantic pairing)",
-    "calls": 55,
+    "calls": 57,
     "claim_level": {
-      "tp": 33,
+      "tp": 34,
       "fp": 0,
       "fn": 2,
-      "tn": 60,
+      "tn": 61,
       "precision": 1.0,
-      "recall": 0.9429,
-      "f1": 0.9706
+      "recall": 0.9444,
+      "f1": 0.9714
     },
-    "claim_status_accuracy": 0.9789,
+    "claim_status_accuracy": 0.9794,
     "finding_level": {
       "tp": 7,
       "fp": 0,
@@ -60,8 +60,8 @@
       "recall": 1.0,
       "f1": 1.0
     },
-    "call_accuracy": 0.9636,
-    "call_strict_accuracy": 0.9636,
+    "call_accuracy": 0.9649,
+    "call_strict_accuracy": 0.9649,
     "failures": [
       {
         "scenario": "gap-vague-spoken-promise",
@@ -79,17 +79,17 @@
   },
   "baseline_naive_existence_check": {
     "label": "Naive existence check",
-    "calls": 57,
+    "calls": 59,
     "claim_level": {
       "tp": 20,
-      "fp": 0,
-      "fn": 15,
+      "fp": 2,
+      "fn": 16,
       "tn": 60,
-      "precision": 1.0,
-      "recall": 0.5714,
-      "f1": 0.7273
+      "precision": 0.9091,
+      "recall": 0.5556,
+      "f1": 0.6897
     },
-    "claim_status_accuracy": 0.7579,
+    "claim_status_accuracy": 0.7423,
     "finding_level": {
       "tp": 0,
       "fp": 0,
@@ -99,8 +99,8 @@
       "recall": 0.0,
       "f1": null
     },
-    "call_accuracy": 0.6667,
-    "call_strict_accuracy": 0.5263,
+    "call_accuracy": 0.661,
+    "call_strict_accuracy": 0.5085,
     "failures": [
       {
         "scenario": "fault-wrong-time",
@@ -232,6 +232,20 @@
         ]
       },
       {
+        "scenario": "correction-honored",
+        "problems": [
+          "AppointmentBooked[0]: expected VERIFIED, got NOT_FOUND",
+          "AppointmentBooked[1]: unexpected claim judged VERIFIED"
+        ]
+      },
+      {
+        "scenario": "correction-stale-write",
+        "problems": [
+          "AppointmentBooked[0]: expected MISMATCH, got VERIFIED",
+          "AppointmentBooked[1]: unexpected claim judged NOT_FOUND"
+        ]
+      },
+      {
         "scenario": "edge-preexisting-match",
         "problems": [
           "AppointmentBooked[0]: expected NOT_FOUND, got VERIFIED"
@@ -272,17 +286,17 @@
   "ablations": [
     {
       "label": "Subpoena without the transcript reader",
-      "calls": 57,
+      "calls": 59,
       "claim_level": {
-        "tp": 27,
+        "tp": 28,
         "fp": 0,
         "fn": 8,
-        "tn": 60,
+        "tn": 61,
         "precision": 1.0,
-        "recall": 0.7714,
-        "f1": 0.871
+        "recall": 0.7778,
+        "f1": 0.875
       },
-      "claim_status_accuracy": 0.9158,
+      "claim_status_accuracy": 0.9175,
       "finding_level": {
         "tp": 7,
         "fp": 0,
@@ -292,8 +306,8 @@
         "recall": 1.0,
         "f1": 1.0
       },
-      "call_accuracy": 0.8947,
-      "call_strict_accuracy": 0.8947,
+      "call_accuracy": 0.8983,
+      "call_strict_accuracy": 0.8983,
       "failures": [
         {
           "scenario": "fault-spoken-only",
@@ -337,17 +351,17 @@
     },
     {
       "label": "Subpoena without policy checks",
-      "calls": 57,
+      "calls": 59,
       "claim_level": {
-        "tp": 33,
+        "tp": 34,
         "fp": 0,
         "fn": 2,
-        "tn": 60,
+        "tn": 61,
         "precision": 1.0,
-        "recall": 0.9429,
-        "f1": 0.9706
+        "recall": 0.9444,
+        "f1": 0.9714
       },
-      "claim_status_accuracy": 0.9789,
+      "claim_status_accuracy": 0.9794,
       "finding_level": {
         "tp": 3,
         "fp": 0,
@@ -357,8 +371,8 @@
         "recall": 0.4286,
         "f1": 0.6
       },
-      "call_accuracy": 0.9123,
-      "call_strict_accuracy": 0.8947,
+      "call_accuracy": 0.9153,
+      "call_strict_accuracy": 0.8983,
       "failures": [
         {
           "scenario": "fault-double-book",
@@ -504,6 +518,11 @@
     },
     {
       "fault": "stale_confirmation",
+      "scenarios": 1,
+      "fully_correct": 1
+    },
+    {
+      "fault": "stale_correction",
       "scenarios": 1,
       "fully_correct": 1
     },

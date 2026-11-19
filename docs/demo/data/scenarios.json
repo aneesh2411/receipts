@@ -384,6 +384,24 @@
   "known_gap": null
  },
  {
+  "id": "correction-honored",
+  "title": "Caller corrects the time mid-call; the agent moves the write",
+  "story": "The booking is spoken and written, then the caller corrects the day and the agent updates the record. The corrected claim is what the caller is owed; the superseded claim is withdrawn and must not compete for the write.",
+  "group": "correction",
+  "faults": [],
+  "known_gap": null
+ },
+ {
+  "id": "correction-stale-write",
+  "title": "Caller corrects the time mid-call; the write stays stale",
+  "story": "The agent says the corrected day but never updates the record, which still holds the value the caller corrected away from. The verdict must name the correction as the evidence.",
+  "group": "correction",
+  "faults": [
+   "stale_correction"
+  ],
+  "known_gap": null
+ },
+ {
   "id": "edge-timezone-equivalent",
   "title": "Claim is in UTC, record is in clinic time",
   "story": "19:30Z and 2:30 PM Eastern are the same instant. Must verify.",

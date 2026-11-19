@@ -19,6 +19,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Rosa Delgado",
@@ -34,6 +35,7 @@
     "turn_index": 3,
     "source": "structured",
     "utterance": "",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+14805550142",
@@ -59,6 +61,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Rosa Delgado",
@@ -111,6 +114,7 @@
     "turn_index": 3,
     "source": "structured",
     "utterance": "",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+14805550142",
@@ -260,10 +264,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "c96506ef3ad913f7ccbe3dc773cad5acc33705e86cf9ab578ebc6c5481d0457d",
+  "content_hash": "512e99106158e87dbc7aaa3d8bfb9dd505568252fb0c37ca734365f55477b478",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "cf4df899ae6d916ceccc61ac01e8f6dbab48c1dd4c623586fc8898de15e803b8",
-  "signature": "63fb95961589aa5905c7e47e84e5b0f6a7c5d6aaec143aec641735f039daf496",
+  "chain_hash": "9a887edc38f15bdf345a5dda1b77662a5a66e00b342502cf066b80f8324e0bb4",
+  "signature": "fb70ca7a426e60673fd1c0ecd918f1f0b9943477b4bc05c4eeb5c0fd265633f6",
   "key_id": "6508b98a7ace"
  }
 }

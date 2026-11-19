@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "I've moved your appointment from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "corrects_prior": false,
     "type": "Rescheduled",
     "patient": {
      "name": "Maya Chen",
@@ -73,6 +74,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "I've moved your appointment from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "corrects_prior": false,
     "type": "Rescheduled",
     "patient": {
      "name": "Maya Chen",
@@ -261,10 +263,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "ba6f0c4593dbae44dd753e8f4befcc2e69c1993896bf6d0eee1c077c94684003",
+  "content_hash": "3a3d434bcfdb4f7276f003a35add8090748afd905153c71bb3913811edf9e037",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "9d36be1e7f344423030742b526f36573f6dcea2a864eeb8489b27b70202b5a2d",
-  "signature": "bf38ed4653b15de32e1d3897e194138077084aa6f793539aefc831f68dd7cd5e",
+  "chain_hash": "2ab0a6b5a901c4004239f6a718c07193f511a7153859589b72107534f2798828",
+  "signature": "e37df6f3a76d8a1232d81d972c3e4405000d89d7db85b043a7021dd82840bf1f",
   "key_id": "6508b98a7ace"
  }
 }

@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "corrects_prior": false,
     "type": "HandoffCreated",
     "patient": {
      "name": "Maya Chen",
@@ -72,6 +73,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "corrects_prior": false,
     "type": "HandoffCreated",
     "patient": {
      "name": "Maya Chen",
@@ -177,10 +179,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0756aa9519b4db6ddd9cce712aa47197d361e6ffc1d93273b25992507639ea76",
+  "content_hash": "401b2e1faadc92ebdd0a9155f663ee2da2b7cf70802b5bc46936ec8c99cc4bb2",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "86116081842021a928761f3dd8875265c1b00400fef3f706cc3c941f0b51e18b",
-  "signature": "a231adadf384166535812b3c472972d92551c6c56900d4def60f11efd354d21c",
+  "chain_hash": "8a0ac55ccc4db408c6e444622031abf090e3bb90594912e103aafdce5b6560d5",
+  "signature": "5d79ed26545f6d7754a8e6de433959bcc465d9dd6e02dd6dc283a6e3535b3d94",
   "key_id": "6508b98a7ace"
  }
 }

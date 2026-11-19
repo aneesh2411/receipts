@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Okay, I've got you down with Dr. Kim on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -59,6 +60,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Okay, I've got you down with Dr. Kim on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -84,6 +86,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Okay, I've got you down with Dr. Kim on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -180,6 +183,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Okay, I've got you down with Dr. Kim on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -264,6 +268,7 @@
     "turn_index": 2,
     "source": "transcript",
     "utterance": "Okay, I've got you down with Dr. Kim on Tuesday, March 3 at 2:30 PM.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -405,10 +410,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "fd7e75003478d0d6b39a18d74525e13e3478d84f762cbd7c8ec70b9b280d4fc9",
+  "content_hash": "a29901121ad0e7f548c23921c987e9b704c10f455388357d99e61fadff3af0be",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "07582da6e5b7ceae9c74c0fb0b00cd34ee61a48110066944042cba48b04360f4",
-  "signature": "29600dd9793f432bb3cd9f364cc6e357cc04d2b278145ef9656aaf24ad5594d2",
+  "chain_hash": "3047bc5227ae7f44a2853603b795d3e318e65c311ba3a142886754b2edabac42",
+  "signature": "bb82ef7a7837728a48e065ddf6038d196c8c45134bf41d53316dd72f8b3b9839",
   "key_id": "6508b98a7ace"
  }
 }

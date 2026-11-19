@@ -1,0 +1,257 @@
+{
+ "audit_id": "aud-correction-honored",
+ "auditor": "subpoena/0.1.0",
+ "created_at": "2026-03-02T09:06:24-05:00",
+ "call": {
+  "call_id": "call-correction-honored",
+  "agent_id": "agent:receptionist",
+  "caller": {
+   "name": "Maya Chen",
+   "phone": "+15550101001"
+  },
+  "started_at": "2026-03-02T09:05:00-05:00",
+  "ended_at": "2026-03-02T09:05:24-05:00",
+  "transcript": [
+   {
+    "index": 0,
+    "speaker": "agent",
+    "text": "Thank you for calling Brightside Dental. How can I help?",
+    "at": "2026-03-02T09:05:04-05:00"
+   },
+   {
+    "index": 1,
+    "speaker": "caller",
+    "text": "Hi, I'd like to book a cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "at": "2026-03-02T09:05:08-05:00"
+   },
+   {
+    "index": 2,
+    "speaker": "agent",
+    "text": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "at": "2026-03-02T09:05:12-05:00"
+   },
+   {
+    "index": 3,
+    "speaker": "caller",
+    "text": "Actually, could we make that Wednesday, March 4 at 2:30 PM instead?",
+    "at": "2026-03-02T09:05:16-05:00"
+   },
+   {
+    "index": 4,
+    "speaker": "agent",
+    "text": "No problem at all. I've booked you for Wednesday, March 4 at 2:30 PM instead.",
+    "at": "2026-03-02T09:05:20-05:00"
+   },
+   {
+    "index": 5,
+    "speaker": "agent",
+    "text": "Is there anything else? Have a great day.",
+    "at": "2026-03-02T09:05:24-05:00"
+   }
+  ],
+  "raw_transcript": null,
+  "claims": [
+   {
+    "claim_id": "call-correction-honored-c1",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "corrects_prior": false,
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-03T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "cleaning"
+   },
+   {
+    "claim_id": "call-correction-honored-c2",
+    "turn_index": 4,
+    "source": "structured",
+    "utterance": "No problem at all. I've booked you for Wednesday, March 4 at 2:30 PM instead.",
+    "corrects_prior": true,
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-04T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": null,
+    "reason": null
+   }
+  ],
+  "provenance": {
+   "agent_version": "receptionist-sim/0.1.0",
+   "model": null,
+   "prompt_version": "narrator:standard",
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
+  }
+ },
+ "outcome": "CLEAN",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "call-correction-honored-c2",
+    "turn_index": 4,
+    "source": "structured",
+    "utterance": "No problem at all. I've booked you for Wednesday, March 4 at 2:30 PM instead.",
+    "corrects_prior": true,
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Maya Chen",
+     "phone": "+15550101001"
+    },
+    "start": "2026-03-04T14:30:00-05:00",
+    "provider": "Dr. Patel",
+    "duration_min": null,
+    "reason": null
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Booking for Maya Chen on Wed Mar 4 2026, 2:30 PM EST exists exactly as claimed (apt_0001).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
+    },
+    {
+     "name": "coverage",
+     "passed": true,
+     "detail": "The calendar change history for the call window was fully observed."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "patient",
+     "claimed": "Maya Chen (+15550101001)",
+     "actual": "Maya Chen (+15550101001)",
+     "match": true
+    },
+    {
+     "field": "start",
+     "claimed": "Wed Mar 4 2026, 2:30 PM EST",
+     "actual": "Wed Mar 4 2026, 2:30 PM EST",
+     "match": true
+    },
+    {
+     "field": "provider",
+     "claimed": "Dr. Patel",
+     "actual": "Dr. Patel",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "calendar",
+     "ref": "apt_0001",
+     "note": "Appointment written by the agent during the call (journal #6, #7; net: created)",
+     "record": {
+      "id": "apt_0001",
+      "patient_id": "pat_0001",
+      "provider": "Dr. Patel",
+      "start": "2026-03-04T19:30:00+00:00",
+      "duration_min": 30,
+      "reason": "cleaning",
+      "status": "booked"
+     }
+    }
+   ],
+   "remediation": null
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 2 write(s) stamped to this call, 0 under the shared agent identity in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "claims",
+   "message": "call-correction-honored-c2 corrects call-correction-honored-c1 (turn 4); the earlier AppointmentBooked claim is withdrawn, the corrected value is what the caller is owed"
+  },
+  {
+   "seq": 7,
+   "stage": "reconcile",
+   "message": "call-correction-honored-c2 (AppointmentBooked): exact match -> apt_0001"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "call-correction-honored-c2 (AppointmentBooked): VERIFIED"
+  },
+  {
+   "seq": 9,
+   "stage": "verdict",
+   "message": "Outcome: CLEAN"
+  }
+ ],
+ "stats": {
+  "claims": 1,
+  "verified": 1,
+  "mismatch": 0,
+  "not_found": 0,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 1.0,
+  "max_severity": "INFO"
+ },
+ "extraction": {
+  "extractor": "rules",
+  "degraded": false,
+  "detail": null
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "08c1e99248dd455366baa58b2022db94b393ac670c3b361235f14d814933fbfc",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "98bfc0773b92ee9058ff9f68479c81fc0c4e99c3a02e75e8014cb2beac77501f",
+  "signature": "d80bbc67d07a2b0735c4d872a7b2b441a61fe516c48749bc59979f58cf370942",
+  "key_id": "6508b98a7ace"
+ }
+}

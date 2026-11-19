@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Okay, I've got you down with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -59,6 +60,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Okay, I've got you down with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -84,6 +86,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Okay, I've got you down with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -180,6 +183,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Okay, I've got you down with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -329,10 +333,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "fc2d1e145d096dcf03f6e2c0f2f74c77dd1eed907427acc6cbefdc2cd2503e6b",
+  "content_hash": "5dfa9453f98fe26ca4280714501be7777e26ac04831aa64e601e5b66ccea9c26",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "1d475abaad3ec3dd20b267b4ddab36062722493208226ad93468d33887a4e965",
-  "signature": "f2377352c6fc34d8461c7c190b80b52b75f232a3ba37f15569a01ec3cdcd4358",
+  "chain_hash": "6c6459064cb9ccc4d5a77058533fbc1d5fccbb1acb3a25edba809d20001fb5ce",
+  "signature": "b3daa38f70ccda5017850dc7beffda58111e0b7f03d5a728a08a1a30d466b151",
   "key_id": "6508b98a7ace"
  }
 }

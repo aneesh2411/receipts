@@ -40,6 +40,9 @@ class Narrator:
     def ask_book(self, reason: str, provider: str, start: datetime) -> str:
         return f"Hi, I'd like to book a {reason} with {provider} on {self.when(start)}."
 
+    def correct_booking(self, new_start: datetime) -> str:
+        return f"Actually, could we make that {self.when(new_start)} instead?"
+
     def ask_reschedule(self, old: datetime, new: datetime) -> str:
         return f"I need to move my appointment from {self.when(old)} to {self.when(new)}."
 
@@ -65,6 +68,9 @@ class Narrator:
                 f"Okay, I've got you down with {provider} on {when}.",
             ]
         )
+
+    def booking_corrected(self, new_start: datetime) -> str:
+        return f"No problem at all. I've booked you for {self.when(new_start)} instead."
 
     def recap(self, provider: str, start: datetime) -> str:
         when = self.when(start)

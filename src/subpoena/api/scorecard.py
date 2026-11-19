@@ -125,9 +125,7 @@ def build_scorecards(reports: Iterable[AuditReport]) -> dict[str, Any]:
                 version: {**vcard, "by_claim_type": dict(vcard["by_claim_type"])}
                 for _, version, vcard in versions
             },
-            "daily": [
-                {"date": day, **bucket} for day, bucket in sorted(card["daily"].items())
-            ],
+            "daily": [{"date": day, **bucket} for day, bucket in sorted(card["daily"].items())],
             "regressions": regressions,
         }
     return out

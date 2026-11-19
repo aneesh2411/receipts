@@ -32,6 +32,7 @@ from subpoena.auditor.findings import DEFAULT_POLICIES, Policy, policy_violation
 from subpoena.auditor.seal import GENESIS, Sealer
 from subpoena.auditor.verdicts import unverifiable
 from subpoena.models import (
+    AppointmentBooked,
     AuditReport,
     AuditStats,
     CallRecord,
@@ -129,9 +130,13 @@ class Auditor:
     ) -> AuditReport:
         ctx = AuditContext.open(call, self._sor, self._clinic, self._grace)
         claims = self._collect_claims(call, ctx)
-        matches, blocked = self._reconcile(claims, ctx)
-        verdicts = tuple(self._judge(c, matches.get(c.claim_id), blocked, ctx) for c in claims)
-        findings = self._findings(ctx, claims, verdicts)
+        settled, withdrawn = _resolve_corrections(claims, ctx)
+        matches, blocked = self._reconcile(settled, ctx)
+        verdicts = tuple(self._judge(c, matches.get(c.claim_id), blocked, ctx) for c in settled)
+        verdicts = tuple(
+            _correction_checks(v, withdrawn.get(v.claim.claim_id, ()), ctx) for v in verdicts
+        )
+        findings = self._findings(ctx, settled, verdicts)
         outcome = _outcome(verdicts, findings, ctx)
         ctx.log("verdict", f"Outcome: {outcome.value}")
         report = AuditReport(
@@ -316,9 +321,7 @@ class Auditor:
                 continue
             ranked = sorted(exact, key=lambda c: -c[0]) + sorted(partial, key=lambda c: -c[0])
             exact_n = len(exact)
-            options.append(
-                [(s, m, i < exact_n) for i, (s, m) in enumerate(ranked)] + [None]
-            )
+            options.append([(s, m, i < exact_n) for i, (s, m) in enumerate(ranked)] + [None])
 
         combos = 1
         for opts in options:
@@ -335,9 +338,7 @@ class Auditor:
                         continue
                     _, match, is_exact = entry
                     if all(nc.key not in ctx._consumed for nc in match.changes):
-                        self._take(
-                            claim, match, ctx, matches, "exact" if is_exact else "partial"
-                        )
+                        self._take(claim, match, ctx, matches, "exact" if is_exact else "partial")
                         break
             return
 
@@ -348,10 +349,7 @@ class Auditor:
             paired = [(i, e) for i, e in enumerate(chosen) if e is not None]
             return (
                 len(paired),
-                -sum(
-                    self._claim_distance(order[i], write_time(m), ctx)
-                    for i, (_, m, _) in paired
-                ),
+                -sum(self._claim_distance(order[i], write_time(m), ctx) for i, (_, m, _) in paired),
                 sum(1 for _, (_, _, exact) in paired if exact),
                 sum(s for _, (s, _, _) in paired),
                 sum(1 for i, _ in paired if order[i].source is ClaimSource.STRUCTURED),
@@ -571,6 +569,64 @@ def _apply_coverage(claim: Claim, verdict: Verdict, ctx: AuditContext) -> Verdic
         remediation="Re-sync the system of record so the full window is observed, then "
         "re-run the audit; the original sealed report stands.",
     )
+
+
+def _chain_key(claim: Claim) -> tuple[str, str] | None:
+    """Which commitment a claim is about, for correction chaining."""
+    patient = getattr(claim, "patient", None)
+    if patient is None or claim.type not in ("AppointmentBooked", "Cancelled"):
+        return None
+    who = patient.phone or patient.name.strip().lower()
+    return (claim.type, who)
+
+
+def _resolve_corrections(
+    claims: tuple[Claim, ...], ctx: AuditContext
+) -> tuple[tuple[Claim, ...], dict[str, tuple[Claim, ...]]]:
+    """Bind corrections into supersedes chains.
+
+    A claim raised after the caller corrected themselves replaces the most
+    recent earlier claim about the same commitment. The superseded claim is
+    withdrawn from judgment - the agent is held to the final value, and the
+    earlier utterance stays in the record as context, not as a second promise
+    competing for the same write.
+    """
+    settled: list[Claim] = []
+    withdrawn: dict[str, tuple[Claim, ...]] = {}
+    last_by_key: dict[tuple[str, str], Claim] = {}
+    for claim in claims:
+        key = _chain_key(claim)
+        prior = last_by_key.get(key) if key is not None else None
+        if claim.corrects_prior and prior is not None:
+            settled.remove(prior)
+            withdrawn[claim.claim_id] = (*withdrawn.get(claim.claim_id, ()), prior)
+            ctx.log(
+                "claims",
+                f"{claim.claim_id} corrects {prior.claim_id} (turn {claim.turn_index}); "
+                f"the earlier {prior.type} claim is withdrawn, the corrected value is "
+                "what the caller is owed",
+            )
+        settled.append(claim)
+        if key is not None:
+            last_by_key[key] = claim
+    return tuple(settled), withdrawn
+
+
+def _correction_checks(verdict: Verdict, superseded: Sequence[Claim], ctx: AuditContext) -> Verdict:
+    """Name the smoking gun: the write still holds a value the caller corrected."""
+    if verdict.status is not VerdictStatus.MISMATCH or not superseded:
+        return verdict
+    for prior in superseded:
+        if not isinstance(prior, AppointmentBooked):
+            continue
+        hits = ctx.booked_at(ctx.patient_ids(prior.patient), prior.start)
+        if hits:
+            note = (
+                f" The calendar holds {ctx.show(hits[0].start)}, the exact value the "
+                f"caller corrected away from at turn {prior.turn_index}."
+            )
+            return verdict.model_copy(update={"summary": verdict.summary + note})
+    return verdict
 
 
 def _outcome(

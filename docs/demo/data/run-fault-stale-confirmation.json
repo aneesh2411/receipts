@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -59,6 +60,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -84,6 +86,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -180,6 +183,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -329,10 +333,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "9f9c77c30cbbe04f2693c8f92e0b92c28961fd7127a7c26f4ca1bcd6ff263a61",
+  "content_hash": "9636ca8e58a7acd87a0256b22084ab71024a5a238f7fc16cc8b6035a8b28250f",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "47d489796bf45f43f9de2066dc0c27bb46877ae4ad831bfee068902cc3e1f377",
-  "signature": "4af9d85620c7aee472ea5c6f2cafc75969fda1e4485bddaf73c2fa0515cbc26a",
+  "chain_hash": "ef164594b5dd760276309d3453a659c6a3f3c544e2736e143664e3cf06a28924",
+  "signature": "cc02cccaaa29cbe54381e5c9e30ae1377a6d2ab7c3301cec2266911e43960347",
   "key_id": "6508b98a7ace"
  }
 }

@@ -35,9 +35,11 @@ def _report(with_extras: bool):
     result = run_suspect(scenario, world)
     call = result.call
     if with_extras:
-        provenance = call.provenance.model_copy(
-            update=_INGEST_EXTRAS["provenance"]
-        ) if call.provenance else None
+        provenance = (
+            call.provenance.model_copy(update=_INGEST_EXTRAS["provenance"])
+            if call.provenance
+            else None
+        )
         from subpoena.models import Provenance
 
         call = call.model_copy(

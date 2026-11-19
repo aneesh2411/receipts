@@ -7,12 +7,15 @@ and a mobile app.
 
 Working today:
 
-- Simulated receptionist with 25 fault modes.
+- Simulated receptionist with 26 fault modes.
 - SQLite system of record with a trigger-written, append-only change journal.
 - Auditor: claim verdicts with evidence, unclaimed writes, policy checks, sealed reports.
-- 57 golden scenarios, 500-call fuzzing, naive baseline, ablations.
+  Caller corrections bind into supersedes chains: the agent is held to the final
+  settled value, the superseded utterance is withdrawn from judgment, and a write
+  that still holds the corrected-away value is named as the evidence.
+- 59 golden scenarios, 500-call fuzzing, naive baseline, ablations.
 - FastAPI service, CLI demo, single-page replay view.
-- 473 tests, lint clean.
+- 483 tests, lint clean.
 
 Not done:
 

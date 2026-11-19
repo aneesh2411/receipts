@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -74,6 +75,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -225,10 +227,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "c31c49ecd78213a9ca291e653b5c8126631efdf0d44abfd80e282ea81e941cde",
+  "content_hash": "062f37eaa5202c7d6004cadd09acb70a5b59fc2753403b7634217fd83c56de64",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "883c3691a10f21a5179b829e165d58119f8ec48e114b204ec87c801be79736e3",
-  "signature": "f2e6cdfbd67e8d1b708c1ad8155d47c10e4ef92c66909e09aa46b854b0b22ecb",
+  "chain_hash": "2cfe378ea173551f9a209d0d1609db265c4a7e844a5576dcd5a5e814ec0e0f00",
+  "signature": "fa2e0d28f99fd1e9ce64719603c5e17aeff72ff747a86c3a6600d9c784fe786a",
   "key_id": "6508b98a7ace"
  }
 }

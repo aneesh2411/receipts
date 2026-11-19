@@ -109,10 +109,13 @@ def test_rejects_incomplete_or_inconsistent_source(tmp_path, index, field, value
         load_call_record(*inputs, **_OPERATOR)
 
 
-@pytest.mark.parametrize(("contents", "message"), [
-    ("{", "call resource file has invalid JSON"),
-    ("[]", "call resource file must contain a JSON object"),
-])
+@pytest.mark.parametrize(
+    ("contents", "message"),
+    [
+        ("{", "call resource file has invalid JSON"),
+        ("[]", "call resource file must contain a JSON object"),
+    ],
+)
 def test_rejects_malformed_resource_json(tmp_path, contents, message):
     path = tmp_path / "resource.json"
     path.write_text(contents)
@@ -159,7 +162,7 @@ def test_rejects_invalid_claims(tmp_path, change, message):
 def test_cli_requires_operator_flags(capsys, flag):
     flags = _CLI_FLAGS.copy()
     index = flags.index(flag)
-    del flags[index:index + 2]
+    del flags[index : index + 2]
     with pytest.raises(SystemExit, match="2"):
         main([*_CLI_INPUTS, *flags])
     assert flag in capsys.readouterr().err

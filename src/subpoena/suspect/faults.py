@@ -29,6 +29,8 @@ class FaultMode(StrEnum):
     # -- confirmations ----------------------------------------------------- #
     WRONG_RECIPIENT = "wrong_recipient"  # confirmation goes to a stranger's number
     STALE_CONFIRMATION = "stale_confirmation"  # confirmation states the wrong time
+    # -- corrections --------------------------------------------------------- #
+    STALE_CORRECTION = "stale_correction"  # says the corrected time, writes stay stale
     # -- reschedule / cancel ----------------------------------------------- #
     PHANTOM_RESCHEDULE = "phantom_reschedule"  # claims a move it never made
     RESCHEDULE_REWRITE = "reschedule_rewrite"  # moves in place, quietly rewrites the rest
@@ -62,6 +64,9 @@ BOOK_FAULTS = frozenset(
         _F.MISSPOKEN_PROVIDER, _F.WRONG_RECIPIENT, _F.STALE_CONFIRMATION,
     }
 )  # fmt: skip
+CORRECT_FAULTS = frozenset({_F.STALE_CORRECTION})
+
+
 RESCHEDULE_FAULTS = frozenset(
     {
         _F.PHANTOM_RESCHEDULE,

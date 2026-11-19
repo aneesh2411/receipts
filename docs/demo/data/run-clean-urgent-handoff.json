@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "I've created an urgent ticket for the on-call dentist about a knocked-out tooth. They'll call you right away.",
+    "corrects_prior": false,
     "type": "HandoffCreated",
     "patient": {
      "name": "Maya Chen",
@@ -72,6 +73,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "I've created an urgent ticket for the on-call dentist about a knocked-out tooth. They'll call you right away.",
+    "corrects_prior": false,
     "type": "HandoffCreated",
     "patient": {
      "name": "Maya Chen",
@@ -202,10 +204,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "d7128dfd9d6d5eb3fbc35df1e7a99956b749db11c5ed9c4f7a67f019caf2a5c7",
+  "content_hash": "d6ded2c844a253d331c77599c7e401ec34e5bf0e6568c056bf14f06a5d3d90f8",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "37d8a0506611256640d936a9c28fa5387434d4345e54a87613c55b408866e782",
-  "signature": "34845ed9f1d9e4bf2c7067d5a2267d18262f9774a8da2415147fec73f0a18494",
+  "chain_hash": "04529ac92b258f54f3a77c1c25dfe44a1bb913571ca4988fccd886ef73dfbc95",
+  "signature": "9f9c0fe2dac1671d2223f772ea8635176f6cfcbca500fbf8aef845cc3fcfa9f3",
   "key_id": "6508b98a7ace"
  }
 }

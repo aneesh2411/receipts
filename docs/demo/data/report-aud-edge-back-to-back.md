@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 100% | Highest severity: `INFO`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `a9029c5e4a1d44dc50c65873...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `c79ffcde0da65767857fe00c...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -79,6 +79,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `7bf8b918958cba2ada2a68fa1b43dece424e7aaafd143c3916ab41071ed32111`
-- chain `a9029c5e4a1d44dc50c65873c9f6f3c9a59618d29f858f923e22310c5c22463b` (prev `0000000000000000...`)
+- content `f71eb8129d639ed1a5ea1fdfbbd184a9dc72984b5a1b43298355655409613b07`
+- chain `c79ffcde0da65767857fe00ca386f065bca062bae5cd7fce4266530a537736c7` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

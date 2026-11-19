@@ -29,8 +29,14 @@ SCHEMA_VERSION = 1
 VALIDITY_DAYS = 90
 
 _GENERATED_DIRS = {
-    "__pycache__", ".venv", ".pytest_cache", ".ruff_cache", ".receipts",
-    "build", "dist", "htmlcov",
+    "__pycache__",
+    ".venv",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".receipts",
+    "build",
+    "dist",
+    "htmlcov",
 }
 
 DEFAULT_DIR = Path(__file__).resolve().parents[3] / "evals" / "scorecards"

@@ -176,9 +176,7 @@ def _score_claims_v2(
             if w is not None and g is not None:
                 (w_type, w_status), (g_type, g_status) = w, g
                 if w_type != g_type:
-                    problems.append(
-                        f"{identity}: expected a {w_type} claim, got {g_type}"
-                    )
+                    problems.append(f"{identity}: expected a {w_type} claim, got {g_type}")
                     counts += Counts(fn=_flagged(w_status), fp=_flagged(g_status))
                     continue
                 correct += w_status is g_status
@@ -189,9 +187,7 @@ def _score_claims_v2(
                     tn=not _flagged(w_status) and not _flagged(g_status),
                 )
                 if w_status is not g_status:
-                    problems.append(
-                        f"{identity}: expected {w_status.value}, got {g_status.value}"
-                    )
+                    problems.append(f"{identity}: expected {w_status.value}, got {g_status.value}")
             elif w is not None:
                 counts += Counts(fn=1) if _flagged(w[1]) else Counts()
                 problems.append(f"{identity}: expected {w[1].value}, auditor saw no claim")

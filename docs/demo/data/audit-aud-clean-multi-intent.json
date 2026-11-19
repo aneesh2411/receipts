@@ -56,6 +56,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -71,6 +72,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -81,6 +83,7 @@
     "turn_index": 4,
     "source": "structured",
     "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "corrects_prior": false,
     "type": "HandoffCreated",
     "patient": {
      "name": "Maya Chen",
@@ -109,6 +112,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -205,6 +209,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I just texted you a confirmation.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -289,6 +294,7 @@
     "turn_index": 4,
     "source": "structured",
     "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "corrects_prior": false,
     "type": "HandoffCreated",
     "patient": {
      "name": "Maya Chen",
@@ -439,10 +445,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "c255679aef9ec83a1813542881af00e7c1b2bb6d7bb7278e9fc9fc9c585f9026",
+  "content_hash": "83efcc8e62b2f0ad106b0089d0dbb362908664c7c08fb17e8bd1ab642687f344",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "57472468d4b8559313d3d9587c137cab8c3208c960de76981f7ed038022005c8",
-  "signature": "b35854b7b569da96ae711f419412470a29f657589109a273779f28d0381a79bf",
+  "chain_hash": "d34dc55686e80b7e00dd561ba6866a64e601839c23add38055c7de6e52debbc6",
+  "signature": "17c560a277465e333b5c3882926cdbfd27806a65a2cc2f4e262c7301bbd2886a",
   "key_id": "6508b98a7ace"
  }
 }

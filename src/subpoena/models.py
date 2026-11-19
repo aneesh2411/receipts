@@ -111,6 +111,7 @@ class ClaimBase(Frozen):
     turn_index: int = Field(ge=0)
     source: ClaimSource = ClaimSource.STRUCTURED
     utterance: str = Field(default="", max_length=4000)
+    corrects_prior: bool = False  # the caller corrected an earlier commitment this call
 
 
 class AppointmentBooked(ClaimBase):

@@ -68,6 +68,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -83,6 +84,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -93,6 +95,7 @@
     "turn_index": 4,
     "source": "structured",
     "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "corrects_prior": false,
     "type": "HandoffCreated",
     "patient": {
      "name": "Maya Chen",
@@ -106,6 +109,7 @@
     "turn_index": 6,
     "source": "structured",
     "utterance": "Your appointment on Tuesday, March 10 at 3:00 PM is now cancelled.",
+    "corrects_prior": false,
     "type": "Cancelled",
     "patient": {
      "name": "Maya Chen",
@@ -133,6 +137,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "AppointmentBooked",
     "patient": {
      "name": "Maya Chen",
@@ -229,6 +234,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "You're all set. I've booked your cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM. I've sent a confirmation text to the number on file.",
+    "corrects_prior": false,
     "type": "ConfirmationSent",
     "channel": "sms",
     "to": "+15550101001",
@@ -276,6 +282,7 @@
     "turn_index": 4,
     "source": "structured",
     "utterance": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back.",
+    "corrects_prior": false,
     "type": "HandoffCreated",
     "patient": {
      "name": "Maya Chen",
@@ -326,6 +333,7 @@
     "turn_index": 6,
     "source": "structured",
     "utterance": "Your appointment on Tuesday, March 10 at 3:00 PM is now cancelled.",
+    "corrects_prior": false,
     "type": "Cancelled",
     "patient": {
      "name": "Maya Chen",
@@ -480,10 +488,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "5a087c085edb3435a66682513e3cb5008caa02ea856078ab767b095ab8bb8838",
+  "content_hash": "9cb0778a1b003b7dc7ae73c24c0739c0fdd38027ee56f7cdb8fedf1509e863a2",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "67a58943d26fe1a93868e0ea093dde8ba0bf2284a8795f60a18a0082b9781964",
-  "signature": "cb33404210889192268828322656afc8e2885ac464e3b8b5950567b2210f006c",
+  "chain_hash": "79cb7fe655a73d6d874222e6a7e867d7577cc60c25f894d63ec5ec019e3ecc8c",
+  "signature": "899748cd74d1f6a066105d5bffdb386ced8ae0cf2f02c736e64fa7c7f25032a1",
   "key_id": "6508b98a7ace"
  }
 }

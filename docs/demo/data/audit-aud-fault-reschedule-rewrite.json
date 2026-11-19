@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "All done. Your visit is rescheduled from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "corrects_prior": false,
     "type": "Rescheduled",
     "patient": {
      "name": "Maya Chen",
@@ -73,6 +74,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "All done. Your visit is rescheduled from Tuesday, March 3 at 10:00 AM to Thursday, March 5 at 11:00 AM.",
+    "corrects_prior": false,
     "type": "Rescheduled",
     "patient": {
      "name": "Maya Chen",
@@ -229,10 +231,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "cd14e44fb838a8e200dbdf7914565c7e670d20144391bf3f06025018db808240",
+  "content_hash": "471b88550a29042ac8bbea4270f730895f6e5bf812fa503d2826c2638356aa28",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "3b5abc4d9da318084595b13d35874369804f9b4ee10a2563981968d50eee27aa",
-  "signature": "50866dffa391712e82055e391e329b09ba41e66b3db6e069251818664966f28b",
+  "chain_hash": "a760b1beb11403ddb2d74862c889f53212ad5a12d10c5ba0eaedfcba562ace1d",
+  "signature": "44fa74f4a372fc3b4a353c822756cd8a7fffd7326e11ee82f18af223d2417a32",
   "key_id": "6508b98a7ace"
  }
 }

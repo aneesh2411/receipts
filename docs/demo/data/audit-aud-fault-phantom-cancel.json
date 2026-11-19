@@ -44,6 +44,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Your appointment on Tuesday, March 3 at 10:00 AM is now cancelled.",
+    "corrects_prior": false,
     "type": "Cancelled",
     "patient": {
      "name": "Maya Chen",
@@ -71,6 +72,7 @@
     "turn_index": 2,
     "source": "structured",
     "utterance": "Your appointment on Tuesday, March 3 at 10:00 AM is now cancelled.",
+    "corrects_prior": false,
     "type": "Cancelled",
     "patient": {
      "name": "Maya Chen",
@@ -189,10 +191,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "85cf320c732b4075507fc987429cb2ba705d5177db903d110a0b1bcca63e488f",
+  "content_hash": "d0b9446832960a429e01e6451ff8726113f989ea52fcdcdada90dc6c4a1ac058",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "88040777df7e75d3c44702e06f7f35a03be00d970352869d63c1c0b6af2e7846",
-  "signature": "10bbccb0c7439ed4d56308c239ab1a053d94e61e56eb31751c40de7fc263c834",
+  "chain_hash": "76a5bf7d26232896c30d7cb13ed072019a3c615ef74e72f0ee741c651305ca6e",
+  "signature": "f807c839f555593bb6de54d655f86537889f85b7df13cff8fb24b4a7ac3e96ea",
   "key_id": "6508b98a7ace"
  }
 }

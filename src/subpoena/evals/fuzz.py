@@ -209,9 +209,7 @@ def generate(n: int, seed: int = 0) -> list[Scenario]:
         kinds = (
             (rng.choice(("book", "book", "reschedule", "cancel", "handoff")),)
             if k == 1
-            else tuple(
-                rng.choice(("book", "reschedule", "cancel", "handoff")) for _ in range(k)
-            )
+            else tuple(rng.choice(("book", "reschedule", "cancel", "handoff")) for _ in range(k))
         )
         steps: list[Step] = []
         seeds: list[SeedAppointment] = []

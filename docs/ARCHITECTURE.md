@@ -74,6 +74,14 @@ The extractor sits behind `ClaimExtractor`. The default is rule-based and offlin
 model-backed extractor exists for vague phrasing; its output is schema-validated and it
 falls back to the rules on any failure.
 
+Caller corrections bind claims into supersedes chains. When the caller re-states a value
+("actually, Tuesday"), the next same-commitment claim is flagged `corrects_prior`, and the
+engine withdraws the claim it replaces: the earlier utterance stays in the record but is
+not judged, so two claims never compete for one write. The settled claim is judged
+normally, and when the write still holds the superseded value, the mismatch verdict names
+the correction as its evidence. Contradictory spoken and structured claims without
+correction phrasing are not merged away; both are judged.
+
 ### 2-3. Evidence
 
 For each system the auditor pulls the journal for `[call start, call end + grace]`, keeps
