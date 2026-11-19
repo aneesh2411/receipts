@@ -35,6 +35,7 @@ from subpoena.scenarios.world import (
     PATEL,
     ROSTER,
     Expected,
+    ExpectedV2,
     Scenario,
     SeedAppointment,
     at,
@@ -97,6 +98,77 @@ HANDOFF_TRUTH: dict[FaultMode | None, Truth] = {
     F.DOWNGRADED_HANDOFF: (((H, MM),), ()),
 }
 PROVIDERS = (PATEL, KIM, OSEI)
+
+
+def _other_provider(provider: str) -> str:
+    """The provider a misspoken booking names instead (the suspect's fixed pick order)."""
+    return next(p for p in ("Dr. Kim", "Dr. Osei", "Dr. Patel") if p != provider)
+
+
+# The v2 twin of the truth tables: each expected claim named by what it is about, in
+# the same order the positional table composes (structured claims, then spoken ones).
+def _book_v2(step: Book, mode: FaultMode | None, phone: str) -> tuple[ExpectedV2, ...]:
+    b = f"book|{phone}|{step.start.isoformat()}|{step.provider}"
+    c = f"confirm|sms|{phone}|{step.start.isoformat()}"
+    said = step.start + timedelta(days=1)
+    late_b = f"book|{phone}|{said.isoformat()}|{step.provider}"
+    late_c = f"confirm|sms|{phone}|{said.isoformat()}"
+    other_b = f"book|{phone}|{step.start.isoformat()}|{_other_provider(step.provider)}"
+    table: dict[FaultMode | None, tuple[ExpectedV2, ...]] = {
+        None: ((B, V, b), (C, V, c)),
+        F.PHANTOM_BOOKING: ((B, NF, b), (C, V, c)),
+        F.WRONG_TIME: ((B, MM, b), (C, V, c)),
+        F.UNCLAIMED_WRITE: ((B, V, b), (C, V, c)),
+        F.PHANTOM_CONFIRMATION: ((B, V, b), (C, NF, c)),
+        F.DOUBLE_BOOK: ((B, V, b), (C, V, c)),
+        F.WRONG_PATIENT: ((B, MM, b), (C, V, c)),
+        F.DUPLICATE_WRITE: ((B, V, b), (C, V, c)),
+        F.ROLLBACK: ((B, NF, b), (C, V, c)),
+        F.SILENT_CRM_EDIT: ((B, V, b), (C, V, c)),
+        F.SPOKEN_ONLY: ((B, NF, b), (C, NF, c)),
+        F.MISSPOKEN_TIME: ((B, V, b), (C, V, c), (B, NF, late_b), (C, NF, late_c)),
+        F.MISSPOKEN_PROVIDER: ((B, V, b), (C, V, c), (B, NF, other_b)),
+        F.WRONG_RECIPIENT: ((B, V, b), (C, MM, c)),
+        F.STALE_CONFIRMATION: ((B, V, b), (C, MM, c)),
+    }
+    return table[mode]
+
+
+def _reschedule_v2(step: Reschedule, mode: FaultMode | None, phone: str) -> tuple[ExpectedV2, ...]:
+    r = f"reschedule|{phone}|{step.old_start.isoformat()}|{step.new_start.isoformat()}"
+    table: dict[FaultMode | None, tuple[ExpectedV2, ...]] = {
+        None: ((R, V, r),),
+        F.PHANTOM_RESCHEDULE: ((R, NF, r),),
+        F.ZOMBIE_RESCHEDULE: ((R, MM, r),),
+        F.LOST_RESCHEDULE: ((R, MM, r),),
+        F.WRONG_TIME: ((R, MM, r),),
+        F.DOUBLE_BOOK: ((R, V, r),),
+        F.RESCHEDULE_REWRITE: ((R, MM, r),),
+        F.GHOST_RESCHEDULE: ((R, MM, r),),
+    }
+    return table[mode]
+
+
+def _cancel_v2(step: Cancel, mode: FaultMode | None, phone: str) -> tuple[ExpectedV2, ...]:
+    x = f"cancel|{phone}|{step.start.isoformat()}"
+    table: dict[FaultMode | None, tuple[ExpectedV2, ...]] = {
+        None: ((X, V, x),),
+        F.PHANTOM_CANCEL: ((X, NF, x),),
+        F.WRONG_APPOINTMENT_CANCELLED: ((X, MM, x),),
+    }
+    return table[mode]
+
+
+def _handoff_v2(step: Handoff, mode: FaultMode | None, phone: str) -> tuple[ExpectedV2, ...]:
+    h = f"handoff|{phone}|{step.priority}"
+    table: dict[FaultMode | None, tuple[ExpectedV2, ...]] = {
+        None: ((H, V, h),),
+        F.PHANTOM_HANDOFF: ((H, NF, h),),
+        F.DOWNGRADED_HANDOFF: ((H, MM, h),),
+    }
+    return table[mode]
+
+
 REASONS = ("cleaning", "check-up", "filling", "crown fitting")
 TOPICS = ("a billing question", "an insurance form", "a knocked-out tooth", "a referral letter")
 
@@ -215,6 +287,7 @@ def generate(n: int, seed: int = 0) -> list[Scenario]:
         seeds: list[SeedAppointment] = []
         faults: dict[int, frozenset[FaultMode]] = {}
         claims: list[Expected] = []
+        claims_v2: list[ExpectedV2] = []
         findings: list[str] = []
         titles: list[str] = []
         for j, kind in enumerate(kinds):
@@ -226,6 +299,14 @@ def generate(n: int, seed: int = 0) -> list[Scenario]:
             seeds.extend(step_seeds)
             claims.extend(main)
             claims.extend(step_spoken)
+            v2 = {
+                "book": _book_v2,
+                "reschedule": _reschedule_v2,
+                "cancel": _cancel_v2,
+                "handoff": _handoff_v2,
+            }[kind](step, mode, caller.phone)
+            assert len(v2) == len(main) + len(step_spoken), (kind, mode)  # tables drifted
+            claims_v2.extend(v2)
             findings.extend(step_findings)
             if mode is not None:
                 faults[j] = frozenset({mode})
@@ -238,6 +319,7 @@ def generate(n: int, seed: int = 0) -> list[Scenario]:
                 steps=tuple(steps),
                 expected_claims=tuple(claims),
                 expected_findings=tuple(findings),
+                expected_claims_v2=tuple(claims_v2),
                 caller=caller,
                 faults=faults,
                 seed=tuple(seeds),

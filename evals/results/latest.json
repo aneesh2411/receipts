@@ -440,6 +440,33 @@
     "failures": [],
     "seed": 7
   },
+  "fuzz_v2_semantic": {
+    "label": "Subpoena (v2 semantic pairing)",
+    "calls": 500,
+    "claim_level": {
+      "tp": 465,
+      "fp": 0,
+      "fn": 0,
+      "tn": 505,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "claim_status_accuracy": 1.0,
+    "finding_level": {
+      "tp": 79,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "call_accuracy": 1.0,
+    "call_strict_accuracy": 1.0,
+    "failures": [],
+    "seed": 7
+  },
   "by_fault_mode": [
     {
       "fault": "phantom_booking",

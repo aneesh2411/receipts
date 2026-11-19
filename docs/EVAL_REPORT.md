@@ -23,6 +23,7 @@ historical scorecards remain valid as positional-v1 cards.
 | Auditor | Calls | Claim precision | Claim recall | Claim F1 | Exact status | Finding precision | Finding recall | Call accuracy | Call strict |
 |---|---|---|---|---|---|---|---|---|---|
 | Subpoena (v2 semantic pairing) | 57 | 100.0% | 94.4% | 97.1% | 97.9% | 100.0% | 100.0% | 96.5% | 96.5% |
+| Subpoena (v2 semantic pairing) | 500 | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
 
 - **Claim precision / recall**: flagging false claims (any status other than VERIFIED).
 - **Exact status**: the precise verdict (VERIFIED / MISMATCH / NOT_FOUND / UNVERIFIABLE).

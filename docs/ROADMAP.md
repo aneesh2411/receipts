@@ -13,9 +13,11 @@ Working today:
   Caller corrections bind into supersedes chains: the agent is held to the final
   settled value, the superseded utterance is withdrawn from judgment, and a write
   that still holds the corrected-away value is named as the evidence.
-- 59 golden scenarios, 500-call fuzzing, naive baseline, ablations.
+- 59 golden scenarios, 500-call fuzzing, naive baseline, ablations. Identity-labelled
+  (v2 semantic) scoring runs over both the golden set and the fuzzer, beside the
+  positional headline.
 - FastAPI service, CLI demo, single-page replay view.
-- 483 tests, lint clean.
+- 485 tests, lint clean.
 
 Not done:
 

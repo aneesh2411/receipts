@@ -79,6 +79,7 @@ class EvalResult:
     fuzz_seed: int
     ablations: tuple[EvalSummary, ...] = ()
     golden_v2: EvalSummary | None = None
+    fuzz_v2: EvalSummary | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -87,6 +88,9 @@ class EvalResult:
             "baseline_naive_existence_check": self.baseline.as_dict(),
             "ablations": [a.as_dict() for a in self.ablations],
             "fuzz": {**self.fuzz.as_dict(), "seed": self.fuzz_seed},
+            "fuzz_v2_semantic": (
+                {**self.fuzz_v2.as_dict(), "seed": self.fuzz_seed} if self.fuzz_v2 else None
+            ),
             "by_fault_mode": [
                 {"fault": r.mode.value, "scenarios": r.scenarios, "fully_correct": r.caught}
                 for r in self.faults
@@ -107,7 +111,8 @@ def run_all(
 ) -> EvalResult:
     golden = evaluate(GOLDEN, label="Subpoena", extractor=extractor)
     baseline = evaluate(GOLDEN, label="Naive existence check", auditor="naive")
-    fuzz = evaluate(generate(fuzz_n, fuzz_seed), label=f"Subpoena on {fuzz_n} fuzzed calls")
+    fuzz_scenarios = generate(fuzz_n, fuzz_seed)
+    fuzz = evaluate(fuzz_scenarios, label=f"Subpoena on {fuzz_n} fuzzed calls")
     ablations = tuple(
         evaluate(GOLDEN, label=label, options=options) for label, options in ABLATIONS.items()
     )
@@ -119,6 +124,7 @@ def run_all(
         fuzz_seed,
         ablations,
         golden_v2=evaluate_v2(GOLDEN, extractor=extractor),
+        fuzz_v2=evaluate_v2(fuzz_scenarios, extractor=extractor),
     )
 
 
@@ -173,6 +179,7 @@ def render_markdown(result: EvalResult) -> str:
             "Finding precision | Finding recall | Call accuracy | Call strict |",
             "|---|---|---|---|---|---|---|---|---|---|",
             _row(result.golden_v2),
+            *([_row(result.fuzz_v2)] if result.fuzz_v2 is not None else []),
             "",
         ]
     lines += [
