@@ -522,5 +522,13 @@
    "garbled_handoff"
   ],
   "known_gap": "Free-text summaries are deliberately not compared: doing it without a model is guesswork, and verdicts are kept model-free."
+ },
+ {
+  "id": "twilio-booked-nothing",
+  "title": "Booked for Tuesday at 3. Nothing was booked.",
+  "story": "This call arrived as saved Twilio Voice callbacks plus the Call resource, the same files docs/demo/twilio/ ships for subpoena ingest-twilio. The agent's tool log claims a booking and a confirmation text; only the plain transcription survived as audio text. The record holds the text. It holds no appointment.",
+  "group": "twilio",
+  "faults": [],
+  "known_gap": false
  }
 ]

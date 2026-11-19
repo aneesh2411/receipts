@@ -17,9 +17,10 @@ SPEC.loader.exec_module(export_demo)
 
 def test_every_scenario_is_baked_with_its_report_and_markdown(tmp_path):
     files = export_demo.export(tmp_path)
-    assert len(files) == 3 * len(BY_ID) + 1
+    # Three files per scenario plus the scenarios index plus the Twilio story.
+    assert len(files) == 3 * len(BY_ID) + 1 + 3
     index = json.loads((tmp_path / "scenarios.json").read_text())
-    assert {s["id"] for s in index} == set(BY_ID)
+    assert {s["id"] for s in index} == set(BY_ID) | {export_demo.TWILIO_DEMO_ID}
     for scenario_id in ("clean-book", "fault-wrong-time", "edge-same-name-patients"):
         report = json.loads((tmp_path / f"run-{scenario_id}.json").read_text())
         assert report["verdicts"] and report["call"]["transcript"]

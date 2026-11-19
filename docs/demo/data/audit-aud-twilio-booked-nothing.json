@@ -1,0 +1,269 @@
+{
+ "audit_id": "aud-twilio-booked-nothing",
+ "auditor": "subpoena/0.1.0",
+ "created_at": "2026-11-19T18:07:41Z",
+ "call": {
+  "call_id": "CA8f3e2d1c4b5a69708192a3b4c5d6e7f8",
+  "agent_id": "brightside-reception-agent",
+  "caller": {
+   "name": "Rosa Delgado",
+   "phone": "+14805550142"
+  },
+  "started_at": "2026-11-19T18:03:07Z",
+  "ended_at": "2026-11-19T18:06:41Z",
+  "transcript": [],
+  "raw_transcript": "You're all set for Tuesday, November 24th at 3 PM with Dr. Patel. I've just texted you the confirmation.",
+  "claims": [
+   {
+    "claim_id": "tool-log-7f3a",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Rosa Delgado",
+     "phone": "+14805550142"
+    },
+    "start": "2026-11-24T20:00:00Z",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "crown consultation"
+   },
+   {
+    "claim_id": "tool-log-7f3b",
+    "turn_index": 3,
+    "source": "structured",
+    "utterance": "",
+    "type": "ConfirmationSent",
+    "channel": "sms",
+    "to": "+14805550142",
+    "about_start": "2026-11-24T20:00:00Z"
+   }
+  ],
+  "provenance": {
+   "agent_version": "v3.2.1",
+   "model": null,
+   "prompt_version": null,
+   "human_handoffs": [],
+   "platform": "twilio",
+   "from_address": "+14805550142",
+   "to_address": "+12125550100",
+   "completion_callback_at": "2026-11-19T18:06:44Z"
+  }
+ },
+ "outcome": "DISCREPANCIES",
+ "verdicts": [
+  {
+   "claim": {
+    "claim_id": "tool-log-7f3a",
+    "turn_index": 2,
+    "source": "structured",
+    "utterance": "",
+    "type": "AppointmentBooked",
+    "patient": {
+     "name": "Rosa Delgado",
+     "phone": "+14805550142"
+    },
+    "start": "2026-11-24T20:00:00Z",
+    "provider": "Dr. Patel",
+    "duration_min": 30,
+    "reason": "crown consultation"
+   },
+   "status": "NOT_FOUND",
+   "severity": "CRITICAL",
+   "summary": "The agent claimed it booked Rosa Delgado on Tue Nov 24 2026, 3:00 PM EST, but no appointment was created during the call.",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": false,
+     "detail": "No write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Nothing to compare."
+    },
+    {
+     "name": "coverage",
+     "passed": true,
+     "detail": "The calendar change history for the call window was fully observed."
+    }
+   ],
+   "diffs": [],
+   "evidence": [
+    {
+     "source": "journal",
+     "ref": "calendar 2026-11-19T18:03:07+00:00 .. 2026-11-19T18:07:11+00:00",
+     "note": "0 agent write(s) to calendar in the call window. None creates this booking.",
+     "record": null
+    }
+   ],
+   "remediation": "Create the appointment or call the patient back before they show up."
+  },
+  {
+   "claim": {
+    "claim_id": "tool-log-7f3b",
+    "turn_index": 3,
+    "source": "structured",
+    "utterance": "",
+    "type": "ConfirmationSent",
+    "channel": "sms",
+    "to": "+14805550142",
+    "about_start": "2026-11-24T20:00:00Z"
+   },
+   "status": "VERIFIED",
+   "severity": "INFO",
+   "summary": "Confirmation was sent to +14805550142 as claimed (msg_0001).",
+   "checks": [
+    {
+     "name": "existence",
+     "passed": true,
+     "detail": "A write by the agent during the call corresponds to this claim."
+    },
+    {
+     "name": "exactness",
+     "passed": true,
+     "detail": "All fields match."
+    },
+    {
+     "name": "side_effects",
+     "passed": null,
+     "detail": "Not applicable."
+    },
+    {
+     "name": "attribution",
+     "passed": true,
+     "detail": "Every backing write carries this call's own stamp."
+    },
+    {
+     "name": "coverage",
+     "passed": true,
+     "detail": "The messages change history for the call window was fully observed."
+    }
+   ],
+   "diffs": [
+    {
+     "field": "recipient",
+     "claimed": "+14805550142",
+     "actual": "+14805550142",
+     "match": true
+    },
+    {
+     "field": "channel",
+     "claimed": "sms",
+     "actual": "sms",
+     "match": true
+    },
+    {
+     "field": "delivery",
+     "claimed": "sent",
+     "actual": "sent",
+     "match": true
+    },
+    {
+     "field": "stated_time",
+     "claimed": "Tue Nov 24 2026, 3:00 PM EST",
+     "actual": "no time stated in the message",
+     "match": true
+    }
+   ],
+   "evidence": [
+    {
+     "source": "messages",
+     "ref": "msg_0001",
+     "note": "Message logged during the call (journal #2; net: created)",
+     "record": {
+      "id": "msg_0001",
+      "recipient": "+14805550142",
+      "channel": "sms",
+      "body": "Brightside Dental: confirmed for Tue Nov 24, 3:00 PM with Dr. Patel. Reply C to confirm or R to change.",
+      "status": "sent",
+      "sent_at": "2026-11-19T18:06:32+00:00"
+     }
+    }
+   ],
+   "remediation": null
+  }
+ ],
+ "findings": [],
+ "trail": [
+  {
+   "seq": 1,
+   "stage": "evidence",
+   "message": "calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
+  },
+  {
+   "seq": 2,
+   "stage": "evidence",
+   "message": "crm: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
+  },
+  {
+   "seq": 3,
+   "stage": "evidence",
+   "message": "messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window"
+  },
+  {
+   "seq": 4,
+   "stage": "evidence",
+   "message": "tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window"
+  },
+  {
+   "seq": 5,
+   "stage": "claims",
+   "message": "2 structured claim(s); 0 recovered from the transcript, 0 of them never logged by the agent"
+  },
+  {
+   "seq": 6,
+   "stage": "reconcile",
+   "message": "tool-log-7f3b (ConfirmationSent): exact match -> msg_0001"
+  },
+  {
+   "seq": 7,
+   "stage": "reconcile",
+   "message": "tool-log-7f3a (AppointmentBooked): no write corresponds"
+  },
+  {
+   "seq": 8,
+   "stage": "verdict",
+   "message": "tool-log-7f3a (AppointmentBooked): NOT_FOUND"
+  },
+  {
+   "seq": 9,
+   "stage": "verdict",
+   "message": "tool-log-7f3b (ConfirmationSent): VERIFIED"
+  },
+  {
+   "seq": 10,
+   "stage": "verdict",
+   "message": "Outcome: DISCREPANCIES"
+  }
+ ],
+ "stats": {
+  "claims": 2,
+  "verified": 1,
+  "mismatch": 0,
+  "not_found": 1,
+  "unverifiable": 0,
+  "findings": 0,
+  "trust_score": 0.5,
+  "max_severity": "CRITICAL"
+ },
+ "extraction": {
+  "extractor": "rules",
+  "degraded": false,
+  "detail": null
+ },
+ "seal": {
+  "algorithm": "sha256",
+  "content_hash": "c96506ef3ad913f7ccbe3dc773cad5acc33705e86cf9ab578ebc6c5481d0457d",
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain_hash": "cf4df899ae6d916ceccc61ac01e8f6dbab48c1dd4c623586fc8898de15e803b8",
+  "signature": "63fb95961589aa5905c7e47e84e5b0f6a7c5d6aaec143aec641735f039daf496",
+  "key_id": "6508b98a7ace"
+ }
+}

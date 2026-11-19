@@ -1,0 +1,25 @@
+{
+  "call_id": "CA8f3e2d1c4b5a69708192a3b4c5d6e7f8",
+  "claims": [
+    {
+      "type": "AppointmentBooked",
+      "claim_id": "tool-log-7f3a",
+      "source": "structured",
+      "turn_index": 2,
+      "patient": {"name": "Rosa Delgado", "phone": "+14805550142"},
+      "start": "2026-11-24T20:00:00Z",
+      "provider": "Dr. Patel",
+      "duration_min": 30,
+      "reason": "crown consultation"
+    },
+    {
+      "type": "ConfirmationSent",
+      "claim_id": "tool-log-7f3b",
+      "source": "structured",
+      "turn_index": 3,
+      "channel": "sms",
+      "to": "+14805550142",
+      "about_start": "2026-11-24T20:00:00Z"
+    }
+  ]
+}

@@ -12,7 +12,7 @@ Working today:
 - Auditor: claim verdicts with evidence, unclaimed writes, policy checks, sealed reports.
 - 57 golden scenarios, 500-call fuzzing, naive baseline, ablations.
 - FastAPI service, CLI demo, single-page replay view.
-- 377 tests, lint clean.
+- 380 tests, lint clean.
 
 Not done:
 

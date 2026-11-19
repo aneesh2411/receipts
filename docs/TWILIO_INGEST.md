@@ -60,3 +60,11 @@ The offline test `test_existing_auditor_consumes_cli_json` runs the CLI with
 and without the claim export, parses its JSON, and audits against a local SQLite
 store. The claim variant is verified by an independent synthetic SMS journal
 entry.
+
+## The demo story
+
+`docs/demo/twilio/` ships a second, realistic fixture set: an inbound call to
+the demo clinic whose agent claims a Tuesday 3 PM booking and a confirmation
+text. `scripts/export_demo.py` ingests those files, audits them against a
+record that holds the text but no appointment, and bakes the result into the
+GitHub Pages demo under "Arrived via Twilio ingest".

@@ -132,8 +132,8 @@
 const $ = (id) => document.getElementById(id);
 const STAMP = { VERIFIED: "RECEIPT FOUND", MISMATCH: "RECEIPT DOES NOT MATCH",
   NOT_FOUND: "NO RECEIPT", UNVERIFIABLE: "COULD NOT CHECK" };
-const GROUPS = { edge: "Edge cases", fault: "Agent faults", clean: "Honest calls",
-  gap: "Known gaps (auditor misses these)" };
+const GROUPS = { twilio: "Arrived via Twilio ingest", edge: "Edge cases", fault: "Agent faults",
+  clean: "Honest calls", gap: "Known gaps (auditor misses these)" };
 let queue = [], timer = null, playing = false, apiKey = null;
 
 // Every string from the server is untrusted: build DOM with textContent only.
@@ -209,12 +209,21 @@ function receiptEl(title, status, severity, summary, diffs, evidence, fix) {
 }
 
 function buildQueue(report) {
-  const q = [], byTurn = {};
+  const q = [], byTurn = {}, turned = {};
   report.verdicts.forEach((v) => (byTurn[v.claim.turn_index] ||= []).push(v));
   report.call.transcript.forEach((t) => {
     q.push({ kind: "turn", t });
+    turned[t.index] = true;
     (byTurn[t.index] || []).forEach((v) => q.push({ kind: "claim", v }));
   });
+  // Claims whose tool-log turn index has no timed transcript turn (for example a
+  // call ingested from Twilio callbacks, where only plain transcription text
+  // survives) still need their moment in the replay.
+  const unturned = report.verdicts.filter((v) => !turned[v.claim.turn_index]);
+  if (unturned.length) {
+    q.push({ kind: "divider", text: "Claims from the agent's tool log (no timed transcript)" });
+    unturned.forEach((v) => q.push({ kind: "claim", v }));
+  }
   if (report.findings.length) q.push({ kind: "divider", text: "Beyond the claims" });
   report.findings.forEach((f) => q.push({ kind: "finding", f }));
   q.push({ kind: "final", report });
