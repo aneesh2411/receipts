@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subpoena | verify it yourself</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --desk: #14161a; --panel: #1c1f26; --line: #353b49; --ink: #e8e6df; --dim: #b0b6c3;
+    --accent: #90b8ff; --ok: #72d6a3; --bad: #ff9595;
+    --mono: ui-monospace, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--desk); color: var(--ink); font: 15px/1.5 system-ui; }
+  header { border-bottom: 1px solid var(--line); padding: 12px 16px; }
+  main, .bar { max-width: 1080px; margin: 0 auto; }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .brand { font: 700 18px var(--mono); letter-spacing: .14em; }
+  a { color: var(--accent); }
+  a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+  main { padding: 24px 16px 48px; }
+  h1 { margin: 0; font-size: clamp(30px, 5vw, 44px); }
+  h2, p { margin: 0 0 8px; }
+  .intro { color: var(--dim); }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    margin-top: 16px; padding: 16px; }
+  pre { background: var(--desk); border: 1px solid var(--line); border-radius: 6px;
+    padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre, code { font-family: var(--mono); }
+  .verified { color: var(--ok); }
+  .mismatch { color: var(--bad); }
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="brand">SUBPOENA</div>
+  <a href="./">Back to audit demo</a>
+</div></header>
+<main>
+  <h1>Verify it yourself</h1>
+  <p class="intro">Check the seal on a published audit, then edit a local copy and see the verifier
+    reject it. The seal covers the whole report, including the order of its receipts. A failed
+    check identifies the affected report. It cannot pinpoint which receipt changed.</p>
+  <p>Use a shell with Git, curl, and Python 3.11 or newer. In a fresh working directory, set up
+    the verifier first.</p>
+  <pre><code>git clone https://github.com/aneesh2411/subpoena.git
+cd subpoena
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e .</code></pre>
+
+  <section class="panel">
+    <h2>1. Download the sealed audit</h2>
+    <p>Use curl to save the <a href="data/audit-aud-clean-family-two-bookings.json">Family two
+      bookings audit</a> from the live demo.</p>
+    <pre id="download"><code>curl -fsSLO https://aneesh2411.github.io/subpoena/demo/data/audit-aud-clean-family-two-bookings.json</code></pre>
+  </section>
+
+  <section class="panel">
+    <h2>2. Verify the original</h2>
+    <p>The export uses the public demo key <code>subpoena-pages-demo</code> (key ID
+      <code id="demo-key-id">6508b98a7ace</code>). Anyone with this key can produce a matching
+      signature, so it demonstrates the seal check without establishing who published the report.</p>
+    <pre id="verify-original"><code>python scripts/verify_seal.py audit-aud-clean-family-two-bookings.json --key subpoena-pages-demo
+echo "Exit code: $?"</code></pre>
+    <pre id="original-output" class="verified"><code>Report 'aud-clean-family-two-bookings' receipts=3 integrity=intact authentication=authenticated (content and chain verified (signature verified))
+VERDICT PASS (whole-report verification, 1/1 reports passed)
+Exit code: 0</code></pre>
+  </section>
+
+  <section class="panel">
+    <h2>3. Verify a tampered copy</h2>
+    <p>Change the provider on the first receipt in a local copy, keeping the original seal.
+      The report line names the affected audit and the verdict line shows the overall failure.</p>
+    <pre id="edit-copy"><code>python -c '
+import json
+import sys
+from pathlib import Path
+
+audit = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+audit["verdicts"][0]["claim"]["provider"] = "Dr. Edited"
+Path(sys.argv[2]).write_text(json.dumps(audit), encoding="utf-8")
+' audit-aud-clean-family-two-bookings.json tampered.json</code></pre>
+    <pre id="verify-tampered"><code>python scripts/verify_seal.py tampered.json --key subpoena-pages-demo
+echo "Exit code: $?"</code></pre>
+    <pre id="tampered-output" class="mismatch"><code>Report 'aud-clean-family-two-bookings' receipts=3 integrity=altered authentication=authenticated (content does not match its hash: the report was altered)
+VERDICT FAIL (whole-report verification, 0/1 reports passed)
+Exit code: 1</code></pre>
+  </section>
+</main>
+</body>
+</html>
