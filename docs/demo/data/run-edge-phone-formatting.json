@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-edge-phone-formatting-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -324,10 +329,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "4fa6540a96269eb40f18042bdd71519469b6bdcb5c277fa8cf202550bad1f0a1",
+  "content_hash": "804e7d21786cb854914615592d83c8233d140e507dfe9337892ae8153412fa54",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "54343a0f184fa87119136da6703a2df7ba83492227d513eac1e55ad5cd71d566",
-  "signature": "197d56d59131f5486bdcc92979d4e0a0b6b16fe4ab34016a2d551143e5c6ceb0",
+  "chain_hash": "371e3c00f0adaa7a77ceddb916c754ef7b2ff52aecf01e4243dbd0980b5b028e",
+  "signature": "290622d56459266d1f9d4302e77fbb341fc5f681acd19c98defdef0831d6f0a4",
   "key_id": "6508b98a7ace"
  }
 }

@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-phantom-confirmation-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -287,10 +292,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "680f9e84f2746819d42db1c83bc8b3790527dd4da4f74964788806a136f05da0",
+  "content_hash": "89dd3a89f33f8571d9e5f7192c2d5b83ad8b91e81fcae2435577fcce32f4dfbd",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "279d69829e0149d4b5e4a82bc1dc4adb3aea0e536f5a88bc372efc98e9553837",
-  "signature": "c59424b308f073cc67a8cf2af9cfba9b181746d05b6f8d3bd23eadab2b5fe165",
+  "chain_hash": "3d93ad7323144e9f9612cb05eff7aae1c36a0077de61cad84f84d1468c211a90",
+  "signature": "424fb9d8ffa74eafaea34afec916ea72c747156e67ae3fc1a738ffc9a1fafd8a",
   "key_id": "6508b98a7ace"
  }
 }

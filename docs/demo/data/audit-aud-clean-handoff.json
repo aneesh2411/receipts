@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-clean-handoff-c1",
@@ -56,7 +57,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -197,10 +202,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "ec3391edf67662a9faefda1b09fd27f58cc97da90c76dfd064f4c4311dcf2c02",
+  "content_hash": "c7b27c3fd63093b009f4189634875792ef34fed85783fb9be335872b00850d36",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "7f520b1d7688486f5f524e9117c9796af85adb19f75cf035cdcbe67990074615",
-  "signature": "18be8d6f3e2488dd7742e392293d72a6c7a0e3d4914c65f41e010ca9ac9542a6",
+  "chain_hash": "61c42be5bf6036775315041a120763a6d7082d403472552f51537c893f7511ee",
+  "signature": "0f5244d065b115d70995ec7bb0243eddbc63f4e07d8c9dd004873892638720a0",
   "key_id": "6508b98a7ace"
  }
 }

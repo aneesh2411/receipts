@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-clean-urgent-handoff-c1",
@@ -56,7 +57,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -197,10 +202,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "2ebe374e81c39eea3237c528704c73c3a87b89c6ccc823456b7fa53fae9baf0d",
+  "content_hash": "d7128dfd9d6d5eb3fbc35df1e7a99956b749db11c5ed9c4f7a67f019caf2a5c7",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "749fd4872a09baae651b6349e569beab945d0e20ede832fde50b53e9b2671623",
-  "signature": "de8774bd38028495105621afc670ffcf261f52a5832208bcbd7df2e5f35a61b1",
+  "chain_hash": "37d8a0506611256640d936a9c28fa5387434d4345e54a87613c55b408866e782",
+  "signature": "34845ed9f1d9e4bf2c7067d5a2267d18262f9774a8da2415147fec73f0a18494",
   "key_id": "6508b98a7ace"
  }
 }

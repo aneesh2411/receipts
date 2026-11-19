@@ -37,12 +37,17 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [],
   "provenance": {
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -217,10 +222,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "7a61c7be8580fe0659c124f01a6120f9e59c20732a8cea591ea33b927b220637",
+  "content_hash": "f30059e58c756be5061204cd06fac2e9b3b86152201a38953059a315e8152a76",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "8f81b71ccaeb13dae8851432256619e3b953360b507a303fa44cbc506805278a",
-  "signature": "f9828a20f4ebf44f1bdb45091caa0b981b795b022dd0c7d38620b7b64c1ce07f",
+  "chain_hash": "6b6cc1d04afa2ca6ad4f0e5af51c6c5a31b7edb2723353df0cc39df73f403157",
+  "signature": "f2b992713266f9b6e132d8bd584ae5e749f4f9b972f112e2525c0db5015d3ca6",
   "key_id": "6508b98a7ace"
  }
 }

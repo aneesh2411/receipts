@@ -189,6 +189,14 @@ class Provenance(Frozen):
     model: str | None = Field(default=None, max_length=120)
     prompt_version: str | None = Field(default=None, max_length=120)
     human_handoffs: tuple[AwareDatetime, ...] = ()
+    # Where the record came from (e.g. "twilio"), and the signaling addresses
+    # and completion-callback time the platform reported. Signaling metadata,
+    # not identity evidence: it travels with the record so the sealed report
+    # shows what the platform claimed.
+    platform: str | None = Field(default=None, max_length=60)
+    from_address: str | None = Field(default=None, max_length=120)
+    to_address: str | None = Field(default=None, max_length=120)
+    completion_callback_at: AwareDatetime | None = None
 
 
 class CallRecord(Frozen):
@@ -200,6 +208,10 @@ class CallRecord(Frozen):
     started_at: AwareDatetime
     ended_at: AwareDatetime
     transcript: tuple[Turn, ...] = Field(default=(), max_length=500)
+    # A text-only transcription from a platform that supplies no timing or
+    # speaker roles. Kept verbatim, outside the timed Turn sequence: the
+    # extractor reads attributed turns, so nothing here can become a claim.
+    raw_transcript: str | None = Field(default=None, max_length=100_000)
     claims: tuple[Claim, ...] = Field(default=(), max_length=200)
     provenance: Provenance | None = None
 

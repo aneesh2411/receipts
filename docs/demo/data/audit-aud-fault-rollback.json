@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-rollback-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -294,10 +299,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "d90b30e416aaf89a87f4bddc3c9fdade1c4971c6bf32901ef2f471cc9859d290",
+  "content_hash": "7ce587aeb253085aa0cbb31678b98475638199ef2fb4f556d8491e9466d9c3f2",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "04fa8f804fa5702a20afa684867efa093fec42f4ccb0cd3cac7604a36c354d11",
-  "signature": "277afbc40bd5ab9940ede58d4c68f6db4d04d4e61f9f9bec9d7eb2a6ade3a984",
+  "chain_hash": "3e190ecfb26daffcfe9dd29fb88cb35961085bc5198298ebfd1eea655416d0d4",
+  "signature": "aba9a8b991e6788b412d4bba5a92b11d2026fffaac65ac99131fd627e07a1eb1",
   "key_id": "6508b98a7ace"
  }
 }

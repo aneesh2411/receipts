@@ -49,6 +49,7 @@
     "at": "2026-03-02T09:05:24-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-clean-slot-taken-alternative-c1",
@@ -80,7 +81,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -336,10 +341,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "72c8e8bd992819810e3a1969a0ce20e5f1deeef6fd84033eef69014d22d54873",
+  "content_hash": "d1e882ceed0679fde785044279907dace93da1e3cc426a8f74c5702c0c558790",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "7428d2f903c4a0d5034190bafb2c78111390710eb973cf79544160b9c48edff1",
-  "signature": "781db0b72ecb40d22016a952cd6c7af9dc57b57ceb0fd3ca89a0b8bde83e2088",
+  "chain_hash": "9e0aa1d2b937dfa86b65ad9c4c8305ac03e015b120f5cd4af6dd6e07fc64be43",
+  "signature": "909c605633a0ef85f7f61a28b790b7f8097b680e87685bafd62162393070189b",
   "key_id": "6508b98a7ace"
  }
 }

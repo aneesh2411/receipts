@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-downgraded-handoff-c1",
@@ -56,7 +57,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -197,10 +202,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "250038ffcb35e5e47526244ac4f741ccda69847b40ec242d2c6af1197731f66b",
+  "content_hash": "ca6d5847bb2812ab6fc5e0d8a233193fb7f271089bcc00ded38d54c417b7de21",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "11cc996a6c4ea3eb2d72923ca1149d47fcecdf9885df6e22ac72fe6ac9ed456d",
-  "signature": "85ea2946e3b2b37303f117689da0d92628fc2952bf306ee833f03f80be1b202f",
+  "chain_hash": "bd51db7624a1b9cc85841a12b43164c99eabd8be432d59332ee29fda2200f31d",
+  "signature": "4cf6ce27b39bbbf075a3a63fd2aab84b493104d64ebf01a0d0894b12252e9c90",
   "key_id": "6508b98a7ace"
  }
 }

@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-double-book-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -368,10 +373,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "2589e68af1ce44d6e18a3487f3a058da9b9f41fb0b743f1ab73a6147366450ca",
+  "content_hash": "6974897a3f827e3363a8badb2b970b0ff6d79e59723bf455c0c99e13169403ed",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "c775c5d5110a0e512f2dab267be83d537df47077aa7ef6cbd940142b996ca6df",
-  "signature": "863f8226eac2e11c4f4092705d0d8d3db4d32bee170f3377ef6ede792d8c71a0",
+  "chain_hash": "fe492e8e171af5cf86d732b908084eb5fbc59b4b62ba2f34be8527cad6f13cfa",
+  "signature": "68347ed58924d460b18e8741639e4655759ddad0ed1e1fd11d64bb15c6b6bc7e",
   "key_id": "6508b98a7ace"
  }
 }

@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-clean-reschedule-recreate-c1",
@@ -57,7 +58,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -220,10 +225,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "a8c1f4da08963ca6145e4d11f0c4ca825a52c0e55ffca172a394b5a3beb79464",
+  "content_hash": "0c1920ae0e81e8be06bf12066a485c8fce2de827f486a25741814dcb6f40cd1c",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "2a99170de637f8753e4be3c95da1a925211431453d530e7132e358be676b8708",
-  "signature": "ea381acc5baec63d0c39241cc6cdf947aeac0382a0b8b9dd71c9748e9403f256",
+  "chain_hash": "9d988e698afe73a581ab7d037794539fa5daa0c2903e3cbe5699b1c0f3545bac",
+  "signature": "1f214f64046ad819abcebb62a7c86d3e851ff4abd68eea003924b387cad72503",
   "key_id": "6508b98a7ace"
  }
 }

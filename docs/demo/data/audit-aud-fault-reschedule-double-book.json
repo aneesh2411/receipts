@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-reschedule-double-book-c1",
@@ -57,7 +58,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -256,10 +261,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "f5636994f3b36b3cd82347ee55176497b75f8b4ae907571ca7d5c2f254d95394",
+  "content_hash": "ba6f0c4593dbae44dd753e8f4befcc2e69c1993896bf6d0eee1c077c94684003",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "e0ff68b586e42dfd2b4a8a2a916e70a536a65aa8b46bbcae80fa440228042530",
-  "signature": "7ff193b97145b9b73502f1d2016f778ec7bd2066eca8166fdf370c6d707fd965",
+  "chain_hash": "9d36be1e7f344423030742b526f36573f6dcea2a864eeb8489b27b70202b5a2d",
+  "signature": "bf38ed4653b15de32e1d3897e194138077084aa6f793539aefc831f68dd7cd5e",
   "key_id": "6508b98a7ace"
  }
 }

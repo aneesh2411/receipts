@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-silent-crm-edit-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -351,10 +356,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "a88a0c44051c3e2020b64e2431951a6fa2d70431f04d9f2b34ba17f23ecb15d6",
+  "content_hash": "0e4b417db3fdb981fe53aba8a29e50f6bb3efcc1798605cac6aa3d5c2e8f674f",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "4bee924497bc557dc80f091754dd4c3ff85dce879f877208d585e03da748eedb",
-  "signature": "8d78a5446a0bd932518c6a27071066fba46358c49fae039497d0b205b2feecbc",
+  "chain_hash": "c73f9d64ed33fe17f2fcdc4df96d8da6e5b4ee1564e0ce6cd35871c14135646b",
+  "signature": "9f5dbd8991fcda86fc8065fa69037fd68a121b55082cfecf62507c9315833d76",
   "key_id": "6508b98a7ace"
  }
 }

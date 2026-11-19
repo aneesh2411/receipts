@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-ghost-reschedule-c1",
@@ -57,7 +58,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -212,10 +217,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "090f8bdc8985c0766e1345dfec4e49e3737cab4b337c774f9cfdbdb3af8b45b7",
+  "content_hash": "2ed1b1771c2bd7193156af7861afdc22bed295552734bbff9ea4632424747a29",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "b2a4e9a83a46d075ec4212062343bd59c023c9e314d451ba67b445e62e4e0f44",
-  "signature": "e8b34c2fe4ec2c311d167dcfe97213a344cf54058b78737278fc29c5f540eb2a",
+  "chain_hash": "0a4ee58acfdd6efbce1ec2d5d4da4ad71e616c6596209e0b023bdcea2cf3ba2a",
+  "signature": "6a7aa320da804b15715e90bd51fd03265e8c0aa765a8d8cae1562d2180044a45",
   "key_id": "6508b98a7ace"
  }
 }

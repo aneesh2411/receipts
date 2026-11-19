@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-phantom-booking-bare-c1",
@@ -58,7 +59,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -176,10 +181,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "290e4b6e5f464492ca53fd1a5eca110510bebc6008c54605f54d305163819f99",
+  "content_hash": "a2977b6acb4f93eae929bf9cbf3f0b533a6ea1a38db6a4a65d7b1b87a42dda3e",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "b851fdb499be605f7bb868b9576b18b9fa6f81d1d1b85e3ab6b9af651ab8a740",
-  "signature": "b7ce30bdb1c9e5dd31265cefd4d2036b85d14facc2a08ceb784ed6de6b68e7b8",
+  "chain_hash": "70d858392021dcf51c9be6e9b9cb6c72923978d2b6022deeb2b6ec8927fb77ff",
+  "signature": "e540398746e6e848afa6c237d10c1d46eedfe98f383b60ab4c771db25ad3c76e",
   "key_id": "6508b98a7ace"
  }
 }

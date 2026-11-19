@@ -49,6 +49,7 @@
     "at": "2026-03-02T09:05:24-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-clean-family-two-bookings-c1",
@@ -95,7 +96,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -457,10 +462,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "25013b091934bb8b882f9eee027be6d32a8969ef8308cab95181e834cc5bc085",
+  "content_hash": "b19059834edc373f51de9ecb25ce97e10e649345e8d5064fcd1951fecac540a8",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "6c4f06fb02029f43d1bbb574a588ef86368a8e63af4ae44743150597a50a64ff",
-  "signature": "3843078c778a5d9af63206d6bb9e74587257e83bbf4db68ac30f03657ebc9343",
+  "chain_hash": "1e1f33f631e61c2fe1fbd6b2fc21f8b74290d8fef43b58bc6cdda69557cc16be",
+  "signature": "e924083cd65d45ab4cbf3848e441af1bd8f9434d3d7a9e617ee7d282cb3d1db7",
   "key_id": "6508b98a7ace"
  }
 }

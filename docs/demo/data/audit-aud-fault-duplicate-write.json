@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-duplicate-write-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -397,10 +402,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0846b707a0b302c9a8f18fe331c301b2b293a131cc5f99981939c5db2070297f",
+  "content_hash": "6e2a78671190569f425fbcf4747fd5121a6f074107374d86d59ae12c58368718",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "6b1f019b0ce2355646174030fe1ded501f46c80e2e6002f052fada941a5d945f",
-  "signature": "e8ebc38817782cd02d56f31de171b0175838ef61df16c4b11f48127c9db08539",
+  "chain_hash": "f204e7da6f6b6cbdf348f438361d0ed253cc0d63c9f9f3cd274044ff9b358da0",
+  "signature": "c3ca39c20f342a86427eb190da77e5e0ecf17d4d850ae5145dd25af99e9dc907",
   "key_id": "6508b98a7ace"
  }
 }

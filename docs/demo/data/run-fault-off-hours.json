@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-off-hours-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -354,10 +359,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "f17065c3a02bfecf4be9788e0388b55dee218f71851ed355ed7b46e8932decfa",
+  "content_hash": "542deddb8c6106ebfea735e4459e4c6a9bd3a14a3b114e0cc0f1d5707029b06f",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "18175508dcaebecd7d7a8dee16eafd3ab344249019f537a1b0bc9da72051656a",
-  "signature": "fc0712cd0ef085ad617c653c9b2d1d81e080a4ce9a24544b86cc8ac4dc087a80",
+  "chain_hash": "c94fba39925194fe0334ee218c02dfe84035431553aeae652b93091be1cb4679",
+  "signature": "ae0159d51f7ae43f58d12d175ad4f97502597b5f5c03abbe52a39157b26aa71d",
   "key_id": "6508b98a7ace"
  }
 }

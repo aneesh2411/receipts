@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-edge-timezone-equivalent-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -324,10 +329,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "33a9e46ae99e7b1b30afb3777fb37c50b77ca5f60dac0d22ed8c427dbbf3cdc0",
+  "content_hash": "fc09b6949ba5b340ef041dd3b69f42568eaf50c995f8652b7cc77c5c876b11ec",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "0edf6a93e0508da13039374ab613e9cbb948e4fbbf78b22dba5c2db79f94f485",
-  "signature": "0f1cecb5c2d34c66283611c181ee2e2dc6098ad637414d3c562c0dd97b602565",
+  "chain_hash": "387013cb748712e4dcba3f78d8c7ee1d7615c93bf80ce3e842118a606be4fd55",
+  "signature": "5da4493d2e6e59891a24cbc26314fc9b03d3cb0499bf1e424a843932d4730173",
   "key_id": "6508b98a7ace"
  }
 }

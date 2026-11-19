@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-misspoken-provider-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -400,10 +405,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0b6e571c9ac6aa760a1f03dfc076a713a2632d225a441b4ea759b53e9a281071",
+  "content_hash": "fd7e75003478d0d6b39a18d74525e13e3478d84f762cbd7c8ec70b9b280d4fc9",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "b608369f77c1e3bed20e6a4cd58aac78370e737bb2de9dad6bd2a9b40b4ea4aa",
-  "signature": "31f58438d193a8776d8710723ea8c470f32c709d4decb69e87a189782c31d24a",
+  "chain_hash": "07582da6e5b7ceae9c74c0fb0b00cd34ee61a48110066944042cba48b04360f4",
+  "signature": "29600dd9793f432bb3cd9f364cc6e357cc04d2b278145ef9656aaf24ad5594d2",
   "key_id": "6508b98a7ace"
  }
 }

@@ -49,6 +49,7 @@
     "at": "2026-03-02T09:05:24-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-edge-family-one-wrong-c1",
@@ -95,7 +96,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -457,10 +462,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "d166dae8edea96ae4d81be8b566442d4f39f5e3e2e269150e1ad64442d3dab83",
+  "content_hash": "d1520c8c89b681a233d3a3725a1c3009afaabf736a781f3febd14b874797ba5f",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "7c49151cdec6da078755c91c8a0a2d5e2ecbd8456c76a3f7acd9b5d30bb08be0",
-  "signature": "6cd493e4e697aa9cecab67739277ae4d9643838a713f6fe55e63bc26278bd405",
+  "chain_hash": "897948bb6716db67d03bc8e981fe3034d0f81cb4cda82fc8fcda7384722e2512",
+  "signature": "a674350f3e56271c7d9d85467554d71c1e84cba685b0880b5459b08c7f81a868",
   "key_id": "6508b98a7ace"
  }
 }

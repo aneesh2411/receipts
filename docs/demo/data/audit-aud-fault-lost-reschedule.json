@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-lost-reschedule-c1",
@@ -57,7 +58,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -200,10 +205,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "c7f07686bfdcb7cb838227f287632abfa08c135d7dea4f6ee93d4bae552da7cd",
+  "content_hash": "05cbc037588729aff8115378a50b0dda1207dc19a628282bef0343aa7e61a129",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "0a4067e85c0c17c0f87d8a9ce5332d3def37a21028adc9772c776ed7d9da4552",
-  "signature": "4b1bbaa8eb86580c8f8d05b2b3e7534c1f21147cdc0f56b5884ed12ed9ce89b5",
+  "chain_hash": "94a9f8d5ddeb651c1c30173ed1ce0354b033714dd74a67b110d35c9d355a3ec2",
+  "signature": "56d7b94ae16fa7ffac36d4fa11fb780d086e35c3976cd22667917ba9e3269b23",
   "key_id": "6508b98a7ace"
  }
 }

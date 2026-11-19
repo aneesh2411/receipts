@@ -61,6 +61,7 @@
     "at": "2026-03-02T09:05:32-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-edge-three-lies-c1",
@@ -117,7 +118,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -475,10 +480,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0a89d4e80d410fba53d2c02c8419d2d6c6350a49163d9b68a06e4845119a0eb6",
+  "content_hash": "5a087c085edb3435a66682513e3cb5008caa02ea856078ab767b095ab8bb8838",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "d9d9586f72f2a99ca6cda9dad001829bd1cf4550cf87e1bcdb295aa9bac41276",
-  "signature": "409bae50e6f74634d2c5df07fd0de384cd2d64f2f4af75a4bee6b681ffdfaca1",
+  "chain_hash": "67a58943d26fe1a93868e0ea093dde8ba0bf2284a8795f60a18a0082b9781964",
+  "signature": "cb33404210889192268828322656afc8e2885ac464e3b8b5950567b2210f006c",
   "key_id": "6508b98a7ace"
  }
 }

@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-edge-concurrent-staff-write-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -324,10 +329,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "4c04f5d87eb3bacf46fc7a4d6ee282bc90a947ff7ae11768c50d1bf0b91ea921",
+  "content_hash": "fc2d1e145d096dcf03f6e2c0f2f74c77dd1eed907427acc6cbefdc2cd2503e6b",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "fb5462280536c3d01eea45dd8b5ab7e4a9968dbe4135bc5da5011599a52af351",
-  "signature": "45b46e4b4a9334272642e044ea5976e77b38a02e7dd0d28d08e4f9eb04dea442",
+  "chain_hash": "1d475abaad3ec3dd20b267b4ddab36062722493208226ad93468d33887a4e965",
+  "signature": "f2377352c6fc34d8461c7c190b80b52b75f232a3ba37f15569a01ec3cdcd4358",
   "key_id": "6508b98a7ace"
  }
 }

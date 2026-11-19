@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-gap-garbled-handoff-c1",
@@ -56,7 +57,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -197,10 +202,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "dc2dafb87f43d040d41a07310514ddd844a6fb0e8762054856419dcbf4ed2fbf",
+  "content_hash": "01d265a3125cab78ee30aa6ac7ff7a4b20ad7b2e6974a58ed3e53e88da2a82ab",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "8feb8c7d5aaaaa5416db6efd8ac235e9bc0d40fba6c79a0d13d634314a7b5d33",
-  "signature": "9867500a5a1f612f378921744896c098f482382946ebe04fbe8ca71cbaaee4c7",
+  "chain_hash": "78be97c5c8feb9372ca205fed229a4f850797e0b8cfed19a1a19aac838dd820a",
+  "signature": "993026507b103d3ff3c09b64108f0e04b9c98c0bac68907641d31a439da9aa1b",
   "key_id": "6508b98a7ace"
  }
 }

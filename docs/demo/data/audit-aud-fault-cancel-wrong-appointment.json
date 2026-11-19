@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-cancel-wrong-appointment-c1",
@@ -55,7 +56,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -190,10 +195,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "da6ed12c26102af764b41d94c3676bf8daae334201578b0900f1ccd188b06b4b",
+  "content_hash": "dd18c5d5612875e0f28977c5ab54494dc3c93327c697ea4950d0b5f5c9b650d8",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "f8d8c73afaece2311fdaff6f3cfdb20f9ee74a1a7b695deb2d89951a5864862a",
-  "signature": "c87daab40e5e6edd987db638ae022bbfbd8c691bf60497f26311d2b1ee8ccbf6",
+  "chain_hash": "946ed986b34441b1c1392be671fe0b925cf132119a95a63d0eb0a81ae6eff748",
+  "signature": "887fa87771d1d588b5b516d0e3a91b57702f608cbaa6e4f89165dc081d240686",
   "key_id": "6508b98a7ace"
  }
 }

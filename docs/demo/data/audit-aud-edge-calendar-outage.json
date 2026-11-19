@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-edge-calendar-outage-c1",
@@ -68,7 +69,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "INCONCLUSIVE",
@@ -258,10 +263,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "b60384ab5dd347375d85c78961a93d450675735c4c65eb6e3286a1518f19bd3c",
+  "content_hash": "08aaa5b3bba6b4c0d37bbd4c3d1211b9f36033fe0b060692f548624e44afb6a6",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "ef70bcbfa1469d24a283c0d4c0fddf90eca78c2dbd87e09c13927c8079d363c7",
-  "signature": "1a8d5af6fafec004fe3ca1de2ad454cc8c52934a5c448aa00ed75bf90d6b41bd",
+  "chain_hash": "fe0cdd70c4bf3137ef52e753c846b06fe31e15b4fdff22ab8cb3292196eb1d21",
+  "signature": "1c8b6ac53ae798e45cbe223917064b8081e1c7fde77ea6288d193a7bc8896c58",
   "key_id": "6508b98a7ace"
  }
 }

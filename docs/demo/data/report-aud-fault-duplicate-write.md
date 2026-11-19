@@ -8,7 +8,7 @@
 - Findings beyond claims: 2 | Claim trust score: 100% | Highest severity: `HIGH`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `6b1f019b0ce2355646174030...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `f204e7da6f6b6cbdf348f438...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -94,6 +94,6 @@ Evidence:
 
 ## Seal
 
-- content `0846b707a0b302c9a8f18fe331c301b2b293a131cc5f99981939c5db2070297f`
-- chain `6b1f019b0ce2355646174030fe1ded501f46c80e2e6002f052fada941a5d945f` (prev `0000000000000000...`)
+- content `6e2a78671190569f425fbcf4747fd5121a6f074107374d86d59ae12c58368718`
+- chain `f204e7da6f6b6cbdf348f438361d0ed253cc0d63c9f9f3cd274044ff9b358da0` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

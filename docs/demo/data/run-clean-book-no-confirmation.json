@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-clean-book-no-confirmation-c1",
@@ -58,7 +59,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "CLEAN",
@@ -220,10 +225,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "13df9f437ca08aa341b358d8402cecb1a50d1202f01ab25e54b27d009c5a19bb",
+  "content_hash": "c31c49ecd78213a9ca291e653b5c8126631efdf0d44abfd80e282ea81e941cde",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "5caae63c5f03cb5f59e9eecd43c016000cebb4c6df29140ac622db4a1c711fb2",
-  "signature": "210de432f00a5f9310379cf1eca967f99f1f66f0a49d0d8bdcdefcfc726f3009",
+  "chain_hash": "883c3691a10f21a5179b829e165d58119f8ec48e114b204ec87c801be79736e3",
+  "signature": "f2e6cdfbd67e8d1b708c1ad8155d47c10e4ef92c66909e09aa46b854b0b22ecb",
   "key_id": "6508b98a7ace"
  }
 }

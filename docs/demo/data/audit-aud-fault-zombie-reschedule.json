@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-zombie-reschedule-c1",
@@ -57,7 +58,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -220,10 +225,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "51bd6f26ae470235526487dc25ed2c8992aea850ee050d380ac99b20178814d6",
+  "content_hash": "de5282210e7ed94594b99adacd94e934662f7ba33d9a16ca70799da7e19fb3f9",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "e4288b192f4a3dcc948eaf25544cf9c93f8afd93a6597d70b50080d6f16534b1",
-  "signature": "d70ea95c6ffedcf5c05590986f8677148048dd9db60f7a75e32a4665bd7cc90c",
+  "chain_hash": "3fb785ac8e540bfb40361858b5cd7507e800cd535b06726c44bd529825389a46",
+  "signature": "8bb3127ffdc60a8941d1809b70056cd05b42ad150fe2d31b5e056320bed2c892",
   "key_id": "6508b98a7ace"
  }
 }

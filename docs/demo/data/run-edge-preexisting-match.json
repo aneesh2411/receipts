@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-edge-preexisting-match-c1",
@@ -58,7 +59,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -190,10 +195,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "65e3cdbe6fc4c63a931844898f5056da22e6e53f517fc2d5ab1c2a43ff1ccda1",
+  "content_hash": "c14986d035828e2ce1df32c94db2a6ed783fe64dc0aaa7b194d13f83898a7834",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "ddf4e56cc8ae0c1794a4187df6dade583f505e91e9a23d3302634114948be5b1",
-  "signature": "e8cee8f48d9782d4e163b6315525e9a9eda8d5cc93fe5d8220f4c3d1d8867a2a",
+  "chain_hash": "fab10a6fbf7c91ba764a841ada2a7d418204c5257820e2b7fa9384c0e09e3e15",
+  "signature": "4d363597390007f11f98c6a7b3534dd6cb7889e557416563bf9e840004b12861",
   "key_id": "6508b98a7ace"
  }
 }

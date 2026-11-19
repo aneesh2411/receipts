@@ -37,6 +37,7 @@
     "at": "2026-03-02T09:05:16-05:00"
    }
   ],
+  "raw_transcript": null,
   "claims": [
    {
     "claim_id": "call-fault-reschedule-wrong-time-c1",
@@ -57,7 +58,11 @@
    "agent_version": "receptionist-sim/0.1.0",
    "model": null,
    "prompt_version": "narrator:standard",
-   "human_handoffs": []
+   "human_handoffs": [],
+   "platform": null,
+   "from_address": null,
+   "to_address": null,
+   "completion_callback_at": null
   }
  },
  "outcome": "DISCREPANCIES",
@@ -212,10 +217,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0db2ace180155e4f5882076e8f21bc51fdcf121643ac6f2f9e0973bda588f81c",
+  "content_hash": "5805d59b7e99b6161763a0fe5c7ed90ee71c5f78406094332b5e790ac37c2a41",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "0995484a8a2822e5a6e1df7b06d26c3c565eeb600288867474fe0784b0ec2698",
-  "signature": "e059b9870aa111dc41424d87073166db366a84b1dbb5406c7faca894dbcb9d9f",
+  "chain_hash": "5fe6a46bade61be5dec92b36caa99eec98d66e9965879f00c9a55f057eb6cce3",
+  "signature": "164ab809e92db895650eeb9b5b9916d4709d3671823dcde3d87107b6ad2d9356",
   "key_id": "6508b98a7ace"
  }
 }
