@@ -1,4 +1,4 @@
-"""Command line: demo, eval, serve, verify, and offline Twilio validation."""
+"""Command line: demo, eval, serve, verify, and offline Twilio ingest."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from subpoena.auditor import Sealer
 from subpoena.auditor.render import claim_headline, stamp
 from subpoena.evals import run_all
 from subpoena.evals.run import render_markdown as render_eval
-from subpoena.ingest.twilio import load_callbacks
+from subpoena.ingest.twilio import load_call_record, load_callbacks
 from subpoena.models import AuditReport, Outcome, Severity, Verdict, VerdictStatus
 from subpoena.scenarios import BY_ID, GOLDEN, HERO, run_scenario
 
@@ -293,6 +293,28 @@ def cmd_validate_twilio(args: argparse.Namespace, console: Console) -> int:
     return 0
 
 
+def cmd_ingest_twilio(args: argparse.Namespace, _console: Console) -> int:
+    try:
+        record = load_call_record(
+            args.status,
+            args.transcription,
+            args.call_resource,
+            agent_id=args.agent_id,
+            agent_version=args.agent_version,
+            caller_name=args.caller_name,
+            claims_path=args.claims,
+        )
+        content = record.model_dump_json(indent=2) + "\n"
+        if args.out is None:
+            sys.stdout.write(content)
+        else:
+            args.out.write_text(content, encoding="utf-8")
+    except (ValueError, OSError) as exc:
+        print(f"Cannot ingest Twilio call: {exc}", file=sys.stderr)
+        return 2
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="subpoena", description="Every claim needs a receipt.")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -340,6 +362,16 @@ def build_parser() -> argparse.ArgumentParser:
     twilio.add_argument("status", type=Path, help="completed Voice status callback JSON export")
     twilio.add_argument("transcription", type=Path, help="completed Record callback JSON export")
     twilio.set_defaults(func=cmd_validate_twilio)
+    ingest = sub.add_parser("ingest-twilio", help="build a CallRecord from saved Twilio files")
+    ingest.add_argument("status", type=Path, help="completed Voice status callback JSON export")
+    ingest.add_argument("transcription", type=Path, help="completed Record callback JSON export")
+    ingest.add_argument("call_resource", type=Path, help="saved Twilio REST Call resource JSON")
+    ingest.add_argument("--agent-id", required=True, help="deployment's audit actor ID")
+    ingest.add_argument("--agent-version", required=True, help="deployment's agent version")
+    ingest.add_argument("--caller-name", required=True, help="operator-supplied caller name")
+    ingest.add_argument("--claims", type=Path, help="Subpoena deployment tool-log claims JSON")
+    ingest.add_argument("--out", type=Path, help="write CallRecord JSON here instead of stdout")
+    ingest.set_defaults(func=cmd_ingest_twilio)
     return parser
 
 

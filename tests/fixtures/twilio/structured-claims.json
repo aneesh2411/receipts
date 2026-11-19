@@ -1,0 +1,13 @@
+{
+  "call_id": "CA00000000000000000000000000000001",
+  "claims": [
+    {
+      "type": "ConfirmationSent",
+      "claim_id": "tool-1",
+      "source": "structured",
+      "turn_index": 4,
+      "channel": "sms",
+      "to": "+12025550102"
+    }
+  ]
+}
