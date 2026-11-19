@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eval history · Subpoena</title>
+  <style>
+    :root { color-scheme: light; font: 1rem/1.55 system-ui, sans-serif; color: #182731; }
+    body { margin: 0; background: #f3f6f8; }
+    main { max-width: 60rem; margin: 0 auto; padding: clamp(1rem, 5vw, 3rem); }
+    h1 { margin: 0 0 .35rem; font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.1; }
+    p { max-width: 64ch; }
+    a { color: #0b5d83; }
+    figure { margin: 1.75rem 0; padding: 1rem; background: white; border: 1px solid #cddae1;
+      border-radius: .7rem; }
+    .plot { overflow-x: auto; }
+    svg { display: block; width: 100%; min-width: 35rem; height: auto; }
+    svg text { font: 14px system-ui, sans-serif; fill: #344754; }
+    circle:focus { stroke: #182731; stroke-width: 3; }
+    figcaption { padding: .4rem .5rem; color: #344754; }
+    #detail { min-height: 1.6em; margin: .25rem .5rem; }
+    .key { display: inline-block; margin-right: 1rem; }
+    .key::before { content: ""; display: inline-block; width: .65rem; height: .65rem;
+      margin-right: .35rem; border-radius: 50%; background: var(--color); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Eval history</h1>
+  <p>Strict accuracy is the share of golden-set scenarios with fully correct outcomes under
+    the strict scorer. The golden set changed over time, so the scenario counts can differ.</p>
+  <figure>
+    <figcaption>
+      <span class="key" style="--color: #125d91">Eval results</span>
+      <span class="key" style="--color: #a04122">Certification scorecards</span>
+    </figcaption>
+    <div class="plot">
+      <svg id="chart" viewBox="0 0 860 380" role="group" aria-labelledby="chart-title">
+        <title id="chart-title">Golden-set strict accuracy by commit time</title>
+      </svg>
+    </div>
+    <p id="detail" role="status">Loading committed snapshots…</p>
+  </figure>
+  <p>Source: committed eval snapshots in git history. Each point uses the commit time in UTC.
+    Identical copies committed together within a source share one point.
+    <a href="data-history/history.json">View source data</a>.</p>
+  <noscript>Enable JavaScript to render the chart.</noscript>
+</main>
+<script>
+  const chart = document.querySelector("#chart");
+  const detail = document.querySelector("#detail");
+  const colors = {results: "#125d91", scorecards: "#a04122"};
+  const labels = {results: "Eval results", scorecards: "Certification scorecards"};
+
+  function draw(tag, attrs, label, parent = chart) {
+    const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [key, value] of Object.entries(attrs)) element.setAttribute(key, value);
+    if (label) element.textContent = label;
+    parent.append(element);
+    return element;
+  }
+
+  function render({snapshots}) {
+    if (!snapshots.length) {
+      detail.textContent = "No committed snapshots found.";
+      return;
+    }
+
+    const left = 91, right = 806, top = 22, bottom = 286;
+    const start = snapshots[0].commit_time, end = snapshots.at(-1).commit_time;
+    const x = time => start === end
+      ? (left + right) / 2
+      : left + (time - start) / (end - start) * (right - left);
+    const y = ratio => bottom - ratio * (bottom - top);
+    const date = time => new Date(time * 1000).toISOString();
+    const percent = ratio => (ratio * 100).toFixed(2) + "%";
+
+    for (let tick = 0; tick <= 100; tick += 25) {
+      const row = y(tick / 100);
+      draw("line", {x1: left, x2: right, y1: row, y2: row, stroke: "#ccd8de"});
+      draw("text", {x: left - 10, y: row + 5, "text-anchor": "end"}, tick + "%");
+    }
+    draw("text", {x: 22, y: 155, transform: "rotate(-90 22 155)", "text-anchor": "middle"},
+      "Strict accuracy (%)");
+    draw("line", {x1: left, x2: left, y1: top, y2: bottom, stroke: "#657781"});
+    draw("line", {x1: left, x2: right, y1: bottom, y2: bottom, stroke: "#657781"});
+
+    const ticks = start === end ? [start] : [start, (start + end) / 2, end];
+    for (const time of ticks) {
+      const col = x(time);
+      const iso = date(time);
+      draw("line", {x1: col, x2: col, y1: bottom, y2: bottom + 6, stroke: "#657781"});
+      draw("text", {x: col, y: bottom + 24, "text-anchor": "middle"}, iso.slice(0, 10));
+      draw("text", {x: col, y: bottom + 42, "text-anchor": "middle"}, iso.slice(11, 19));
+    }
+    draw("text", {x: (left + right) / 2, y: 358, "text-anchor": "middle"}, "Commit time (UTC)");
+
+    for (const [series, color] of Object.entries(colors)) {
+      const points = snapshots.filter(point => point.series === series);
+      draw("polyline", {
+        points: points.map(point => [x(point.commit_time), y(point.strict_accuracy)].join(","))
+          .join(" "),
+        fill: "none", stroke: color, "stroke-width": 2
+      });
+    }
+
+    for (const point of snapshots) {
+      const label = [
+        labels[point.series], percent(point.strict_accuracy), point.scenarios + " scenarios",
+        date(point.commit_time), point.commit.slice(0, 12)
+      ].join(" · ");
+      const marker = draw("circle", {
+        cx: x(point.commit_time), cy: y(point.strict_accuracy),
+        r: point.series === "scorecards" ? 5 : 3.5,
+        fill: point.series === "scorecards" ? "none" : colors.results,
+        stroke: colors[point.series], "stroke-width": 2, "pointer-events": "all",
+        tabindex: 0, "aria-label": label
+      });
+      draw("title", {}, label, marker);
+      marker.addEventListener("focus", () => { detail.textContent = label; });
+      marker.addEventListener("pointerenter", () => { detail.textContent = label; });
+    }
+    detail.textContent = "Focus or hover over a point to see its accuracy, scenario count, and commit.";
+  }
+
+  fetch("data-history/history.json")
+    .then(response => {
+      if (!response.ok) throw new Error("History request failed");
+      return response.json();
+    })
+    .then(render)
+    .catch(() => { detail.textContent = "Could not load the committed snapshots."; });
+</script>
+</body>
+</html>
