@@ -1,0 +1,1 @@
+{"call_id":"call-a","event_id":"01","timestamp":"2026-01-02T09:00:00Z","kind":"booking","payload":{"patient":{"name":"Maya Chen"},"start":"2026-01-05T09:00:00Z","duration_min":"30"}}

@@ -1,0 +1,2 @@
+{"call_id":"call-a","event_id":"01","timestamp":"2026-01-02T09:00:00Z","kind":"handoff","payload":{}}
+{"call_id":"call-a","event_id":"01","timestamp":"2026-01-02T09:01:00Z","kind":"confirmation_sent","payload":{"to":"+15550101001"}}
