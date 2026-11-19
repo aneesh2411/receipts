@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert a Subpoena audit report to SARIF 2.1.0."""
+"""Convert a Subpoena audit report to SARIF 2.1.0. By default, the seal is not verified."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
+from subpoena.auditor.seal import GENESIS, Sealer, canonical_bytes
 from subpoena.models import AuditReport, Severity, VerdictStatus
 
 LEVELS = {
@@ -67,14 +68,33 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("report_json", type=Path)
     parser.add_argument("-o", type=Path, help="write SARIF to this file")
+    parser.add_argument(
+        "--verify", action="store_true", help="require an intact standalone report seal"
+    )
     args = parser.parse_args()
 
     try:
-        report = AuditReport.model_validate_json(args.report_json.read_bytes())
+        data = args.report_json.read_bytes()
+        report = AuditReport.model_validate_json(data)
     except OSError as exc:
         parser.exit(1, f"Unable to read report {args.report_json}: {exc}\n")
     except ValidationError as exc:
         parser.exit(1, f"Invalid audit report {args.report_json}: {exc}\n")
+
+    if args.verify:
+        try:
+            check = Sealer().verify(report, expected_prev=GENESIS)
+            if not check.ok:
+                raise ValueError(check.reason)
+
+            # Model validation can restore omitted defaults or coerce edited values.
+            payload = json.loads(data)
+            payload.pop("seal")
+            exported_content = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+            if exported_content != canonical_bytes(report):
+                raise ValueError("exported content differs from the canonical report")
+        except (ValueError, RecursionError) as exc:
+            parser.exit(1, f"Seal verification failed for {args.report_json}: {exc}\n")
 
     output = json.dumps(to_sarif(report), indent=2, sort_keys=True) + "\n"
     try:

@@ -103,6 +103,54 @@ def test_exports_non_verified_verdicts(report_path, tmp_path):
     assert output.read_bytes() == first.stdout
 
 
+def test_verified_export_is_byte_identical(report_path):
+    default = run_export(report_path)
+    first = run_export(report_path, "--verify")
+    second = run_export(report_path, "--verify")
+    assert default.returncode == 0, default.stderr
+    assert first.returncode == 0, first.stderr
+    assert second.returncode == 0, second.stderr
+    assert first.stdout == second.stdout == default.stdout
+
+
+@pytest.mark.parametrize(
+    ("original", "replacement", "reason"),
+    [
+        (b"Summary for claim-1", b"Summary for claim-X", b"report was altered"),
+        (b',"remediation":null', b"", b"differs from the canonical report"),
+    ],
+)
+def test_verified_export_rejects_altered_content(
+    report_path, tmp_path, original, replacement, reason
+):
+    data = report_path.read_bytes()
+    assert original in data
+    report_path.write_bytes(data.replace(original, replacement, 1))
+    output = tmp_path / "report.sarif"
+
+    result = run_export(report_path, "--verify", "-o", output)
+    assert result.returncode != 0
+    assert result.stdout == b""
+    assert str(report_path).encode() in result.stderr
+    assert reason in result.stderr
+    assert not output.exists()
+    assert run_export(report_path).returncode == 0
+
+
+def test_verified_export_rejects_unsealed_report(report_path):
+    payload = json.loads(report_path.read_bytes())
+    del payload["seal"]
+    report_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = run_export(report_path, "--verify")
+    assert result.returncode != 0
+    assert result.stdout == b""
+    assert str(report_path).encode() in result.stderr
+    assert b"report is not sealed" in result.stderr
+    assert run_export(report_path).returncode == 0
+
+
+@pytest.mark.parametrize("flags", [(), ("--verify",)])
 @pytest.mark.parametrize(
     ("content", "error"),
     [
@@ -111,11 +159,12 @@ def test_exports_non_verified_verdicts(report_path, tmp_path):
         ("{}", b"Invalid audit report"),
     ],
 )
-def test_rejects_invalid_input(tmp_path, content, error):
+def test_rejects_invalid_input(tmp_path, content, error, flags):
     path = tmp_path / "invalid.json"
     if content is not None:
         path.write_text(content, encoding="utf-8")
-    result = run_export(path)
+    result = run_export(path, *flags)
     assert result.returncode != 0
     assert result.stdout == b""
+    assert str(path).encode() in result.stderr
     assert error in result.stderr
