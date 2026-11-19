@@ -10,6 +10,7 @@ Supporting:
     GET  /reviews                review items and sealed transition history
     POST /reviews/{id}/transition   transition one review item
     GET  /scorecard              per-agent honesty numbers
+    GET  /repair-queue           recurring failure shapes across audits, ranked
     GET  /ledger/verify          re-verify every seal and the hash chain
     GET  /demo/scenarios         the golden scenarios
     POST /demo/scenarios/{id}/run    play a scenario in a sandbox and audit it
@@ -35,6 +36,7 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from subpoena import __version__
+from subpoena.api.repair_queue import build_repair_queue
 from subpoena.api.review import Hash, ReviewError, TransitionRequest
 from subpoena.api.scorecard import build_scorecards
 from subpoena.api.store import AuditStore
@@ -284,6 +286,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         # Totals as always, plus per-version buckets, a daily series, and
         # regression flags (MIN_CLAIMS / REGRESSION_DROP policy in scorecard.py).
         return _ok(build_scorecards(store().audits()))
+
+    @app.get("/repair-queue", dependencies=guarded)
+    def repair_queue() -> JSONResponse:
+        return _ok(build_repair_queue(store().audits()))
 
     # -- demo --------------------------------------------------------------- #
 
