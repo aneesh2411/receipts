@@ -233,6 +233,7 @@ Configuration is by environment variable:
 | `SUBPOENA_API_KEY` | Require `X-API-Key` on every data endpoint. |
 | `SUBPOENA_SIGNING_KEY` | HMAC-sign every report. |
 | `SUBPOENA_DB` | Path for calls and the audit ledger. |
+| `SUBPOENA_CRITICAL_WEBHOOK_URL` | Optional HTTPS receiver for [critical audit alerts](docs/CRITICAL_WEBHOOK.md). |
 | `SUBPOENA_SOR_DB` | Path for the system of record. |
 | `SUBPOENA_DEMO=0` | Disable the demo endpoints. |
 | `SUBPOENA_LLM=anthropic` | Use a live model to read transcripts. If the model fails, the rules run instead and the report's extraction health is marked degraded - a silent fallback never looks like a healthy run. |

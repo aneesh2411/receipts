@@ -23,7 +23,7 @@ import os
 import threading
 import uuid
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Annotated, Any
 
@@ -34,6 +34,7 @@ from pydantic import BaseModel, ConfigDict, model_validator
 
 from subpoena import __version__
 from subpoena.api.store import AuditStore
+from subpoena.api.webhook import CriticalWebhook
 from subpoena.auditor import (
     GENESIS,
     Auditor,
@@ -59,6 +60,7 @@ class Settings:
     api_key: str | None = None
     signing_key: bytes | None = None
     demo: bool = True
+    critical_webhook_url: str | None = field(default=None, repr=False)
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -69,6 +71,7 @@ class Settings:
             api_key=os.environ.get("SUBPOENA_API_KEY") or None,
             signing_key=key.encode() if key else None,
             demo=os.environ.get("SUBPOENA_DEMO", "1") != "0",
+            critical_webhook_url=os.environ.get("SUBPOENA_CRITICAL_WEBHOOK_URL") or None,
         )
 
 
@@ -108,6 +111,11 @@ def _summary(report: AuditReport) -> dict[str, Any]:
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings.from_env()
+    webhook = (
+        CriticalWebhook(settings.critical_webhook_url, settings.db_path)
+        if settings.critical_webhook_url is not None
+        else None
+    )
     app = FastAPI(
         title="Subpoena",
         version=__version__,
@@ -123,6 +131,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     def store() -> AuditStore:
         return app.state.store
+
+    def append_report(report: AuditReport) -> AuditReport:
+        sealed = store().append(report, app.state.sealer)
+        if webhook is not None:
+            webhook.deliver(sealed)
+        return sealed
 
     def require_key(x_api_key: Annotated[str | None, Header()] = None) -> None:
         expected = settings.api_key
@@ -193,7 +207,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         auditor = Auditor(
             app.state.sor.session("auditor", utcnow), extractor=extractor, sealer=app.state.sealer
         )
-        report = store().append(auditor.audit(call), app.state.sealer)
+        report = append_report(auditor.audit(call))
         log.info("audit %s for call %s: %s", report.audit_id, call.call_id, report.outcome.value)
         return _ok(report.model_dump(mode="json"), 201)
 
@@ -297,7 +311,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             world.store.close()
         unique = draft.model_copy(update={"audit_id": f"aud_{uuid.uuid4().hex[:12]}"})
         store().save_call(result.call)
-        return _ok(store().append(unique, app.state.sealer).model_dump(mode="json"), 201)
+        return _ok(append_report(unique).model_dump(mode="json"), 201)
 
     @app.post("/demo/scenarios/{scenario_id}/stage", status_code=201, dependencies=demo_only)
     def stage_demo(scenario_id: str) -> JSONResponse:
