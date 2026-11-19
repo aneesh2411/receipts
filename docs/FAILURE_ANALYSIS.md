@@ -256,6 +256,6 @@ works.
    scenario.
 2. Measure the model-backed reader on real, messy transcripts, with precision tracked
    separately from recall.
-3. Replace greedy reconcile with per-type assignment so same-kind multi-intent calls can
-   join the fuzzer (#39).
+3. Re-admit same-kind intent chains to the fuzzer now that reconcile pairs by
+   assignment (#39 landed); then structured topics for handoffs.
 4. Structured topics for handoffs, to close gap 2.2 without a model on the verdict path.

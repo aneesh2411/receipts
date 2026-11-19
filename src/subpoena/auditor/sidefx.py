@@ -42,8 +42,10 @@ def _created(nc: NetChange) -> bool:
     return nc.kind is ChangeKind.CREATED and nc.after is not None
 
 
-def match_confirmation(claim: ConfirmationSent, ctx: AuditContext, strict: bool) -> Match | None:
-    best: tuple[int, NetChange] | None = None
+def candidates_confirmation(
+    claim: ConfirmationSent, ctx: AuditContext, strict: bool
+) -> list[tuple[int, Match]]:
+    out: list[tuple[int, Match]] = []
     for nc in ctx.free(Entity.MESSAGE):
         if not _created(nc):
             continue
@@ -54,9 +56,13 @@ def match_confirmation(claim: ConfirmationSent, ctx: AuditContext, strict: bool)
         if strict and not (to_ok and channel_ok and time_ok is not False):
             continue
         score = 4 * to_ok + channel_ok + 2 * (time_ok is True)
-        if best is None or score > best[0]:
-            best = (score, nc)
-    return Match(primary=best[1]) if best else None
+        out.append((score, Match(primary=nc)))
+    return out
+
+
+def match_confirmation(claim: ConfirmationSent, ctx: AuditContext, strict: bool) -> Match | None:
+    candidates = candidates_confirmation(claim, ctx, strict)
+    return max(candidates, key=lambda c: c[0])[1] if candidates else None
 
 
 def judge_confirmation(claim: ConfirmationSent, match: Match | None, ctx: AuditContext) -> Verdict:
@@ -118,9 +124,11 @@ def judge_confirmation(claim: ConfirmationSent, match: Match | None, ctx: AuditC
 # ------------------------------- HandoffCreated ---------------------------- #
 
 
-def match_handoff(claim: HandoffCreated, ctx: AuditContext, strict: bool) -> Match | None:
+def candidates_handoff(
+    claim: HandoffCreated, ctx: AuditContext, strict: bool
+) -> list[tuple[int, Match]]:
     ids = ctx.patient_ids(claim.patient)
-    best: tuple[int, NetChange] | None = None
+    out: list[tuple[int, Match]] = []
     for nc in ctx.free(Entity.TICKET):
         if not _created(nc):
             continue
@@ -130,9 +138,13 @@ def match_handoff(claim: HandoffCreated, ctx: AuditContext, strict: bool) -> Mat
         if strict and not (who and priority):
             continue
         score = 2 * who + priority
-        if best is None or score > best[0]:
-            best = (score, nc)
-    return Match(primary=best[1]) if best else None
+        out.append((score, Match(primary=nc)))
+    return out
+
+
+def match_handoff(claim: HandoffCreated, ctx: AuditContext, strict: bool) -> Match | None:
+    candidates = candidates_handoff(claim, ctx, strict)
+    return max(candidates, key=lambda c: c[0])[1] if candidates else None
 
 
 def judge_handoff(claim: HandoffCreated, match: Match | None, ctx: AuditContext) -> Verdict:

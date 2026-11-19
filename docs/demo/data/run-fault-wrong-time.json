@@ -284,12 +284,12 @@
   {
    "seq": 6,
    "stage": "reconcile",
-   "message": "call-fault-wrong-time-c2 (ConfirmationSent): exact match -> msg_0001"
+   "message": "call-fault-wrong-time-c1 (AppointmentBooked): partial match -> apt_0001"
   },
   {
    "seq": 7,
    "stage": "reconcile",
-   "message": "call-fault-wrong-time-c1 (AppointmentBooked): partial match -> apt_0001"
+   "message": "call-fault-wrong-time-c2 (ConfirmationSent): exact match -> msg_0001"
   },
   {
    "seq": 8,
@@ -324,10 +324,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "769e108635bb4fc9efe4f297e91f9d6d9ac7d1c0c16354612442ce6e5defa333",
+  "content_hash": "ee536f4ac30bb6c2ba810903777034fe44494432f61aa1d73ff10a11af1d4288",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "aa3ddd9bdfaac8d526cfce10cc62bb5eec468271781a49e1c5c94802ded723e6",
-  "signature": "0f3e5fb40dc97a41b4f6350806d996cfb0d2dc5564bc09bd10bb786333fafbb8",
+  "chain_hash": "1bc05510ef45376bcec183df5851ae4f9c9a16056deec620caab8a42ed953b99",
+  "signature": "b88c636f872056cfcddacad6fbd3fa66926f4a5bd6a8c28f9647855c8ca5d1d5",
   "key_id": "6508b98a7ace"
  }
 }

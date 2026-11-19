@@ -13,6 +13,7 @@ from subpoena.auditor.delta import (
     ChangeKind,
     NetChange,
     collapse,
+    content_signature,
     dedupe,
 )
 from subpoena.models import (
@@ -180,6 +181,20 @@ class AuditContext:
 
     def consume(self, match: Match) -> None:
         self._consumed.update(nc.key for nc in match.changes)
+
+    def consumed_signatures(self, entity: Entity) -> set[str]:
+        """Content signatures of the writes claims have already accounted for.
+
+        The loose pass uses these to keep a leftover copy of a claimed write
+        from being borrowed as evidence by a second claim.
+        """
+        return {
+            sig
+            for nc in self.touched(entity)
+            if nc.key in self._consumed
+            for sig in [content_signature(nc.after)]
+            if sig is not None
+        }
 
     # -- lookups against current state ------------------------------------- #
 

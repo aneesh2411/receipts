@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "certified_at": "2026-11-18T23:41:26.837771+00:00",
-  "expires_at": "2027-02-16T23:41:26.837771+00:00",
-  "fingerprint": "21c1d32f46cfe7c0d68e6184d7242fe07afb31622d0f35c07611c27e22cbe2ab",
+  "certified_at": "2026-11-19T08:09:09.672108+00:00",
+  "expires_at": "2027-02-17T08:09:09.672108+00:00",
+  "fingerprint": "8b384540160faa92db077135fe2420b72f5ea8db029aa10c4e8e8c2f41b96898",
   "golden": {
     "label": "Subpoena",
     "calls": 57,
@@ -170,7 +170,7 @@
     }
   ],
   "diff": {
-    "previous": "2026-11-18T23:37:38.308859+00:00",
+    "previous": "2026-11-18T23:41:26.837771+00:00",
     "strict_accuracy": {
       "was": 0.9649,
       "now": 0.9649

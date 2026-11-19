@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 67% | Highest severity: `CRITICAL`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:24-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `d3e8ffbfc99cb577f462074f...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `7c49151cdec6da078755c91c...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -97,8 +97,8 @@ None. Every write the agent made is accounted for by a claim.
 4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 3 structured claim(s); 3 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-edge-family-one-wrong-c1 (AppointmentBooked): exact match -> apt_0001
-7. `reconcile` call-edge-family-one-wrong-c2 (ConfirmationSent): exact match -> msg_0001
-8. `reconcile` call-edge-family-one-wrong-c3 (AppointmentBooked): partial match -> apt_0002
+7. `reconcile` call-edge-family-one-wrong-c3 (AppointmentBooked): partial match -> apt_0002
+8. `reconcile` call-edge-family-one-wrong-c2 (ConfirmationSent): exact match -> msg_0001
 9. `verdict` call-edge-family-one-wrong-c1 (AppointmentBooked): VERIFIED
 10. `verdict` call-edge-family-one-wrong-c2 (ConfirmationSent): VERIFIED
 11. `verdict` call-edge-family-one-wrong-c3 (AppointmentBooked): MISMATCH
@@ -106,6 +106,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `42683fd6a4690d41c7ff8dd14da49f6d8236b184925f0c7ea216fae333f40963`
-- chain `d3e8ffbfc99cb577f462074fa68b7c4bcae603e0fbc0e77f43f2379366f107e5` (prev `0000000000000000...`)
+- content `d166dae8edea96ae4d81be8b566442d4f39f5e3e2e269150e1ad64442d3dab83`
+- chain `7c49151cdec6da078755c91c8a0a2d5e2ecbd8456c76a3f7acd9b5d30bb08be0` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

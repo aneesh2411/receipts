@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 25% | Highest severity: `CRITICAL`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:32-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `30efb9f4a2db23a1eb994552...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `d9d9586f72f2a99ca6cda9da...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -101,8 +101,8 @@ None. Every write the agent made is accounted for by a claim.
 3. `evidence` messages: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 4 structured claim(s); 4 recovered from the transcript, 0 of them never logged by the agent
-6. `reconcile` call-edge-three-lies-c4 (Cancelled): exact match -> apt_0001
-7. `reconcile` call-edge-three-lies-c1 (AppointmentBooked): partial match -> apt_0002
+6. `reconcile` call-edge-three-lies-c1 (AppointmentBooked): partial match -> apt_0002
+7. `reconcile` call-edge-three-lies-c4 (Cancelled): exact match -> apt_0001
 8. `reconcile` call-edge-three-lies-c2 (ConfirmationSent): no write corresponds
 9. `reconcile` call-edge-three-lies-c3 (HandoffCreated): no write corresponds
 10. `verdict` call-edge-three-lies-c1 (AppointmentBooked): MISMATCH
@@ -113,6 +113,6 @@ None. Every write the agent made is accounted for by a claim.
 
 ## Seal
 
-- content `e51a6e7a431aabf43dfb8274961d3a23ee5da6610c8124d73124d8c3c33ac2ee`
-- chain `30efb9f4a2db23a1eb994552f5286b9ef3d2adb9dc1673fafe37361579ef17d8` (prev `0000000000000000...`)
+- content `0a89d4e80d410fba53d2c02c8419d2d6c6350a49163d9b68a06e4845119a0eb6`
+- chain `d9d9586f72f2a99ca6cda9dad001829bd1cf4550cf87e1bcdb295aa9bac41276` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

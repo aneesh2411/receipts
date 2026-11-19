@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 50% | Highest severity: `CRITICAL`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `1554a749034b9ca372306e44...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `742c00b2ab4a3f4078ab6635...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -72,14 +72,14 @@ None. Every write the agent made is accounted for by a claim.
 3. `evidence` messages: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
 4. `evidence` tickets: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
 5. `claims` 2 structured claim(s); 2 recovered from the transcript, 0 of them never logged by the agent
-6. `reconcile` call-fault-wrong-patient-c2 (ConfirmationSent): exact match -> msg_0001
-7. `reconcile` call-fault-wrong-patient-c1 (AppointmentBooked): partial match -> apt_0001
+6. `reconcile` call-fault-wrong-patient-c1 (AppointmentBooked): partial match -> apt_0001
+7. `reconcile` call-fault-wrong-patient-c2 (ConfirmationSent): exact match -> msg_0001
 8. `verdict` call-fault-wrong-patient-c1 (AppointmentBooked): MISMATCH
 9. `verdict` call-fault-wrong-patient-c2 (ConfirmationSent): VERIFIED
 10. `verdict` Outcome: DISCREPANCIES
 
 ## Seal
 
-- content `b8c5834b109a240599214c238d1ff68d3e750f09af0312468a225d8096d6891d`
-- chain `1554a749034b9ca372306e44d09bbccb79ead3f0cc05ac288406ef30ec29c087` (prev `0000000000000000...`)
+- content `b78f3ab98404531d92f051dcd183c94606fe4a82d638c66d55c11673ffeabb99`
+- chain `742c00b2ab4a3f4078ab663551e80402598842a3d1a260dec4d711a1c39be943` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

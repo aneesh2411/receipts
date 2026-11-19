@@ -415,12 +415,12 @@
   {
    "seq": 6,
    "stage": "reconcile",
-   "message": "call-edge-three-lies-c4 (Cancelled): exact match -> apt_0001"
+   "message": "call-edge-three-lies-c1 (AppointmentBooked): partial match -> apt_0002"
   },
   {
    "seq": 7,
    "stage": "reconcile",
-   "message": "call-edge-three-lies-c1 (AppointmentBooked): partial match -> apt_0002"
+   "message": "call-edge-three-lies-c4 (Cancelled): exact match -> apt_0001"
   },
   {
    "seq": 8,
@@ -475,10 +475,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "e51a6e7a431aabf43dfb8274961d3a23ee5da6610c8124d73124d8c3c33ac2ee",
+  "content_hash": "0a89d4e80d410fba53d2c02c8419d2d6c6350a49163d9b68a06e4845119a0eb6",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "30efb9f4a2db23a1eb994552f5286b9ef3d2adb9dc1673fafe37361579ef17d8",
-  "signature": "1cbdf7e6c2c280e74ff83cd0df3d59f3958c9e4e921c33df76a29394d4d8d156",
+  "chain_hash": "d9d9586f72f2a99ca6cda9dad001829bd1cf4550cf87e1bcdb295aa9bac41276",
+  "signature": "409bae50e6f74634d2c5df07fd0de384cd2d64f2f4af75a4bee6b681ffdfaca1",
   "key_id": "6508b98a7ace"
  }
 }

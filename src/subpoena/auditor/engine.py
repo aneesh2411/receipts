@@ -26,7 +26,7 @@ from typing import Any
 from subpoena import __version__
 from subpoena.auditor import appointments, sidefx
 from subpoena.auditor.context import AuditContext, Match
-from subpoena.auditor.delta import SOURCE, Attribution
+from subpoena.auditor.delta import SOURCE, Attribution, content_signature
 from subpoena.auditor.extractor import ClaimExtractor, RuleBasedExtractor, merge_claims
 from subpoena.auditor.findings import DEFAULT_POLICIES, Policy, policy_violations, unclaimed_writes
 from subpoena.auditor.seal import GENESIS, Sealer
@@ -57,28 +57,46 @@ class _Handler:
     needs: tuple[Entity, ...]  # systems that must be readable to judge the claim
     consumes: Entity  # where the write that backs the claim lives
     match: Callable[[Any, AuditContext, bool], Match | None]
+    candidates: Callable[[Any, AuditContext, bool], list[tuple[int, Match]]]
     judge: Callable[[Any, Match | None, AuditContext], Verdict]
 
 
 _CALENDAR = (Entity.APPOINTMENT, Entity.PATIENT)
 HANDLERS: dict[str, _Handler] = {
     "AppointmentBooked": _Handler(
-        _CALENDAR, Entity.APPOINTMENT, appointments.match_booked, appointments.judge_booked
+        _CALENDAR,
+        Entity.APPOINTMENT,
+        appointments.match_booked,
+        appointments.candidates_booked,
+        appointments.judge_booked,
     ),
     "Rescheduled": _Handler(
         _CALENDAR,
         Entity.APPOINTMENT,
         appointments.match_rescheduled,
+        appointments.candidates_rescheduled,
         appointments.judge_rescheduled,
     ),
     "Cancelled": _Handler(
-        _CALENDAR, Entity.APPOINTMENT, appointments.match_cancelled, appointments.judge_cancelled
+        _CALENDAR,
+        Entity.APPOINTMENT,
+        appointments.match_cancelled,
+        appointments.candidates_cancelled,
+        appointments.judge_cancelled,
     ),
     "ConfirmationSent": _Handler(
-        (Entity.MESSAGE,), Entity.MESSAGE, sidefx.match_confirmation, sidefx.judge_confirmation
+        (Entity.MESSAGE,),
+        Entity.MESSAGE,
+        sidefx.match_confirmation,
+        sidefx.candidates_confirmation,
+        sidefx.judge_confirmation,
     ),
     "HandoffCreated": _Handler(
-        (Entity.TICKET, Entity.PATIENT), Entity.TICKET, sidefx.match_handoff, sidefx.judge_handoff
+        (Entity.TICKET, Entity.PATIENT),
+        Entity.TICKET,
+        sidefx.match_handoff,
+        sidefx.candidates_handoff,
+        sidefx.judge_handoff,
     ),
 }
 
@@ -163,34 +181,224 @@ class Auditor:
     ) -> tuple[dict[str, Match], dict[str, str]]:
         """Pair claims with writes: exact matches claim their evidence first, and
         within a pass the most specific claims go first so a vague claim cannot
-        take the write a specific one describes."""
+        take the write a specific one describes.
+
+        When several claims share an evidence pool (same-type or same-system
+        claims in one call), the pool is paired by global assignment, not
+        claim order: the pairing chosen is the one that matches the most
+        claims, then the most exact matches, then the highest total score,
+        then the most structured claims, then the reading where each write
+        follows closest on the words that promised it. A leftover copy of a
+        write a claim already owns is never borrowed by another claim: the
+        copy is itself the anomaly an unclaimed-write finding reports.
+        """
         matches: dict[str, Match] = {}
         blocked: dict[str, str] = {}
         by_specificity = sorted(claims, key=self._specificity, reverse=True)
-        for strict in (True, False):
-            for claim in by_specificity:
-                if claim.claim_id in matches or claim.claim_id in blocked:
-                    continue
-                handler = HANDLERS[claim.type]
-                down = [SOURCE[e] for e in handler.needs if ctx.delta.get(e) is None]
-                if down:
-                    blocked[claim.claim_id] = f"{', '.join(down)} could not be read"
-                    continue
-                try:
-                    match = handler.match(claim, ctx, strict)
-                except AdapterUnavailable as exc:
-                    blocked[claim.claim_id] = str(exc)
-                    continue
-                if match is not None:
-                    matches[claim.claim_id] = match
-                    ctx.consume(match)
-                    refs = ", ".join(nc.entity_id for nc in match.changes)
-                    kind = "exact" if strict else "partial"
-                    ctx.log("reconcile", f"{claim.claim_id} ({claim.type}): {kind} match -> {refs}")
+        for claim in by_specificity:
+            handler = HANDLERS[claim.type]
+            down = [SOURCE[e] for e in handler.needs if ctx.delta.get(e) is None]
+            if down:
+                blocked[claim.claim_id] = f"{', '.join(down)} could not be read"
+        pools: dict[Entity, list[Claim]] = {}
+        for claim in by_specificity:
+            if claim.claim_id not in blocked:
+                pools.setdefault(HANDLERS[claim.type].consumes, []).append(claim)
+        for entity, pool in pools.items():
+            if len(pool) == 1:
+                self._match_one(pool[0], ctx, True, matches, blocked)
+                self._match_one(pool[0], ctx, False, matches, blocked)
+            else:
+                self._match_pool(pool, entity, ctx, matches, blocked)
         for claim in claims:
             if claim.claim_id not in matches and claim.claim_id not in blocked:
                 ctx.log("reconcile", f"{claim.claim_id} ({claim.type}): no write corresponds")
         return matches, blocked
+
+    def _match_one(
+        self,
+        claim: Claim,
+        ctx: AuditContext,
+        strict: bool,
+        matches: dict[str, Match],
+        blocked: dict[str, str],
+    ) -> None:
+        if claim.claim_id in matches or claim.claim_id in blocked:
+            return
+        handler = HANDLERS[claim.type]
+        down = [SOURCE[e] for e in handler.needs if ctx.delta.get(e) is None]
+        if down:
+            blocked[claim.claim_id] = f"{', '.join(down)} could not be read"
+            return
+        if claim.claim_id in matches or claim.claim_id in blocked:
+            return
+        try:
+            if strict:
+                match = handler.match(claim, ctx, strict)
+            else:
+                candidates = self._loose_candidates(claim, ctx)
+                match = max(candidates, key=lambda c: c[0])[1] if candidates else None
+        except AdapterUnavailable as exc:
+            blocked[claim.claim_id] = str(exc)
+            return
+        if match is not None:
+            self._take(claim, match, ctx, matches, "exact" if strict else "partial")
+
+    @staticmethod
+    def _loose_candidates(claim: Claim, ctx: AuditContext) -> list[tuple[int, Match]]:
+        """Loose-match candidates, minus leftover copies of writes already claimed."""
+        handler = HANDLERS[claim.type]
+        claimed_copies = ctx.consumed_signatures(handler.consumes)
+        return [
+            (s, m)
+            for s, m in handler.candidates(claim, ctx, False)
+            if not any(
+                (sig := content_signature(nc.after)) is not None and sig in claimed_copies
+                for nc in m.changes
+            )
+        ]
+
+    @staticmethod
+    def _take(
+        claim: Claim, match: Match, ctx: AuditContext, matches: dict[str, Match], kind: str
+    ) -> None:
+        matches[claim.claim_id] = match
+        ctx.consume(match)
+        refs = ", ".join(nc.entity_id for nc in match.changes)
+        ctx.log("reconcile", f"{claim.claim_id} ({claim.type}): {kind} match -> {refs}")
+
+    @staticmethod
+    def _claim_distance(claim: Claim, write_at: datetime, ctx: AuditContext) -> float:
+        """Seconds between a write and the exchange its claim belongs to.
+
+        A write lands on the caller-request tick between the request and the
+        agent's answer, so the claim's moment spans both turns.
+        """
+        turns = ctx.call.transcript
+        lo = max(0, claim.turn_index - 1)
+        moments = [t.at for t in turns[lo : claim.turn_index + 1]] or [ctx.call.ended_at]
+        return min(abs((write_at - at).total_seconds()) for at in moments)
+
+    def _match_pool(
+        self,
+        pool: list[Claim],
+        entity: Entity,
+        ctx: AuditContext,
+        matches: dict[str, Match],
+        blocked: dict[str, str],
+    ) -> None:
+        """Pair a pool of competing claims with writes by global assignment.
+
+        The objective: match as many claims as possible; prefer the reading
+        where each write follows closest on the words that promised it (a
+        write belongs to the utterance that caused it, not a look-alike);
+        then exact over partial matches, highest total score, and structured
+        claims over transcript-only ones. Full ties resolve for the more
+        specific claim.
+        """
+        order = sorted(pool, key=lambda c: (-self._specificity(c), c.claim_id))
+        # Each claim's options, best first: exact candidates, then partial,
+        # then no match. The search visits earlier claims first, so a full
+        # tie resolves for the more specific claim.
+        options: list[list[tuple[int, Match, bool] | None]] = []
+        for claim in order:
+            try:
+                exact = HANDLERS[claim.type].candidates(claim, ctx, True)
+                exact_keys = {nc.key for _, m in exact for nc in m.changes}
+                partial = [
+                    (s, m)
+                    for s, m in self._loose_candidates(claim, ctx)
+                    if not any(nc.key in exact_keys for nc in m.changes)
+                ]
+            except AdapterUnavailable as exc:
+                blocked[claim.claim_id] = str(exc)
+                options.append([None])
+                continue
+            ranked = sorted(exact, key=lambda c: -c[0]) + sorted(partial, key=lambda c: -c[0])
+            exact_n = len(exact)
+            options.append(
+                [(s, m, i < exact_n) for i, (s, m) in enumerate(ranked)] + [None]
+            )
+
+        combos = 1
+        for opts in options:
+            combos *= len(opts)
+        if len(order) > 12 or combos > 100_000:
+            ctx.log(
+                "reconcile",
+                f"{SOURCE[entity]}: {len(order)} competing claims, assignment space too "
+                "large; falling back to per-claim best match",
+            )
+            for claim, opts in zip(order, options, strict=True):
+                for entry in opts:
+                    if entry is None:
+                        continue
+                    _, match, is_exact = entry
+                    if all(nc.key not in ctx._consumed for nc in match.changes):
+                        self._take(
+                            claim, match, ctx, matches, "exact" if is_exact else "partial"
+                        )
+                        break
+            return
+
+        def write_time(match: Match) -> datetime:
+            return max(c.at for nc in match.changes for c in nc.changes)
+
+        def objective(chosen: list[tuple[int, Match, bool] | None]) -> tuple:
+            paired = [(i, e) for i, e in enumerate(chosen) if e is not None]
+            return (
+                len(paired),
+                -sum(
+                    self._claim_distance(order[i], write_time(m), ctx)
+                    for i, (_, m, _) in paired
+                ),
+                sum(1 for _, (_, _, exact) in paired if exact),
+                sum(s for _, (s, _, _) in paired),
+                sum(1 for i, _ in paired if order[i].source is ClaimSource.STRUCTURED),
+            )
+
+        best_key: tuple | None = None
+        best: list[tuple[int, Match, bool] | None] = []
+
+        def search(
+            i: int,
+            used: set[tuple[Entity, str]],
+            copies: set[str],
+            chosen: list[tuple[int, Match, bool] | None],
+        ) -> None:
+            nonlocal best_key, best
+            if i == len(order):
+                k = objective(chosen)
+                if best_key is None or k > best_key:
+                    best_key, best = k, list(chosen)
+                return
+            for entry in options[i]:
+                keys: list[tuple[Entity, str]] = []
+                sigs: list[str] = []
+                if entry is not None:
+                    keys = [nc.key for nc in entry[1].changes]
+                    sigs = [
+                        sig
+                        for nc in entry[1].changes
+                        if (sig := content_signature(nc.after)) is not None
+                    ]
+                # Two matches in one assignment may not describe the same
+                # content: the leftover copy is the anomaly, not evidence.
+                if any(k_ in used for k_ in keys) or any(s in copies for s in sigs):
+                    continue
+                used.update(keys)
+                copies.update(sigs)
+                chosen.append(entry)
+                search(i + 1, used, copies, chosen)
+                chosen.pop()
+                used.difference_update(keys)
+                copies.difference_update(sigs)
+
+        search(0, set(), set(), [])
+        for claim, entry in zip(order, best, strict=True):
+            if entry is not None:
+                _, match, is_exact = entry
+                self._take(claim, match, ctx, matches, "exact" if is_exact else "partial")
 
     @staticmethod
     def _judge(

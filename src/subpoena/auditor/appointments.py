@@ -50,9 +50,11 @@ def _new_booking(nc: NetChange) -> Appointment | None:
 # ------------------------------ AppointmentBooked -------------------------- #
 
 
-def match_booked(claim: AppointmentBooked, ctx: AuditContext, strict: bool) -> Match | None:
+def candidates_booked(
+    claim: AppointmentBooked, ctx: AuditContext, strict: bool
+) -> list[tuple[int, Match]]:
     ids = ctx.patient_ids(claim.patient)
-    best: tuple[int, NetChange] | None = None
+    out: list[tuple[int, Match]] = []
     for nc in ctx.free(Entity.APPOINTMENT):
         appt = _new_booking(nc)
         if appt is None:
@@ -62,10 +64,14 @@ def match_booked(claim: AppointmentBooked, ctx: AuditContext, strict: bool) -> M
         where = claim.provider is None or _same(appt.provider, claim.provider)
         # Strict: everything lines up. Loose: same person, or same slot under another name.
         eligible = (who and when and where) if strict else (who or (when and where))
-        score = 4 * who + 2 * when + where
-        if eligible and (best is None or score > best[0]):
-            best = (score, nc)
-    return Match(primary=best[1]) if best else None
+        if eligible:
+            out.append((4 * who + 2 * when + where, Match(primary=nc)))
+    return out
+
+
+def match_booked(claim: AppointmentBooked, ctx: AuditContext, strict: bool) -> Match | None:
+    candidates = candidates_booked(claim, ctx, strict)
+    return max(candidates, key=lambda c: c[0])[1] if candidates else None
 
 
 def judge_booked(claim: AppointmentBooked, match: Match | None, ctx: AuditContext) -> Verdict:
@@ -168,7 +174,9 @@ def _booking_not_found(claim: AppointmentBooked, ctx: AuditContext, what: str) -
 # -------------------------------- Rescheduled ------------------------------ #
 
 
-def match_rescheduled(claim: Rescheduled, ctx: AuditContext, strict: bool) -> Match | None:
+def candidates_rescheduled(
+    claim: Rescheduled, ctx: AuditContext, strict: bool
+) -> list[tuple[int, Match]]:
     ids = ctx.patient_ids(claim.patient)
     free = ctx.free(Entity.APPOINTMENT)
     candidates: list[tuple[int, Match]] = []
@@ -207,10 +215,17 @@ def match_rescheduled(claim: Rescheduled, ctx: AuditContext, strict: bool) -> Ma
             continue
         candidates.append((2 * new_ok + 2 * (old is not None), Match(primary=nc, secondary=old)))
 
-    # Shape C: the old record was released and nothing replaced it.
-    if not strict and not candidates and old is not None:
+    # Shape C: the old record was released and nothing replaced it. Always
+    # offered loose, even beside shape B candidates: pool assignment may find
+    # the new booking belongs to another claim.
+    if not strict and old is not None:
         candidates.append((1, Match(primary=None, secondary=old)))
 
+    return candidates
+
+
+def match_rescheduled(claim: Rescheduled, ctx: AuditContext, strict: bool) -> Match | None:
+    candidates = candidates_rescheduled(claim, ctx, strict)
     return max(candidates, key=lambda c: c[0])[1] if candidates else None
 
 
@@ -358,9 +373,11 @@ def judge_rescheduled(claim: Rescheduled, match: Match | None, ctx: AuditContext
 # --------------------------------- Cancelled ------------------------------- #
 
 
-def match_cancelled(claim: Cancelled, ctx: AuditContext, strict: bool) -> Match | None:
+def candidates_cancelled(
+    claim: Cancelled, ctx: AuditContext, strict: bool
+) -> list[tuple[int, Match]]:
     ids = ctx.patient_ids(claim.patient)
-    best: tuple[int, NetChange] | None = None
+    out: list[tuple[int, Match]] = []
     for nc in ctx.free(Entity.APPOINTMENT):
         before = _appt(nc.before)
         if not _released(nc) or before is None or before.patient_id not in ids:
@@ -368,9 +385,13 @@ def match_cancelled(claim: Cancelled, ctx: AuditContext, strict: bool) -> Match 
         exact = before.start == claim.start
         if strict and not exact:
             continue
-        if best is None or exact > best[0]:
-            best = (int(exact), nc)
-    return Match(primary=best[1]) if best else None
+        out.append((int(exact), Match(primary=nc)))
+    return out
+
+
+def match_cancelled(claim: Cancelled, ctx: AuditContext, strict: bool) -> Match | None:
+    candidates = candidates_cancelled(claim, ctx, strict)
+    return max(candidates, key=lambda c: c[0])[1] if candidates else None
 
 
 def judge_cancelled(claim: Cancelled, match: Match | None, ctx: AuditContext) -> Verdict:

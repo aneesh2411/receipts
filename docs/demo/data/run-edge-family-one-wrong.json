@@ -412,12 +412,12 @@
   {
    "seq": 7,
    "stage": "reconcile",
-   "message": "call-edge-family-one-wrong-c2 (ConfirmationSent): exact match -> msg_0001"
+   "message": "call-edge-family-one-wrong-c3 (AppointmentBooked): partial match -> apt_0002"
   },
   {
    "seq": 8,
    "stage": "reconcile",
-   "message": "call-edge-family-one-wrong-c3 (AppointmentBooked): partial match -> apt_0002"
+   "message": "call-edge-family-one-wrong-c2 (ConfirmationSent): exact match -> msg_0001"
   },
   {
    "seq": 9,
@@ -457,10 +457,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "42683fd6a4690d41c7ff8dd14da49f6d8236b184925f0c7ea216fae333f40963",
+  "content_hash": "d166dae8edea96ae4d81be8b566442d4f39f5e3e2e269150e1ad64442d3dab83",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "d3e8ffbfc99cb577f462074fa68b7c4bcae603e0fbc0e77f43f2379366f107e5",
-  "signature": "ae5b87de02d00d94203a12ca8d6f229bdb2d37bd54e76ec62f53b538122a2016",
+  "chain_hash": "7c49151cdec6da078755c91c8a0a2d5e2ecbd8456c76a3f7acd9b5d30bb08be0",
+  "signature": "6cd493e4e697aa9cecab67739277ae4d9643838a713f6fe55e63bc26278bd405",
   "key_id": "6508b98a7ace"
  }
 }

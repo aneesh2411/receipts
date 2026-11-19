@@ -83,6 +83,18 @@ def _freeze(image: dict[str, Any] | None) -> str | None:
     return json.dumps(image, sort_keys=True, default=str) if image is not None else None
 
 
+def content_signature(image: dict[str, Any] | None) -> str | None:
+    """A write's content minus its record id.
+
+    Two writes with the same signature are the same fact written twice. A
+    leftover copy is not new evidence for another claim: it is itself the
+    anomaly an unclaimed-write finding exists to report.
+    """
+    if image is None:
+        return None
+    return _freeze({k: v for k, v in image.items() if k != "id"})
+
+
 @dataclass(frozen=True)
 class NetChange:
     entity: Entity

@@ -284,12 +284,12 @@
   {
    "seq": 6,
    "stage": "reconcile",
-   "message": "call-fault-wrong-patient-c2 (ConfirmationSent): exact match -> msg_0001"
+   "message": "call-fault-wrong-patient-c1 (AppointmentBooked): partial match -> apt_0001"
   },
   {
    "seq": 7,
    "stage": "reconcile",
-   "message": "call-fault-wrong-patient-c1 (AppointmentBooked): partial match -> apt_0001"
+   "message": "call-fault-wrong-patient-c2 (ConfirmationSent): exact match -> msg_0001"
   },
   {
    "seq": 8,
@@ -324,10 +324,10 @@
  },
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "b8c5834b109a240599214c238d1ff68d3e750f09af0312468a225d8096d6891d",
+  "content_hash": "b78f3ab98404531d92f051dcd183c94606fe4a82d638c66d55c11673ffeabb99",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "1554a749034b9ca372306e44d09bbccb79ead3f0cc05ac288406ef30ec29c087",
-  "signature": "9bdfdaba79b653c6c2a19b190339ecfa85736bb3803f2c961cda9ae7d4050379",
+  "chain_hash": "742c00b2ab4a3f4078ab663551e80402598842a3d1a260dec4d711a1c39be943",
+  "signature": "65e13bbecfb1d4fd404cb52d608a1d928de30cb0335a4c1844a97acfeb311bb8",
   "key_id": "6508b98a7ace"
  }
 }
