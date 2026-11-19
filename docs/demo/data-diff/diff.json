@@ -1,0 +1,54 @@
+{
+  "call_id": "call-fault-wrong-time",
+  "claims": [
+    {
+      "after": "VERIFIED",
+      "before": "MISMATCH",
+      "claim_id": "call-fault-wrong-time-c1",
+      "claim_type": "AppointmentBooked",
+      "fields": [
+        {
+          "after": [
+            {
+              "actual": "Tue Mar 3 2026, 2:30 PM EST",
+              "claimed": "Tue Mar 3 2026, 2:30 PM EST",
+              "match": true
+            }
+          ],
+          "before": [
+            {
+              "actual": "Tue Mar 3 2026, 3:30 PM EST",
+              "claimed": "Tue Mar 3 2026, 2:30 PM EST",
+              "match": false
+            }
+          ],
+          "field": "start",
+          "kind": "receipt"
+        }
+      ]
+    },
+    {
+      "after": "VERIFIED",
+      "before": "VERIFIED",
+      "claim_id": "call-fault-wrong-time-c2",
+      "claim_type": "ConfirmationSent",
+      "fields": []
+    }
+  ],
+  "cli_diff": [
+    "Claim \"call-fault-wrong-time-c1\":",
+    "  Verdict: MISMATCH -> VERIFIED",
+    "  Receipt field \"start\": [{\"actual\":\"Tue Mar 3 2026, 3:30 PM EST\",\"claimed\":\"Tue Mar 3 2026, 2:30 PM EST\",\"match\":false}] -> [{\"actual\":\"Tue Mar 3 2026, 2:30 PM EST\",\"claimed\":\"Tue Mar 3 2026, 2:30 PM EST\",\"match\":true}]"
+  ],
+  "runs": {
+    "after": {
+      "outcome": "CLEAN",
+      "seal": "OK integrity=intact authentication=authenticated (content and chain verified (signature verified))"
+    },
+    "before": {
+      "outcome": "DISCREPANCIES",
+      "seal": "OK integrity=intact authentication=authenticated (content and chain verified (signature verified))"
+    }
+  },
+  "scenario_id": "fault-wrong-time"
+}
