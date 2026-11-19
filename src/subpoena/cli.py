@@ -1,4 +1,4 @@
-"""Command line: demo, eval, serve, verify."""
+"""Command line: demo, eval, serve, verify, and offline Twilio validation."""
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from subpoena.auditor import Sealer
 from subpoena.auditor.render import claim_headline, stamp
 from subpoena.evals import run_all
 from subpoena.evals.run import render_markdown as render_eval
+from subpoena.ingest.twilio import load_callbacks
 from subpoena.models import AuditReport, Outcome, Severity, Verdict, VerdictStatus
 from subpoena.scenarios import BY_ID, GOLDEN, HERO, run_scenario
 
@@ -282,6 +283,16 @@ def cmd_verify(args: argparse.Namespace, console: Console) -> int:
     return 0 if check.ok else 1
 
 
+def cmd_validate_twilio(args: argparse.Namespace, console: Console) -> int:
+    try:
+        load_callbacks(args.status, args.transcription)
+    except ValueError as exc:
+        print(f"Invalid Twilio callback pair: {exc}", file=sys.stderr)
+        return 2
+    console.print("Twilio callback pair passed offline validation.")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="subpoena", description="Every claim needs a receipt.")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -323,6 +334,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="require an authenticated seal: unsigned or unverifiable reports fail",
     )
     verify.set_defaults(func=cmd_verify)
+    twilio = sub.add_parser(
+        "validate-twilio", help="validate saved Voice status and transcription callback parameters"
+    )
+    twilio.add_argument("status", type=Path, help="completed Voice status callback JSON export")
+    twilio.add_argument("transcription", type=Path, help="completed Record callback JSON export")
+    twilio.set_defaults(func=cmd_validate_twilio)
     return parser
 
 

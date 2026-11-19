@@ -1,0 +1,12 @@
+{
+  "AccountSid": "AC00000000000000000000000000000000",
+  "CallSid": "CA00000000000000000000000000000001",
+  "CallStatus": "completed",
+  "From": "+12025550101",
+  "To": "+12025550102",
+  "Direction": "outbound-api",
+  "Timestamp": "Thu, 19 Nov 2026 18:00:20 +0000",
+  "CallDuration": "20",
+  "CallbackSource": "call-progress-events",
+  "SequenceNumber": "0"
+}
