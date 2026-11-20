@@ -100,12 +100,13 @@
   "degraded": false,
   "detail": null
  },
+ "fulfillments": [],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "1a89c441bfd72449780ae9f95887f74006240c3941ae0d294219f559e685cbdc",
+  "content_hash": "2c79472b772d4adfed1f88bd79cf1d90b5d62632f2cb293963bbdbedd2e995de",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "4dc3caeda879c3e803735dfb21c5cf537a344092031fd0e04bfff81f5162efa4",
-  "signature": "91a7b55ceee9ce0529df023dd3b2563c2e508ff941b152711885b075814aa528",
+  "chain_hash": "4de594b2401ee73b1d4ed7a19de759791e77658a8dd4f9f9d69d929446ffa8cd",
+  "signature": "ff2ee5ea7106f2714ef055a778ee9e710981149d4dde9df8562f6c93bf48b492",
   "key_id": "6508b98a7ace"
  }
 }

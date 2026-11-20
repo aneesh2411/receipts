@@ -84,14 +84,15 @@
     "extractor": "rules"
   },
   "findings": [],
+  "fulfillments": [],
   "outcome": "CLEAN",
   "seal": {
     "algorithm": "sha256",
-    "chain_hash": "ca6544b973d9638128b60f73f1b3900f8468c4c20a2aa4b8d2ebbd04cd271d62",
-    "content_hash": "4e3fa9d1b4366ba235925709e29266e845010b73e588c66b95cc970103cc2514",
+    "chain_hash": "fe821170eef89ab526a1158b917d7d711e7b538386bd729c14d9779eb17b67b7",
+    "content_hash": "86359e79f06643fca1eda7a5038b6ca629cc007aa69f39e7d4f0909fbe007563",
     "key_id": "6508b98a7ace",
     "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-    "signature": "6604b563a212e10eacc83f44a4b21db0b63f98c7d23adeb4ca5487c3d4d0fa1e"
+    "signature": "ff66a365b8e80e384600114d1dda847578399ffcd68ce5fe19a2c8537a7bcbef"
   },
   "stats": {
     "claims": 2,

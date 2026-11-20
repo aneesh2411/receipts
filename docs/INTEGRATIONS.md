@@ -71,6 +71,10 @@ listings default to incomplete coverage. Set `complete_creation_history=True`
 only if the endpoint exposes every creation in the window with immutable
 creation data and no unobserved mutations.
 
+The adapter carries creation evidence only. Handoff fulfillment beyond
+"recorded" (assigned, acknowledged, completed) is reported as inconclusive
+against it until it exposes lifecycle reads.
+
 This example uses the [test ticket service](../tests/test_sor_rest_tickets.py)
 in place of a live API and reads back the creation evidence.
 

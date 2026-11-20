@@ -137,6 +137,7 @@
       "summary": "Caller needs help with a knocked-out tooth",
       "priority": "urgent",
       "status": "open",
+      "assignee": null,
       "created_at": "2026-03-02T14:05:08+00:00"
      }
     }
@@ -183,6 +184,11 @@
   },
   {
    "seq": 8,
+   "stage": "fulfillment",
+   "message": "ticket tkt_0001: recorded; the callback is still pending"
+  },
+  {
+   "seq": 9,
    "stage": "verdict",
    "message": "Outcome: CLEAN"
   }
@@ -202,12 +208,36 @@
   "degraded": false,
   "detail": null
  },
+ "fulfillments": [
+  {
+   "ticket_id": "tkt_0001",
+   "state": "recorded",
+   "pending": true,
+   "summary": "The ticket was created and nothing further happened. Nobody is known to be calling back.",
+   "evidence": [
+    {
+     "source": "tickets",
+     "ref": "tkt_0001",
+     "note": "Ticket created during the call (journal #6)",
+     "record": {
+      "id": "tkt_0001",
+      "patient_id": "pat_0001",
+      "summary": "Caller needs help with a knocked-out tooth",
+      "priority": "urgent",
+      "status": "open",
+      "assignee": null,
+      "created_at": "2026-03-02T14:05:08+00:00"
+     }
+    }
+   ]
+  }
+ ],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "d6ded2c844a253d331c77599c7e401ec34e5bf0e6568c056bf14f06a5d3d90f8",
+  "content_hash": "f556c6445eb186a0c72a756e108bae078cc138a07ae7277023c645fa4ce280ef",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "04529ac92b258f54f3a77c1c25dfe44a1bb913571ca4988fccd886ef73dfbc95",
-  "signature": "9f9c0fe2dac1671d2223f772ea8635176f6cfcbca500fbf8aef845cc3fcfa9f3",
+  "chain_hash": "3d72bd5da1b1f95dc7aaa30831fa8a96f2d3211cafe2af31204a7cdbc3b124e1",
+  "signature": "0757832800b50cef380533ce922c4b2b9be15a7e1dfdc7c2583f55562041af57",
   "key_id": "6508b98a7ace"
  }
 }

@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 100% | Highest severity: `INFO`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:24-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `d34dc55686e80b7e00dd561b...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `b229f6965ae94e8cfc906d60...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -85,6 +85,15 @@ Evidence:
 
 None. Every write the agent made is accounted for by a claim.
 
+## Handoff fulfillment
+
+A created ticket is a recorded promise, not a kept one. Each state below is backed by a journal row; missing evidence leaves the promise pending.
+
+### Ticket `tkt_0001`: RECORDED (promise pending)
+
+- The ticket was created and nothing further happened. Nobody is known to be calling back.
+- Evidence `tickets` `tkt_0001`: Ticket created during the call (journal #8)
+
 ## Audit trail
 
 1. `evidence` calendar: 1 write(s) stamped to this call, 0 under the shared agent identity in the call window
@@ -98,10 +107,11 @@ None. Every write the agent made is accounted for by a claim.
 9. `verdict` call-clean-multi-intent-c1 (AppointmentBooked): VERIFIED
 10. `verdict` call-clean-multi-intent-c2 (ConfirmationSent): VERIFIED
 11. `verdict` call-clean-multi-intent-c3 (HandoffCreated): VERIFIED
-12. `verdict` Outcome: CLEAN
+12. `fulfillment` ticket tkt_0001: recorded; the callback is still pending
+13. `verdict` Outcome: CLEAN
 
 ## Seal
 
-- content `83efcc8e62b2f0ad106b0089d0dbb362908664c7c08fb17e8bd1ab642687f344`
-- chain `d34dc55686e80b7e00dd561ba6866a64e601839c23add38055c7de6e52debbc6` (prev `0000000000000000...`)
+- content `0b1de6e071d95176ccef5d69115103fdc117e1b8a95f0edd88bf782f40bc0073`
+- chain `b229f6965ae94e8cfc906d60f9671c8edf6a2f875fe5f669fc001b51a63e366c` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

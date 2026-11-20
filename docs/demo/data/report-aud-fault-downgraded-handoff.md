@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 0% | Highest severity: `HIGH`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `b3ee04e52d82c5e0a27ab3eb...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `515c8f99a5c9d7aea9b452db...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -39,6 +39,15 @@ Evidence:
 
 None. Every write the agent made is accounted for by a claim.
 
+## Handoff fulfillment
+
+A created ticket is a recorded promise, not a kept one. Each state below is backed by a journal row; missing evidence leaves the promise pending.
+
+### Ticket `tkt_0001`: RECORDED (promise pending)
+
+- The ticket was created and nothing further happened. Nobody is known to be calling back.
+- Evidence `tickets` `tkt_0001`: Ticket created during the call (journal #6)
+
 ## Audit trail
 
 1. `evidence` calendar: 0 write(s) stamped to this call, 0 under the shared agent identity in the call window
@@ -48,10 +57,11 @@ None. Every write the agent made is accounted for by a claim.
 5. `claims` 1 structured claim(s); 1 recovered from the transcript, 0 of them never logged by the agent
 6. `reconcile` call-fault-downgraded-handoff-c1 (HandoffCreated): partial match -> tkt_0001
 7. `verdict` call-fault-downgraded-handoff-c1 (HandoffCreated): MISMATCH
-8. `verdict` Outcome: DISCREPANCIES
+8. `fulfillment` ticket tkt_0001: recorded; the callback is still pending
+9. `verdict` Outcome: DISCREPANCIES
 
 ## Seal
 
-- content `f2b08e7f3e983af499fdbdd3b5125d7c9ff7018ffb1194addef195340a6b7fa6`
-- chain `b3ee04e52d82c5e0a27ab3eb7c338524e681b6f8f4ec7d8439ee27dadf2831c6` (prev `0000000000000000...`)
+- content `304b321ce16ab8c33dd734ee10be74d22755c1c2e0a76d51fad440838ddb8c0e`
+- chain `515c8f99a5c9d7aea9b452db33ccf7f7894b41e8d1e5ee5e65e244e4f7338365` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

@@ -137,6 +137,7 @@
       "summary": "Caller needs help with a billing question about my last invoice",
       "priority": "normal",
       "status": "open",
+      "assignee": null,
       "created_at": "2026-03-02T14:05:08+00:00"
      }
     }
@@ -183,6 +184,11 @@
   },
   {
    "seq": 8,
+   "stage": "fulfillment",
+   "message": "ticket tkt_0001: recorded; the callback is still pending"
+  },
+  {
+   "seq": 9,
    "stage": "verdict",
    "message": "Outcome: CLEAN"
   }
@@ -202,12 +208,36 @@
   "degraded": false,
   "detail": null
  },
+ "fulfillments": [
+  {
+   "ticket_id": "tkt_0001",
+   "state": "recorded",
+   "pending": true,
+   "summary": "The ticket was created and nothing further happened. Nobody is known to be calling back.",
+   "evidence": [
+    {
+     "source": "tickets",
+     "ref": "tkt_0001",
+     "note": "Ticket created during the call (journal #6)",
+     "record": {
+      "id": "tkt_0001",
+      "patient_id": "pat_0001",
+      "summary": "Caller needs help with a billing question about my last invoice",
+      "priority": "normal",
+      "status": "open",
+      "assignee": null,
+      "created_at": "2026-03-02T14:05:08+00:00"
+     }
+    }
+   ]
+  }
+ ],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "d10a09cdc4d5bec7e43f69abcd06f23fb76ed73f67c959f7a2a6390f3de71541",
+  "content_hash": "75c9bd1977b57c87d2f080a4cda0aea88e3b3d2b43b14907597f2318a94465fa",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "05e96d0807c10fb0af01183907676a9dd7781941289da6c37a6bff4c08b5f0af",
-  "signature": "a25067fe4b0a569361b82b15b47602d686ad6b52923e90621c6b96028b069862",
+  "chain_hash": "9586fd712fbeb1e4d35b5473c9884573d094f526e5f6a7cd8394da20552cd9ba",
+  "signature": "b65e3424d66305bd387a8ade0fc75bae599a2432204a72047395fed6dd4773d4",
   "key_id": "6508b98a7ace"
  }
 }

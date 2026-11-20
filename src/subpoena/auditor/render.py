@@ -2,7 +2,15 @@
 
 from __future__ import annotations
 
-from subpoena.models import AuditReport, Claim, ExtractionHealth, Finding, Verdict, VerdictStatus
+from subpoena.models import (
+    AuditReport,
+    Claim,
+    ExtractionHealth,
+    Finding,
+    Fulfillment,
+    Verdict,
+    VerdictStatus,
+)
 
 _STAMP = {
     VerdictStatus.VERIFIED: "RECEIPT FOUND",
@@ -67,6 +75,15 @@ def _finding_md(n: int, f: Finding) -> list[str]:
     return [*lines, ""]
 
 
+def _fulfillment_md(f: Fulfillment) -> list[str]:
+    label = f.state.value.upper()
+    if f.pending:
+        label += " (promise pending)"
+    lines = [f"### Ticket `{f.ticket_id}`: {label}", "", f"- {f.summary}"]
+    lines += [f"- Evidence `{e.source}` `{e.ref}`: {e.note}" for e in f.evidence]
+    return [*lines, ""]
+
+
 def _render_extraction(extraction: ExtractionHealth) -> str:
     line = f"- Extraction: `{extraction.extractor}`"
     if extraction.degraded:
@@ -127,6 +144,15 @@ def render_markdown(report: AuditReport) -> str:
         lines += ["None. Every write the agent made is accounted for by a claim.", ""]
     for n, finding in enumerate(report.findings, start=1):
         lines += _finding_md(n, finding)
+    if report.fulfillments:
+        lines += ["## Handoff fulfillment", ""]
+        lines += [
+            "A created ticket is a recorded promise, not a kept one. Each state below "
+            "is backed by a journal row; missing evidence leaves the promise pending.",
+            "",
+        ]
+        for f in report.fulfillments:
+            lines += _fulfillment_md(f)
     lines += ["## Audit trail", ""]
     lines += [f"{e.seq}. `{e.stage}` {e.message}" for e in report.trail]
     if report.seal:

@@ -217,12 +217,13 @@
   "degraded": false,
   "detail": null
  },
+ "fulfillments": [],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "fd392f942923d83a952a27349af60e60fdc40bf0e821765c7de091fa161c0626",
+  "content_hash": "c8cc29260643fbbec5dfe1d4324e7783b97dda00ed385a9d279e692d43c1187f",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "783f74a337d421522fd4ca36ca8621ce3e516e63aea6d961c8a183cbe684ff9e",
-  "signature": "fdb67104a08a359e6dc31980346ad1a22b8d09d12cde2354b522eac596e8a4ca",
+  "chain_hash": "b3d89fb05ddc85bed6d7b154d2246e26f7a3231b5b4a2791652ba418b968b185",
+  "signature": "84ffa44e69f171494e339bac1c9238423f368309363a8dc47688a32b5d2d6dbb",
   "key_id": "6508b98a7ace"
  }
 }

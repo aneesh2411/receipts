@@ -137,6 +137,7 @@
       "summary": "Caller asked about parking validation",
       "priority": "normal",
       "status": "open",
+      "assignee": null,
       "created_at": "2026-03-02T14:05:08+00:00"
      }
     }
@@ -183,6 +184,11 @@
   },
   {
    "seq": 8,
+   "stage": "fulfillment",
+   "message": "ticket tkt_0001: recorded; the callback is still pending"
+  },
+  {
+   "seq": 9,
    "stage": "verdict",
    "message": "Outcome: CLEAN"
   }
@@ -202,12 +208,36 @@
   "degraded": false,
   "detail": null
  },
+ "fulfillments": [
+  {
+   "ticket_id": "tkt_0001",
+   "state": "recorded",
+   "pending": true,
+   "summary": "The ticket was created and nothing further happened. Nobody is known to be calling back.",
+   "evidence": [
+    {
+     "source": "tickets",
+     "ref": "tkt_0001",
+     "note": "Ticket created during the call (journal #6)",
+     "record": {
+      "id": "tkt_0001",
+      "patient_id": "pat_0001",
+      "summary": "Caller asked about parking validation",
+      "priority": "normal",
+      "status": "open",
+      "assignee": null,
+      "created_at": "2026-03-02T14:05:08+00:00"
+     }
+    }
+   ]
+  }
+ ],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "d3c16a3192bfb9881b1b3fe369fb6f82f245a7c6c18f6778afdb6cfd781c849c",
+  "content_hash": "44113dd5e276db4036639298dc9616c29db2933d284b0db46406d4276e0bd286",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "a75f6db3d9218b81b205558808d65076d0fc72b4c246b068f5787b6b051e1215",
-  "signature": "103baa72fb5a7f5e5ed0700dd10048e081ad2c054415fcd672c9c6fd3ee51d7a",
+  "chain_hash": "85d9dbfaa77dc084643d8a0237c40ca75a44188c218ab0ac4fefe040552a908f",
+  "signature": "bd63802dd5447351a16cbea1cefd1c69251828b8ddaf2f70454cce591fdbd36a",
   "key_id": "6508b98a7ace"
  }
 }
