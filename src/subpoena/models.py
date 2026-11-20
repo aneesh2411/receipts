@@ -318,6 +318,56 @@ class Finding(Frozen):
     remediation: str | None = None
 
 
+class IncidentStatus(StrEnum):
+    """Whether a cross-call request is still owed, from linked fulfillments."""
+
+    PENDING = "pending"
+    FULFILLED = "fulfilled"
+    INCONCLUSIVE = "inconclusive"
+
+
+class LinkedCall(Frozen):
+    """One call's contribution to an incident."""
+
+    call_id: str
+    audit_id: str
+    claim_ids: tuple[str, ...]
+
+
+class DuplicateWrite(Frozen):
+    """A second system-of-record record for a request one record already covers."""
+
+    source: str  # tickets | calendar | messages
+    ref: str
+    audit_id: str
+    note: str
+
+
+class ReviewCandidate(Frozen):
+    """A merge the grouper refused to make on its own."""
+
+    reason: str
+    audits: tuple[str, ...]
+    detail: str
+
+
+class Incident(Frozen):
+    """One caller's repeated request, grouped across calls.
+
+    Merging requires strong identity (name and phone together) plus a matching
+    request; ambiguous matches stay unmerged and surface as review candidates.
+    """
+
+    incident_id: str
+    caller: str
+    request: str
+    calls: tuple[LinkedCall, ...]
+    repeated_promises: int
+    duplicate_writes: tuple[DuplicateWrite, ...] = ()
+    handoff_status: IncidentStatus | None = None
+    summary: str
+
+
 class FulfillmentState(StrEnum):
     """Lifecycle of a handoff promise. Acknowledged is not fulfilled: only a
     closed ticket, evidenced by a journal row, completes the promise."""
