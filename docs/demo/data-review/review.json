@@ -1,0 +1,64 @@
+{
+  "reviews": [
+    {
+      "audits": [
+        "aud-review-shared-phone-1",
+        "aud-review-shared-phone-2"
+      ],
+      "calls": [
+        {
+          "audit_id": "aud-review-shared-phone-1",
+          "outcome": "CLEAN",
+          "started_at": "2026-03-02T09:05:00-05:00"
+        },
+        {
+          "audit_id": "aud-review-shared-phone-2",
+          "outcome": "CLEAN",
+          "started_at": "2026-03-03T09:05:00-05:00"
+        }
+      ],
+      "detail": "Phone +15550101001 appears as maya chen, mina chen. These calls were not merged; confirm the caller is one person.",
+      "reason": "same-phone-different-names"
+    },
+    {
+      "audits": [
+        "aud-review-missing-phone-1",
+        "aud-review-missing-phone-2"
+      ],
+      "calls": [
+        {
+          "audit_id": "aud-review-missing-phone-1",
+          "outcome": "CLEAN",
+          "started_at": "2026-03-02T09:05:00-05:00"
+        },
+        {
+          "audit_id": "aud-review-missing-phone-2",
+          "outcome": "CLEAN",
+          "started_at": "2026-03-03T09:05:00-05:00"
+        }
+      ],
+      "detail": "Maya Chen appears without a verified number in audit aud-review-missing-phone-2. Not merged with the matching named caller.",
+      "reason": "same-name-no-phone"
+    },
+    {
+      "audits": [
+        "aud-review-topic-1",
+        "aud-review-topic-2"
+      ],
+      "calls": [
+        {
+          "audit_id": "aud-review-topic-1",
+          "outcome": "CLEAN",
+          "started_at": "2026-03-02T09:05:00-05:00"
+        },
+        {
+          "audit_id": "aud-review-topic-2",
+          "outcome": "DISCREPANCIES",
+          "started_at": "2026-03-03T09:05:00-05:00"
+        }
+      ],
+      "detail": "The handoff summary in audit aud-review-topic-2 partly overlaps another request from this caller. Left unmerged.",
+      "reason": "ambiguous-handoff-topic"
+    }
+  ]
+}
