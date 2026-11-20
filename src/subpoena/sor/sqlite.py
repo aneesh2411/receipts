@@ -41,7 +41,7 @@ _TABLES: dict[Entity, tuple[str, tuple[str, ...]]] = {
     Entity.MESSAGE: ("messages", ("id", "recipient", "channel", "body", "status", "sent_at")),
     Entity.TICKET: (
         "tickets",
-        ("id", "patient_id", "summary", "priority", "status", "created_at"),
+        ("id", "patient_id", "summary", "priority", "status", "assignee", "created_at"),
     ),
 }
 _ID_PREFIX = {
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS messages(
 CREATE TABLE IF NOT EXISTS tickets(
     id TEXT PRIMARY KEY, patient_id TEXT, summary TEXT NOT NULL,
     priority TEXT NOT NULL DEFAULT 'normal', status TEXT NOT NULL DEFAULT 'open',
-    created_at TEXT NOT NULL);
+    assignee TEXT, created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS id_seq(entity TEXT PRIMARY KEY, n INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS session_ctx(
     id INTEGER PRIMARY KEY CHECK (id = 1), actor TEXT NOT NULL, now TEXT NOT NULL);
@@ -378,6 +378,33 @@ class _Tickets(_Adapter):
         return Ticket(
             id=new_id, patient_id=patient_id, summary=summary, priority=priority, created_at=now
         )
+
+    _EDITABLE = {"assignee", "status"}
+    _STATUSES = {"open", "closed"}
+
+    def get_ticket(self, ticket_id: str) -> Ticket | None:
+        rows = self._store._rows("SELECT * FROM tickets WHERE id = ?", (ticket_id,))
+        return Ticket.model_validate(rows[0]) if rows else None
+
+    def update_ticket(self, ticket_id: str, **fields: Any) -> Ticket:
+        """Staff-side lifecycle writes (assign, close). Journaled under the
+        session's own actor, so the auditor can tell staff touches apart from
+        the creating agent's."""
+        unknown = set(fields) - self._EDITABLE
+        if unknown or not fields:
+            raise ValueError(f"cannot update ticket fields: {sorted(unknown) or 'none given'}")
+        if "status" in fields and fields["status"] not in self._STATUSES:
+            raise ValueError(f"unknown ticket status: {fields['status']!r}")
+        if self.get_ticket(ticket_id) is None:
+            raise RecordNotFound(f"ticket {ticket_id} does not exist")
+        assignments = ", ".join(f"{col} = ?" for col in fields)  # columns are allow-listed
+        with self._tx() as conn:
+            conn.execute(
+                f"UPDATE tickets SET {assignments} WHERE id = ?", (*fields.values(), ticket_id)
+            )
+        ticket = self.get_ticket(ticket_id)
+        assert ticket is not None
+        return ticket
 
     def list_tickets(self, *, patient_id: str | None = None) -> list[Ticket]:
         tickets = [

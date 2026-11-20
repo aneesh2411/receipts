@@ -60,14 +60,15 @@
       "extractor": "rules"
     },
     "findings": [],
+    "fulfillments": [],
     "outcome": "DISCREPANCIES",
     "seal": {
       "algorithm": "sha256",
-      "chain_hash": "f057fad4e31c9ba511723cd695f3b59c47ddca3783875950037ba7f0a7da3a8b",
-      "content_hash": "aa288a7ac91dc8956f54d0301cde318f51bb7dc673ea30173052ea83aad3e60a",
+      "chain_hash": "28913d43fa0e426694180620fcab46e42764728571c02c11f8b2696c727f1fe8",
+      "content_hash": "10a14bc0b29bf7eaacef6b6f0fdc075ea3edaac39f18c66fdf36793b1c3bcab8",
       "key_id": "6508b98a7ace",
       "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "signature": "2ce758f92924e2ea40e03734653f8b3a015b32e963cb3d683d1fe6388dd84f87"
+      "signature": "f96633b67e1c16bc9242e6ade11d2e419a2209f55230009e88b76b354ec19459"
     },
     "stats": {
       "claims": 2,
@@ -238,18 +239,18 @@
   "authentication": "authenticated",
   "items": [
     {
-      "audit_chain_hash": "f057fad4e31c9ba511723cd695f3b59c47ddca3783875950037ba7f0a7da3a8b",
+      "audit_chain_hash": "28913d43fa0e426694180620fcab46e42764728571c02c11f8b2696c727f1fe8",
       "audit_id": "aud-twilio-ops",
-      "head": "d39746be3b7d2cd6ca532d798e5b82dd4ea887ffd93773063d5040e284eb5ed9",
-      "item_id": "37ee7bf6684249b734e3788fffa45745dc789f976ffa38634cc18adebe07d00d",
+      "head": "2c21f102f61af52248a9c2c3f937fa5a228f5a8b8c62f14858913e46633ecb47",
+      "item_id": "ca7a8895cd12eeb07b86d5573ff21eee9e19956936c253067da4091001a3917a",
       "result_pointer": "/verdicts/0",
       "state": "resolved"
     },
     {
-      "audit_chain_hash": "f057fad4e31c9ba511723cd695f3b59c47ddca3783875950037ba7f0a7da3a8b",
+      "audit_chain_hash": "28913d43fa0e426694180620fcab46e42764728571c02c11f8b2696c727f1fe8",
       "audit_id": "aud-twilio-ops",
-      "head": "efb6978190eb45092b1a3e7be398e26e2b416e9d4488403a4fc484be0819685b",
-      "item_id": "e5494393a1f41904fc9f4a191e4c7c9c0dd3e0be026d9eb7e16b943e46456045",
+      "head": "4b326f1efcfa54445919e91eee7e91781b0f6d9fbbe47e6e4f4e36847dee7e64",
+      "item_id": "217bdc1bbbeb0b1f4ca73bb6e12fa0c253021c4ef103c4b74b96ce2557b95f7c",
       "result_pointer": "/verdicts/1",
       "state": "open"
     }
@@ -258,14 +259,14 @@
     {
       "actor": "reviewer",
       "from_state": "open",
-      "hash": "fab220918ddcdf9c6db32ce3ade40b1c70fdbec1d9fddbaf4c6116c70f1cb2f1",
-      "item_id": "37ee7bf6684249b734e3788fffa45745dc789f976ffa38634cc18adebe07d00d",
+      "hash": "64c43775e4968399466210f82eae489070355dce2732948328f6313b90932afb",
+      "item_id": "ca7a8895cd12eeb07b86d5573ff21eee9e19956936c253067da4091001a3917a",
       "key_id": "6508b98a7ace",
       "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "previous_item_head": "37ee7bf6684249b734e3788fffa45745dc789f976ffa38634cc18adebe07d00d",
+      "previous_item_head": "ca7a8895cd12eeb07b86d5573ff21eee9e19956936c253067da4091001a3917a",
       "reason": "Checked the booking claim against the appointment ledger.",
       "sequence": 1,
-      "signature": "87349062855d307230b322d919326e3dfd703d330a3967f719baee43df9ddeeb",
+      "signature": "e183a8dde7b399f049bc521be41e8c2f62eb7618e6466bd442a23e15c3d515b1",
       "timestamp": "2026-11-19T18:07:46.000000+00:00",
       "to_state": "acknowledged",
       "version": 1
@@ -273,14 +274,14 @@
     {
       "actor": "supervisor",
       "from_state": "acknowledged",
-      "hash": "d39746be3b7d2cd6ca532d798e5b82dd4ea887ffd93773063d5040e284eb5ed9",
-      "item_id": "37ee7bf6684249b734e3788fffa45745dc789f976ffa38634cc18adebe07d00d",
+      "hash": "2c21f102f61af52248a9c2c3f937fa5a228f5a8b8c62f14858913e46633ecb47",
+      "item_id": "ca7a8895cd12eeb07b86d5573ff21eee9e19956936c253067da4091001a3917a",
       "key_id": "6508b98a7ace",
-      "previous_hash": "fab220918ddcdf9c6db32ce3ade40b1c70fdbec1d9fddbaf4c6116c70f1cb2f1",
-      "previous_item_head": "fab220918ddcdf9c6db32ce3ade40b1c70fdbec1d9fddbaf4c6116c70f1cb2f1",
+      "previous_hash": "64c43775e4968399466210f82eae489070355dce2732948328f6313b90932afb",
+      "previous_item_head": "64c43775e4968399466210f82eae489070355dce2732948328f6313b90932afb",
       "reason": "Closed the finding after recording the missing booking.",
       "sequence": 2,
-      "signature": "5bf053e9beb9148975278ff74b517747f568d7457c88278d669f00be447b2da4",
+      "signature": "b2947fbfc276a44ceb72a4fe31aa962db938251ee88048a7a485636fa548e962",
       "timestamp": "2026-11-19T18:07:47.000000+00:00",
       "to_state": "resolved",
       "version": 1
@@ -288,14 +289,14 @@
     {
       "actor": "reviewer",
       "from_state": "open",
-      "hash": "7dc7d93ac6dc692e219e84b14ba4d3cbc3faf9b04275a2ea4f1ed2dad9273296",
-      "item_id": "e5494393a1f41904fc9f4a191e4c7c9c0dd3e0be026d9eb7e16b943e46456045",
+      "hash": "ee67db243f6da65c52704cec90efe968c233e7590a50d7a5f58d7d5ec78cb35e",
+      "item_id": "217bdc1bbbeb0b1f4ca73bb6e12fa0c253021c4ef103c4b74b96ce2557b95f7c",
       "key_id": "6508b98a7ace",
-      "previous_hash": "d39746be3b7d2cd6ca532d798e5b82dd4ea887ffd93773063d5040e284eb5ed9",
-      "previous_item_head": "e5494393a1f41904fc9f4a191e4c7c9c0dd3e0be026d9eb7e16b943e46456045",
+      "previous_hash": "2c21f102f61af52248a9c2c3f937fa5a228f5a8b8c62f14858913e46633ecb47",
+      "previous_item_head": "217bdc1bbbeb0b1f4ca73bb6e12fa0c253021c4ef103c4b74b96ce2557b95f7c",
       "reason": "Checked the confirmation claim against the message log.",
       "sequence": 3,
-      "signature": "aadf1b12298e52f2568defc26a62f37b98cfdd3a7facb167f9009e0a19ed1814",
+      "signature": "0ffc806646fccd35f17251e2fbf721c168113a3f0766b18952c5b2f1b7b6785e",
       "timestamp": "2026-11-19T18:07:49.000000+00:00",
       "to_state": "acknowledged",
       "version": 1
@@ -303,14 +304,14 @@
     {
       "actor": "supervisor",
       "from_state": "acknowledged",
-      "hash": "5b68c5fcb7d94ccfe4fde091e5c051a0f60a62ffa5f9d71aa2bc5d3b2c7058b9",
-      "item_id": "e5494393a1f41904fc9f4a191e4c7c9c0dd3e0be026d9eb7e16b943e46456045",
+      "hash": "e168ddb21ae47cf2396df35dafa0e325602edba6fc77f46381ae5c44bff6e297",
+      "item_id": "217bdc1bbbeb0b1f4ca73bb6e12fa0c253021c4ef103c4b74b96ce2557b95f7c",
       "key_id": "6508b98a7ace",
-      "previous_hash": "7dc7d93ac6dc692e219e84b14ba4d3cbc3faf9b04275a2ea4f1ed2dad9273296",
-      "previous_item_head": "7dc7d93ac6dc692e219e84b14ba4d3cbc3faf9b04275a2ea4f1ed2dad9273296",
+      "previous_hash": "ee67db243f6da65c52704cec90efe968c233e7590a50d7a5f58d7d5ec78cb35e",
+      "previous_item_head": "ee67db243f6da65c52704cec90efe968c233e7590a50d7a5f58d7d5ec78cb35e",
       "reason": "Requested a check of the provider's delivery records.",
       "sequence": 4,
-      "signature": "b4e54c039f499820366d6b7386b50a54070aa4704db5644c78a03f08c56874f9",
+      "signature": "ded0cbfe65831af7698f95698b1917dc8c208a75f05ed6a33bacc63b46509d59",
       "timestamp": "2026-11-19T18:07:50.000000+00:00",
       "to_state": "disputed",
       "version": 1
@@ -318,24 +319,24 @@
     {
       "actor": "reviewer",
       "from_state": "disputed",
-      "hash": "efb6978190eb45092b1a3e7be398e26e2b416e9d4488403a4fc484be0819685b",
-      "item_id": "e5494393a1f41904fc9f4a191e4c7c9c0dd3e0be026d9eb7e16b943e46456045",
+      "hash": "4b326f1efcfa54445919e91eee7e91781b0f6d9fbbe47e6e4f4e36847dee7e64",
+      "item_id": "217bdc1bbbeb0b1f4ca73bb6e12fa0c253021c4ef103c4b74b96ce2557b95f7c",
       "key_id": "6508b98a7ace",
-      "previous_hash": "5b68c5fcb7d94ccfe4fde091e5c051a0f60a62ffa5f9d71aa2bc5d3b2c7058b9",
-      "previous_item_head": "5b68c5fcb7d94ccfe4fde091e5c051a0f60a62ffa5f9d71aa2bc5d3b2c7058b9",
+      "previous_hash": "e168ddb21ae47cf2396df35dafa0e325602edba6fc77f46381ae5c44bff6e297",
+      "previous_item_head": "e168ddb21ae47cf2396df35dafa0e325602edba6fc77f46381ae5c44bff6e297",
       "reason": "Returned the finding to the queue for follow-up.",
       "sequence": 5,
-      "signature": "5bd30862a729dac03584885d0361a209a2b73003d51c167b4400f54ecadb295f",
+      "signature": "9aab6abfa7888bdb9b18ec5706fcd1423d1f8f4b20b2008b431289c5e3a4a423",
       "timestamp": "2026-11-19T18:07:51.000000+00:00",
       "to_state": "open",
       "version": 1
     }
   ],
-  "journal_head": "efb6978190eb45092b1a3e7be398e26e2b416e9d4488403a4fc484be0819685b",
+  "journal_head": "4b326f1efcfa54445919e91eee7e91781b0f6d9fbbe47e6e4f4e36847dee7e64",
   "rejection": {
     "after_sequence": 2,
     "from_state": "resolved",
-    "item_id": "37ee7bf6684249b734e3788fffa45745dc789f976ffa38634cc18adebe07d00d",
+    "item_id": "ca7a8895cd12eeb07b86d5573ff21eee9e19956936c253067da4091001a3917a",
     "message": "invalid review state transition",
     "status": 409,
     "to_state": "open"

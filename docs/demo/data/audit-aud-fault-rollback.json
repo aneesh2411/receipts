@@ -301,12 +301,13 @@
   "degraded": false,
   "detail": null
  },
+ "fulfillments": [],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "a3e314bd6d8e70ae110647b547c11b9e50b101320732d8dbc1517f1131483a73",
+  "content_hash": "9f1862376dc0571d094fdb1337e3a21bbb2cf52388c08c252bd767c6a0cbc69b",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "27de091e3fa7fe7abf2a9a6347a41e38e70ceb6c5e376bfedcaf5212ab875ac2",
-  "signature": "a8d7586b0a14b443844df1e1028ef1c061d037ae5a89818c4d2ebc085b57cab1",
+  "chain_hash": "b0a1786b8d1d5aa0a18553901d856cd6f2e99ee074cb19eb187481db83f60728",
+  "signature": "15ae804f0223b54ff50fbeaecfdb6b4544071dabba2332b645130cb72e2bf7b2",
   "key_id": "6508b98a7ace"
  }
 }

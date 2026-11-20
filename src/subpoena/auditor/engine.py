@@ -24,7 +24,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from subpoena import __version__
-from subpoena.auditor import appointments, sidefx
+from subpoena.auditor import appointments, fulfillment, sidefx
 from subpoena.auditor.context import AuditContext, Match
 from subpoena.auditor.delta import SOURCE, Attribution, content_signature
 from subpoena.auditor.extractor import ClaimExtractor, RuleBasedExtractor, merge_claims
@@ -43,8 +43,11 @@ from subpoena.models import (
     Entity,
     ExtractionHealth,
     Finding,
+    Fulfillment,
+    HandoffCreated,
     Outcome,
     Severity,
+    Ticket,
     Verdict,
     VerdictStatus,
     max_severity,
@@ -137,6 +140,7 @@ class Auditor:
             _correction_checks(v, withdrawn.get(v.claim.claim_id, ()), ctx) for v in verdicts
         )
         findings = self._findings(ctx, settled, verdicts)
+        fulfillments = self._fulfillments(settled, matches, ctx)
         outcome = _outcome(verdicts, findings, ctx)
         ctx.log("verdict", f"Outcome: {outcome.value}")
         report = AuditReport(
@@ -150,10 +154,42 @@ class Auditor:
             trail=tuple(ctx.trail),
             stats=_stats(verdicts, findings),
             extraction=self._extraction_health(ctx),
+            fulfillments=fulfillments,
         )
         return self._sealer.seal(report, prev_hash)
 
     # -- pipeline stages ---------------------------------------------------- #
+
+    def _fulfillments(
+        self,
+        claims: Sequence[Claim],
+        matches: dict[str, Match],
+        ctx: AuditContext,
+    ) -> tuple[Fulfillment, ...]:
+        """Grade each matched handoff ticket's lifecycle after the call.
+
+        A verified ticket is a recorded promise; only later journal rows show
+        it assigned, acknowledged or completed. Fulfillment never changes the
+        call's outcome: the audit is about what the agent did, this is about
+        what happened next.
+        """
+        out: list[Fulfillment] = []
+        for claim in claims:
+            if not isinstance(claim, HandoffCreated):
+                continue
+            match = matches.get(claim.claim_id)
+            if match is None or match.primary is None or match.primary.after is None:
+                continue
+            ticket = Ticket.model_validate(match.primary.after)
+            creator = match.primary.changes[0].actor if match.primary.changes else ""
+            result = fulfillment.assess(ticket, creator, self._sor.tickets, self._clock())
+            ctx.log(
+                "fulfillment",
+                f"ticket {ticket.id}: {result.state.value}"
+                + ("; the callback is still pending" if result.pending else ""),
+            )
+            out.append(result)
+        return tuple(out)
 
     def _collect_claims(self, call: CallRecord, ctx: AuditContext) -> tuple[Claim, ...]:
         spoken = self._extractor.extract(call, self._clinic) if self._extractor else []

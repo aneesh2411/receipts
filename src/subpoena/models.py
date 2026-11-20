@@ -73,6 +73,7 @@ class Ticket(Frozen):
     summary: str
     priority: Priority = "normal"
     status: Literal["open", "closed"] = "open"
+    assignee: str | None = None
     created_at: AwareDatetime
 
 
@@ -317,6 +318,27 @@ class Finding(Frozen):
     remediation: str | None = None
 
 
+class FulfillmentState(StrEnum):
+    """Lifecycle of a handoff promise. Acknowledged is not fulfilled: only a
+    closed ticket, evidenced by a journal row, completes the promise."""
+
+    COMPLETED = "completed"  # closed, with the closing row as evidence
+    ACKNOWLEDGED = "acknowledged"  # someone other than the creating agent touched it
+    ASSIGNED = "assigned"  # an assignee is named
+    RECORDED = "recorded"  # created; nothing further observed
+    INCONCLUSIVE = "inconclusive"  # the lifecycle evidence could not be read
+
+
+class Fulfillment(Frozen):
+    """Evidence-backed lifecycle state of one verified handoff ticket."""
+
+    ticket_id: str
+    state: FulfillmentState
+    pending: bool  # the promise is still open
+    summary: str
+    evidence: tuple[Evidence, ...] = ()
+
+
 class Outcome(StrEnum):
     CLEAN = "CLEAN"
     DISCREPANCIES = "DISCREPANCIES"
@@ -375,4 +397,5 @@ class AuditReport(Frozen):
     trail: tuple[TrailEvent, ...]
     stats: AuditStats
     extraction: ExtractionHealth
+    fulfillments: tuple[Fulfillment, ...] = ()
     seal: Seal | None = None
