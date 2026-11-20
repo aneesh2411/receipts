@@ -25,7 +25,9 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass, field
+from datetime import datetime
 
+from subpoena.auditor import fulfillment
 from subpoena.models import (
     AppointmentBooked,
     AuditReport,
@@ -44,6 +46,7 @@ from subpoena.models import (
     ReviewCandidate,
     VerdictStatus,
 )
+from subpoena.sor.base import TicketQueueReader
 from subpoena.util import norm_phone, norm_text
 
 _WRITE_SOURCES = {"tickets", "calendar", "messages"}
@@ -52,7 +55,7 @@ _SAME_TOPIC = 0.6
 _MAYBE_TOPIC = 0.3
 
 _STOPWORDS = frozenset(
-    "a an the to about for need needs help with call back callback please me "
+    "a an the to about for need needs help with call back callback caller please me "
     "his her their they them i my we our on in of and or it is was be".split()
 )
 
@@ -175,11 +178,20 @@ def _cluster_handoffs(entries: list[_Entry]) -> tuple[list[list[_Entry]], list[_
 
 def group_incidents(
     reports: list[AuditReport],
+    *,
+    tickets_feed: TicketQueueReader | None = None,
+    now: datetime | None = None,
 ) -> tuple[tuple[Incident, ...], tuple[ReviewCandidate, ...]]:
     """Group stored audit reports into cross-call incidents.
 
     Deterministic: reports are ordered by call start, then audit id, so the
     input order does not change the result.
+
+    Each report's fulfillment entries are snapshots from its own audit time.
+    When ``tickets_feed`` and ``now`` are given, linked tickets are re-graded
+    against the journal as of ``now``: a close that landed after an earlier
+    audit still counts, because grouping asks about now, not about what that
+    audit could see then.
     """
     ordered = sorted(reports, key=lambda r: (r.call.started_at, r.audit_id))
     entries = _collect(ordered)
@@ -266,14 +278,14 @@ def group_incidents(
             groups.extend(_Group(identity, signature, cluster) for cluster in clusters)
 
     incidents = tuple(
-        _build(group)
+        _build(group, tickets_feed, now)
         for group in groups
         if len({e.report.call.call_id for e in group.entries}) >= 2
     )
     return incidents, tuple(reviews)
 
 
-def _build(group: _Group) -> Incident:
+def _build(group: _Group, tickets_feed: TicketQueueReader | None, now: datetime | None) -> Incident:
     entries = group.entries
     first = entries[0]
     phone, _ = group.identity
@@ -307,7 +319,7 @@ def _build(group: _Group) -> Incident:
                 )
             seen.append((source, ref, entry.report.audit_id))
 
-    status = _handoff_status(entries, {ref for _, ref, _ in seen})
+    status = _handoff_status(entries, {ref for _, ref, _ in seen}, tickets_feed, now)
     n_calls = len({e.report.call.call_id for e in entries})
     summary = (
         f"This caller raised the same request {len(entries)} time(s) across {n_calls} "
@@ -337,10 +349,23 @@ def _build(group: _Group) -> Incident:
     )
 
 
-def _handoff_status(entries: list[_Entry], ticket_refs: set[str]) -> IncidentStatus | None:
-    linked: list[Fulfillment] = [
-        f for entry in entries for f in entry.report.fulfillments if f.ticket_id in ticket_refs
-    ]
+def _handoff_status(
+    entries: list[_Entry],
+    ticket_refs: set[str],
+    tickets_feed: TicketQueueReader | None,
+    now: datetime | None,
+) -> IncidentStatus | None:
+    linked: list[Fulfillment] = []
+    if tickets_feed is not None and now is not None:
+        by_id = {t.id: t for t in tickets_feed.list_tickets()}
+        for ref in sorted(ticket_refs):
+            ticket = by_id.get(ref)
+            if ticket is not None:
+                linked.append(fulfillment.assess(ticket, "", tickets_feed, now))
+    if not linked:
+        linked = [
+            f for entry in entries for f in entry.report.fulfillments if f.ticket_id in ticket_refs
+        ]
     if not linked:
         return None
     if any(f.pending for f in linked):
