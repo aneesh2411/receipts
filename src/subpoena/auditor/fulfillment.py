@@ -39,7 +39,11 @@ def _is_staff_touch(row: Change, creator: str) -> bool:
 
 
 def assess(ticket: Ticket, creator: str, feed: ChangeFeed, now: datetime) -> Fulfillment:
-    """Walk the ticket's journal from creation to ``now`` and grade the promise."""
+    """Walk the ticket's journal from creation to ``now`` and grade the promise.
+
+    ``creator`` is the actor that filed the ticket; pass "" to take it from the
+    journal's first row.
+    """
     try:
         rows = [c for c in feed.changes(ticket.created_at, now) if c.entity_id == ticket.id]
     except AdapterUnavailable as exc:
@@ -50,6 +54,8 @@ def assess(ticket: Ticket, creator: str, feed: ChangeFeed, now: datetime) -> Ful
             summary=f"The ticket queue could not be read ({exc}). Whether the callback "
             "happened is unknown, and we will not guess.",
         )
+    # The caller may not know the creator; the journal's first row does.
+    creator = creator or (rows[0].actor if rows else "")
 
     closed = next(
         (c for c in rows if c.after is not None and c.after.get("status") == "closed"), None
