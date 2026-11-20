@@ -50,6 +50,13 @@ the same evidence checks. A model can affect which spoken claims are picked
 up, and the quality of your records and attribution limits what the auditor
 can verify.
 
+## Known limits
+
+Audit windows have a one-second resolution because the system of record stores
+write timestamps at second precision. A write in the same second as either
+audit-window boundary is treated as inside the window. The future option for
+microsecond precision is tracked in [issue #116](https://github.com/aneesh2411/subpoena/issues/116).
+
 ## What does the demo prove?
 
 The demo uses simulated calls and records so you can see how the audit

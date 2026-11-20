@@ -9,7 +9,7 @@ import pytest
 
 from subpoena.evals.fuzz import PROVIDERS, _slot
 from subpoena.models import AppointmentBooked, VerdictStatus
-from subpoena.scenarios.world import ROSTER
+from subpoena.scenarios.world import MAYA, PATEL, ROSTER, at
 
 SEED = 112
 CASE_COUNT = 64
@@ -30,7 +30,7 @@ def test_excluded_booking_write(clinic, case_seed, placement):
     writer_id = f"{call.agent_id}-other" if placement == "foreign" else call.agent_id
     actor = rng.choice((writer_id, f"{writer_id}:{call.call_id}"))
     window_end = call.ended_at + GRACE
-    offset = timedelta(microseconds=rng.choice((1, 1000, rng.randint(1, 20_000_000))))
+    offset = timedelta(seconds=rng.randint(1, 20))
     if placement == "before":
         written_at = call.started_at - offset
     elif placement == "after":
@@ -67,3 +67,23 @@ def test_excluded_booking_write(clinic, case_seed, placement):
     (positive,) = clinic.audit(control, grace=GRACE).verdicts
     assert positive.status is VerdictStatus.VERIFIED, case
     assert any(receipt.ref == appointment.id for receipt in positive.evidence), case
+
+
+def test_write_in_same_second_as_window_end_can_verify(clinic):
+    slot = at(1, 14, 30)
+    claim = AppointmentBooked(
+        claim_id="booking", turn_index=0, patient=MAYA, provider=PATEL, start=slot
+    )
+    call = clinic.call([claim], caller=MAYA)
+    window_end = call.ended_at + GRACE
+    # The audit window includes the entire final second at its documented
+    # one-second resolution. See issue #116 for the future microsecond option.
+    written_at = window_end + timedelta(microseconds=1)
+    appointment = clinic.as_actor(call.agent_id, written_at).calendar.create_appointment(
+        patient_id=clinic.patient(MAYA).id, provider=PATEL, start=slot
+    )
+
+    (verdict,) = clinic.audit(call, grace=GRACE).verdicts
+    assert verdict.claim == claim
+    assert verdict.status is VerdictStatus.VERIFIED
+    assert any(receipt.ref == appointment.id for receipt in verdict.evidence)
