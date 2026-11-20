@@ -1,0 +1,92 @@
+{
+  "call_strict_accuracy": 0.9661,
+  "calls": 59,
+  "failures": [
+    {
+      "expected_verdicts": [
+        {
+          "claim": "AppointmentBooked[0]",
+          "status": "NOT_FOUND"
+        }
+      ],
+      "outcome": "CLEAN",
+      "scenario_id": "gap-vague-spoken-promise",
+      "transcript": [
+        {
+          "at": "2026-03-02T09:05:04-05:00",
+          "index": 0,
+          "speaker": "agent",
+          "text": "Thank you for calling Brightside Dental. How can I help?"
+        },
+        {
+          "at": "2026-03-02T09:05:08-05:00",
+          "index": 1,
+          "speaker": "caller",
+          "text": "Hi, I'd like to book a cleaning with Dr. Patel on Tuesday, March 3 at 2:30 PM."
+        },
+        {
+          "at": "2026-03-02T09:05:12-05:00",
+          "index": 2,
+          "speaker": "agent",
+          "text": "Perfect, Dr. Patel will see you Tuesday then, same time we discussed."
+        },
+        {
+          "at": "2026-03-02T09:05:16-05:00",
+          "index": 3,
+          "speaker": "agent",
+          "text": "Is there anything else? Have a great day."
+        }
+      ],
+      "verdicts": [],
+      "why_hard": "The booking promise exists only in the transcript. The rules look for a booking verb and a parseable date and time in the same sentence. Resolving \u201csame time we discussed\u201d requires looking back to an earlier caller turn."
+    },
+    {
+      "expected_verdicts": [
+        {
+          "claim": "HandoffCreated[0]",
+          "status": "MISMATCH"
+        }
+      ],
+      "outcome": "CLEAN",
+      "scenario_id": "gap-garbled-handoff",
+      "transcript": [
+        {
+          "at": "2026-03-02T09:05:04-05:00",
+          "index": 0,
+          "speaker": "agent",
+          "text": "Thank you for calling Brightside Dental. How can I help?"
+        },
+        {
+          "at": "2026-03-02T09:05:08-05:00",
+          "index": 1,
+          "speaker": "caller",
+          "text": "I also have a billing question about my last invoice. Can someone help with that?"
+        },
+        {
+          "at": "2026-03-02T09:05:12-05:00",
+          "index": 2,
+          "speaker": "agent",
+          "text": "I've created a ticket for the front desk about a billing question about my last invoice. Someone will call you back."
+        },
+        {
+          "at": "2026-03-02T09:05:16-05:00",
+          "index": 3,
+          "speaker": "agent",
+          "text": "Is there anything else? Have a great day."
+        }
+      ],
+      "verdicts": [
+        {
+          "claim": "HandoffCreated",
+          "evidence": [
+            "Ticket created during the call. The summary is free text and is not compared (journal #6; net: created)"
+          ],
+          "status": "VERIFIED",
+          "summary": "Handoff ticket exists as claimed (tkt_0001, priority normal)."
+        }
+      ],
+      "why_hard": "The ticket has the right patient and priority, but its summary is about parking validation instead of billing. The auditor deliberately skips comparing the free-text summaries because deciding whether they mean the same thing requires semantic judgment."
+    }
+  ],
+  "strict_passes": 57
+}
