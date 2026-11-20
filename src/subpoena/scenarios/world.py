@@ -63,6 +63,21 @@ class SeedAppointment:
     by_staff_during_call: bool = False  # written by a human while the call is in progress
 
 
+@dataclass(frozen=True)
+class Followup:
+    """A staff touch on the call's handoff tickets, after the call ends.
+
+    Played before the audit runs, so the audit's fulfillment grading can see
+    the ticket get assigned, acknowledged or closed. ``minutes_after`` must be
+    below the scenario's ``audit_delay_min`` to be visible to that audit.
+    """
+
+    minutes_after: int
+    assignee: str | None = None
+    close: bool = False
+    actor: str = "staff:front-desk"
+
+
 Expected = tuple[str, VerdictStatus]
 # (claim type, expected status, identity label): separately reviewed data naming
 # which appointment, message or ticket an expectation is about. See
@@ -90,6 +105,11 @@ class Scenario:
     # reviewed (see golden._V2). Keyword-only position: several scenarios pass
     # expected_findings positionally.
     expected_claims_v2: tuple[ExpectedV2, ...] = ()
+    # Staff lifecycle on the call's tickets, played after the call and before
+    # the audit. New fields go at the end: scenarios pass early fields
+    # positionally.
+    followups: tuple[Followup, ...] = ()
+    audit_delay_min: int = 1
 
     @property
     def fault_modes(self) -> frozenset[FaultMode]:
@@ -141,6 +161,30 @@ def build_world(scenario: Scenario, store: SqliteStore | None = None) -> World:
     return World(store=store, clock=SimClock(CALL_START))
 
 
+def apply_followups(scenario: Scenario, world: World, result: CallResult) -> None:
+    """Play the staff side of the call's handoffs, after the call ends."""
+    if not scenario.followups:
+        return
+    call = result.call
+    reader = world.store.session("auditor", lambda: call.ended_at)
+    tickets = [
+        t
+        for t in reader.tickets.list_tickets()
+        if call.started_at <= t.created_at <= call.ended_at
+    ]
+    for followup in scenario.followups:
+        when = call.ended_at + timedelta(minutes=followup.minutes_after)
+        staff = world.store.session(followup.actor, lambda when=when: when)
+        for ticket in tickets:
+            fields: dict[str, Any] = {}
+            if followup.assignee is not None:
+                fields["assignee"] = followup.assignee
+            if followup.close:
+                fields["status"] = "closed"
+            if fields:
+                staff.tickets.update_ticket(ticket.id, **fields)
+
+
 def run_suspect(scenario: Scenario, world: World) -> CallResult:
     # The platform session stamps every write with the call id, so the journal
     # can attribute a mutation to one call, not just to the shared agent identity.
@@ -166,7 +210,7 @@ def audit_call(
     options: Mapping[str, Any] | None = None,
 ) -> AuditReport:
     """Audit the call. ``options`` are extra ``Auditor`` arguments (used for ablations)."""
-    audited_at = result.call.ended_at + timedelta(minutes=1)
+    audited_at = result.call.ended_at + timedelta(minutes=scenario.audit_delay_min)
     reader = world.store.session("auditor", lambda: audited_at)
     if scenario.outage:
         reader = with_outage(reader, *scenario.outage)
@@ -195,6 +239,7 @@ def run_scenario(
     world = build_world(scenario)
     try:
         result = run_suspect(scenario, world)
+        apply_followups(scenario, world, result)
         report = audit_call(
             scenario,
             world,
