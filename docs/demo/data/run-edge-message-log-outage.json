@@ -253,6 +253,11 @@
   },
   {
    "seq": 10,
+   "stage": "coverage",
+   "message": "messages unavailable: 1 claim(s) capped at UNVERIFIABLE"
+  },
+  {
+   "seq": 11,
    "stage": "verdict",
    "message": "Outcome: INCONCLUSIVE"
   }
@@ -273,12 +278,22 @@
   "detail": null
  },
  "fulfillments": [],
+ "coverage_gaps": [
+  {
+   "source": "messages",
+   "kind": "unavailable",
+   "detail": "messages adapter is unavailable",
+   "claim_ids": [
+    "call-edge-message-log-outage-c2"
+   ]
+  }
+ ],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "0610c0506209c8f67c4f4f7d40a0b8e0fde67d8b25dc5d25884586b0b2af0481",
+  "content_hash": "3728255880242d43a5404d18781c39a5fd0155f655596f82a9d9b95c00cea487",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "8e1bd7ee738639fcef95354cdf87c55733c72f38f7686710f99ec23acf443481",
-  "signature": "8b2ba1b6542f2f65fccd50a4bdd104ffc74b71a4c0b40a092a2536824520489c",
+  "chain_hash": "c6baf3bf2e5a4d9632d56104c699a87adfbcf4638761c2754f02a71cfcc73acb",
+  "signature": "d252c19640c03692031fc21ca59fc21df9a5870be1847bb0cbaef4cd8d536a95",
   "key_id": "6508b98a7ace"
  }
 }

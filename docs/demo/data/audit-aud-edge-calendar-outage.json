@@ -246,6 +246,11 @@
   },
   {
    "seq": 10,
+   "stage": "coverage",
+   "message": "calendar unavailable: 1 claim(s) capped at UNVERIFIABLE"
+  },
+  {
+   "seq": 11,
    "stage": "verdict",
    "message": "Outcome: INCONCLUSIVE"
   }
@@ -266,12 +271,22 @@
   "detail": null
  },
  "fulfillments": [],
+ "coverage_gaps": [
+  {
+   "source": "calendar",
+   "kind": "unavailable",
+   "detail": "calendar adapter is unavailable",
+   "claim_ids": [
+    "call-edge-calendar-outage-c1"
+   ]
+  }
+ ],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "a095d181db654feb10359cfcc4160ff74e91b5f28d7686999c13630ce40b317c",
+  "content_hash": "98d21795d295f6a58e7bb03c51e48e1fed1d956cdd203a9a8542c31e7e3f8a66",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "932675d3db25a5055749aacdf00bcfd2829baa909ae0ba9e3e0c05d2342e3910",
-  "signature": "e1d7d80d9be2f8ce00a2322f635a62d8660317edbad50e1989fbb99becc6625e",
+  "chain_hash": "cc66948be036873e8f5039cc623cbe8d972ae20fbe3b1b699cdfb159de724e59",
+  "signature": "d2da60de195906b940e16cbec6e9c904e1e1e356fd21c315082db2b85fa120e0",
   "key_id": "6508b98a7ace"
  }
 }

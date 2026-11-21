@@ -77,6 +77,7 @@
       }
     ]
   },
+  "coverage_gaps": [],
   "created_at": "2026-03-02T09:06:16-05:00",
   "extraction": {
     "degraded": false,
@@ -88,11 +89,11 @@
   "outcome": "CLEAN",
   "seal": {
     "algorithm": "sha256",
-    "chain_hash": "fe821170eef89ab526a1158b917d7d711e7b538386bd729c14d9779eb17b67b7",
-    "content_hash": "86359e79f06643fca1eda7a5038b6ca629cc007aa69f39e7d4f0909fbe007563",
+    "chain_hash": "9d8ba6957c8bb572a7ec0ece2c80d5547300728e25acf38fb668aa392bfa76bb",
+    "content_hash": "7f18d25fa74b44cb89dae34cd969d58d7d3a48a3468f521c192d98a17512d692",
     "key_id": "6508b98a7ace",
     "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-    "signature": "ff66a365b8e80e384600114d1dda847578399ffcd68ce5fe19a2c8537a7bcbef"
+    "signature": "427d75c6ba6db7a89ad1fef8155c4740ab15c3eb2eb99408a08466c7ef772fa5"
   },
   "stats": {
     "claims": 2,

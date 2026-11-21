@@ -246,6 +246,11 @@
   },
   {
    "seq": 10,
+   "stage": "coverage",
+   "message": "crm unavailable: 1 claim(s) capped at UNVERIFIABLE"
+  },
+  {
+   "seq": 11,
    "stage": "verdict",
    "message": "Outcome: INCONCLUSIVE"
   }
@@ -266,12 +271,22 @@
   "detail": null
  },
  "fulfillments": [],
+ "coverage_gaps": [
+  {
+   "source": "crm",
+   "kind": "unavailable",
+   "detail": "crm adapter is unavailable",
+   "claim_ids": [
+    "call-edge-crm-outage-c1"
+   ]
+  }
+ ],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "a982f8637b5e7caeb2954eb98131a1073ad7060e32f363032a692f1348c28621",
+  "content_hash": "545bb49c72ec3c26ea5331c52dab16d22c2f5a4320c28e85c1f0214164e420ff",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "76112b00c10e14aab05650071beb28fe30bfb0de772fbfce0cbbff867c84ecea",
-  "signature": "b3d084279d96287cfb0f396922d3f2f727efc30464823b7289077ac4d6955957",
+  "chain_hash": "030cd4b37faf8727b4a173a3ce907118456deff96c699483d574ea599a6fefd9",
+  "signature": "3004d68e6e439c5b9045d23677addde8b33d05331f0554f9a63d4c646c1abd36",
   "key_id": "6508b98a7ace"
  }
 }

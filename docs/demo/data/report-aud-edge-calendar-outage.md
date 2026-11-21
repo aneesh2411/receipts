@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 100% | Highest severity: `MEDIUM`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `932675d3db25a5055749aacd...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `cc66948be036873e8f5039cc...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -50,6 +50,12 @@ Evidence:
 
 None. Every write the agent made is accounted for by a claim.
 
+## Coverage gaps
+
+Some evidence could not be fully observed for this call. Every claim a gap touches stays UNVERIFIABLE, never a forced pass or fail.
+
+- `calendar` (unavailable): calendar adapter is unavailable. Affects claim(s): `call-edge-calendar-outage-c1`.
+
 ## Audit trail
 
 1. `evidence` calendar: UNAVAILABLE (calendar adapter is unavailable). Will not guess.
@@ -61,10 +67,11 @@ None. Every write the agent made is accounted for by a claim.
 7. `verdict` call-edge-calendar-outage-c1 (AppointmentBooked): UNVERIFIABLE
 8. `verdict` call-edge-calendar-outage-c2 (ConfirmationSent): VERIFIED
 9. `reconcile` calendar: unclaimed-write check skipped, a claim that may own these writes could not be verified
-10. `verdict` Outcome: INCONCLUSIVE
+10. `coverage` calendar unavailable: 1 claim(s) capped at UNVERIFIABLE
+11. `verdict` Outcome: INCONCLUSIVE
 
 ## Seal
 
-- content `a095d181db654feb10359cfcc4160ff74e91b5f28d7686999c13630ce40b317c`
-- chain `932675d3db25a5055749aacdf00bcfd2829baa909ae0ba9e3e0c05d2342e3910` (prev `0000000000000000...`)
+- content `98d21795d295f6a58e7bb03c51e48e1fed1d956cdd203a9a8542c31e7e3f8a66`
+- chain `cc66948be036873e8f5039cc623cbe8d972ae20fbe3b1b699cdfb159de724e59` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

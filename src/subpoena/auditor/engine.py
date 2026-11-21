@@ -40,6 +40,7 @@ from subpoena.models import (
     CheckName,
     Claim,
     ClaimSource,
+    CoverageGap,
     Entity,
     ExtractionHealth,
     Finding,
@@ -141,6 +142,12 @@ class Auditor:
         )
         findings = self._findings(ctx, settled, verdicts)
         fulfillments = self._fulfillments(settled, matches, ctx)
+        coverage_gaps = _coverage_gaps(settled, ctx)
+        for gap in coverage_gaps:
+            ctx.log(
+                "coverage",
+                f"{gap.source} {gap.kind}: {len(gap.claim_ids)} claim(s) capped at UNVERIFIABLE",
+            )
         outcome = _outcome(verdicts, findings, ctx)
         ctx.log("verdict", f"Outcome: {outcome.value}")
         report = AuditReport(
@@ -155,6 +162,7 @@ class Auditor:
             stats=_stats(verdicts, findings),
             extraction=self._extraction_health(ctx),
             fulfillments=fulfillments,
+            coverage_gaps=coverage_gaps,
         )
         return self._sealer.seal(report, prev_hash)
 
@@ -550,6 +558,37 @@ def _apply_attribution(
             "stamp writes with the call id so attribution is direct."
         ),
     )
+
+
+def _coverage_gaps(claims: Sequence[Claim], ctx: AuditContext) -> tuple[CoverageGap, ...]:
+    """The evidence holes, named: every unreadable or partial system, with the
+    claims it capped. Downgraded verdicts carry the per-claim detail; this is
+    the same information as one explicit list."""
+    gaps: list[CoverageGap] = []
+    for entity, source in SOURCE.items():
+        if ctx.delta.get(entity) is None:
+            claim_ids = tuple(c.claim_id for c in claims if entity in HANDLERS[c.type].needs)
+            gaps.append(
+                CoverageGap(
+                    source=source,
+                    kind="unavailable",
+                    detail=ctx.errors.get(entity, "could not be read"),
+                    claim_ids=claim_ids,
+                )
+            )
+            continue
+        cov = ctx.coverage.get(entity, COMPLETE)
+        if not cov.complete:
+            claim_ids = tuple(c.claim_id for c in claims if HANDLERS[c.type].consumes is entity)
+            gaps.append(
+                CoverageGap(
+                    source=source,
+                    kind="incomplete",
+                    detail=cov.detail or "history not fully observed",
+                    claim_ids=claim_ids,
+                )
+            )
+    return tuple(gaps)
 
 
 def _apply_coverage(claim: Claim, verdict: Verdict, ctx: AuditContext) -> Verdict:
