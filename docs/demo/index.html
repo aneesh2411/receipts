@@ -263,6 +263,20 @@ function render(item, instant) {
     link.target = "_blank"; link.rel = "noopener";
     meta.append(link);
     el.append(meta);
+    if (rep.coverage_gaps?.length) {
+      const gaps = h("section");
+      const list = h("ul");
+      rep.coverage_gaps.forEach((gap) => {
+        const entry = h("li");
+        entry.append(h("strong", "", `${gap.source} (${gap.kind})`), h("div", "", gap.detail));
+        if (gap.claim_ids.length) {
+          entry.append(h("div", "meta", `Affected claims: ${gap.claim_ids.join(", ")}`));
+        }
+        list.append(entry);
+      });
+      gaps.append(h("h3", "", "Coverage gaps"), list);
+      el.append(gaps);
+    }
     cols.append(el);
   }
   if (!instant) window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
