@@ -232,12 +232,13 @@
    ]
   }
  ],
+ "coverage_gaps": [],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "304b321ce16ab8c33dd734ee10be74d22755c1c2e0a76d51fad440838ddb8c0e",
+  "content_hash": "9b4fb8f8057ab4ed27faab0b6e4715ce6a0d387bb396fb7048c7677d3ee6d7f7",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "515c8f99a5c9d7aea9b452db33ccf7f7894b41e8d1e5ee5e65e244e4f7338365",
-  "signature": "763bb35ea4250c76a729b4374e40f7e3d1934db6416e95c0895ec644342bfd07",
+  "chain_hash": "08c16567938353f1149067e38baa50bb589fd71b5e55cd5ff0a15038f6c41cd3",
+  "signature": "c784c57e7cd6c1063edc86a2b55fff2230368cc748b35295f3c2d83bc32565fe",
   "key_id": "6508b98a7ace"
  }
 }

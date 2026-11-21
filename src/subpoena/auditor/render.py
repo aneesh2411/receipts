@@ -144,6 +144,21 @@ def render_markdown(report: AuditReport) -> str:
         lines += ["None. Every write the agent made is accounted for by a claim.", ""]
     for n, finding in enumerate(report.findings, start=1):
         lines += _finding_md(n, finding)
+    if report.coverage_gaps:
+        lines += ["## Coverage gaps", ""]
+        lines += [
+            "Some evidence could not be fully observed for this call. Every claim a gap "
+            "touches stays UNVERIFIABLE, never a forced pass or fail.",
+            "",
+        ]
+        for gap in report.coverage_gaps:
+            affects = (
+                " Affects claim(s): " + ", ".join(f"`{c}`" for c in gap.claim_ids) + "."
+                if gap.claim_ids
+                else " No claims depended on it."
+            )
+            lines.append(f"- `{gap.source}` ({gap.kind}): {gap.detail}.{affects}")
+        lines.append("")
     if report.fulfillments:
         lines += ["## Handoff fulfillment", ""]
         lines += [

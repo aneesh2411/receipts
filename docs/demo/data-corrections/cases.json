@@ -112,6 +112,7 @@
           }
         ]
       },
+      "coverage_gaps": [],
       "created_at": "2026-03-02T09:06:24-05:00",
       "extraction": {
         "degraded": false,
@@ -123,11 +124,11 @@
       "outcome": "CLEAN",
       "seal": {
         "algorithm": "sha256",
-        "chain_hash": "5a846ed655e83f545063bf8e690e33656abaa14ee205846a8dc83feb7510daf0",
-        "content_hash": "c94d77156b25bc69a4916d75ec370fd59fa76151d0b279869d3ee92b878e64db",
+        "chain_hash": "a6e5ac729eecf9af78b3a00c7934a78c0039cbdb0182396c9b20fa88b9d0bcb9",
+        "content_hash": "4b8fd12b33171544ddaf559d163036b592d0f33d96064cd98738b95c40ec6f27",
         "key_id": "6508b98a7ace",
         "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-        "signature": "39c0d31fea8894fc5d539695d1e4c1374f9d4afc5fef77507e996602f50c2ce6"
+        "signature": "ade8cf7d6b957e502817ff6c73659f0445f75eb8f7f8e159470a0f33e7af082f"
       },
       "stats": {
         "claims": 1,
@@ -390,6 +391,7 @@
           }
         ]
       },
+      "coverage_gaps": [],
       "created_at": "2026-03-02T09:06:24-05:00",
       "extraction": {
         "degraded": false,
@@ -401,11 +403,11 @@
       "outcome": "DISCREPANCIES",
       "seal": {
         "algorithm": "sha256",
-        "chain_hash": "f24906520f17870eb76b11121855c2b6e6fb27bb7e52c29a6cc2eaeb1192b0ad",
-        "content_hash": "6283081a307d491fdfda44c87d680c6986e191f4a145c97992de6d39a6509b8a",
+        "chain_hash": "eb775325ae967c7ece1aad1e57a49f7fc394f783d8723a0be678dc41279bddcf",
+        "content_hash": "2f3959da31571124c8742a8dce35f32c9c297e169e73def6399b85c4326d2a1f",
         "key_id": "6508b98a7ace",
         "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-        "signature": "5fe7b59bafb7663beff43de5905df101500b5dfd499c813d85b46b8676607a4b"
+        "signature": "24e2be108bda69ed8b42897b3bb15b8d876700e40325d08f4788120dba3b3d4f"
       },
       "stats": {
         "claims": 1,

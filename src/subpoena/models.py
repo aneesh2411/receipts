@@ -318,6 +318,20 @@ class Finding(Frozen):
     remediation: str | None = None
 
 
+class CoverageGap(Frozen):
+    """One system whose evidence could not be fully observed for this call.
+
+    First-class output: incompleteness is part of the deliverable. Every claim
+    a gap degraded is listed by id and stays UNVERIFIABLE, never a forced
+    pass or fail.
+    """
+
+    source: str  # calendar | crm | messages | tickets
+    kind: Literal["incomplete", "unavailable"]
+    detail: str
+    claim_ids: tuple[str, ...] = ()
+
+
 class IncidentStatus(StrEnum):
     """Whether a cross-call request is still owed, from linked fulfillments."""
 
@@ -448,4 +462,5 @@ class AuditReport(Frozen):
     stats: AuditStats
     extraction: ExtractionHealth
     fulfillments: tuple[Fulfillment, ...] = ()
+    coverage_gaps: tuple[CoverageGap, ...] = ()
     seal: Seal | None = None

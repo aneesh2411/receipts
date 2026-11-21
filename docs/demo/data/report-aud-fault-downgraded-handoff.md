@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 0% | Highest severity: `HIGH`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `515c8f99a5c9d7aea9b452db...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `08c16567938353f1149067e3...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -62,6 +62,6 @@ A created ticket is a recorded promise, not a kept one. Each state below is back
 
 ## Seal
 
-- content `304b321ce16ab8c33dd734ee10be74d22755c1c2e0a76d51fad440838ddb8c0e`
-- chain `515c8f99a5c9d7aea9b452db33ccf7f7894b41e8d1e5ee5e65e244e4f7338365` (prev `0000000000000000...`)
+- content `9b4fb8f8057ab4ed27faab0b6e4715ce6a0d387bb396fb7048c7677d3ee6d7f7`
+- chain `08c16567938353f1149067e38baa50bb589fd71b5e55cd5ff0a15038f6c41cd3` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)

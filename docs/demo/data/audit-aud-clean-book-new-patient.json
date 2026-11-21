@@ -337,12 +337,13 @@
   "detail": null
  },
  "fulfillments": [],
+ "coverage_gaps": [],
  "seal": {
   "algorithm": "sha256",
-  "content_hash": "d12841784158d0223dcfb3791b4c26de664f5ae569aabadeafacafd7d5a5f6a1",
+  "content_hash": "4ca5b6a2b131ca54eb180088b8b352a89bd810a1414d82b08c6816134c2fd086",
   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-  "chain_hash": "b9a9f6313b2a23654a4082a661b335a4afea0c19a84b9ba169e1426c8260eb27",
-  "signature": "6124df39a70beac13a9e1505c1c9d7c83e87b6aae6fbc554449bb9d691459b71",
+  "chain_hash": "36d7ef4c27376b82a3aa73c309d6d2ccebe4f62d036610f24a55e71487266b8a",
+  "signature": "5cf4f4a6f8da2dbe3130b197d200bbf05b9b3b4c9b3548c53ba213538a020c0f",
   "key_id": "6508b98a7ace"
  }
 }

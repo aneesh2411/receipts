@@ -8,7 +8,7 @@
 - Findings beyond claims: 0 | Claim trust score: 100% | Highest severity: `MEDIUM`
 - Audited by `subpoena/0.1.0` at 2026-03-02T09:06:16-05:00
 - Extraction: `rules`
-- Seal: sha256 chain `8e1bd7ee738639fcef95354c...`, signed (key `6508b98a7ace`)
+- Seal: sha256 chain `c6baf3bf2e5a4d9632d56104...`, signed (key `6508b98a7ace`)
 - Provenance (platform-supplied, unverified): agent `receptionist-sim/0.1.0` | prompt `narrator:standard` | human handoffs: 0
 
 ## Claims
@@ -51,6 +51,12 @@ Checks:
 
 None. Every write the agent made is accounted for by a claim.
 
+## Coverage gaps
+
+Some evidence could not be fully observed for this call. Every claim a gap touches stays UNVERIFIABLE, never a forced pass or fail.
+
+- `messages` (unavailable): messages adapter is unavailable. Affects claim(s): `call-edge-message-log-outage-c2`.
+
 ## Audit trail
 
 1. `evidence` messages: UNAVAILABLE (messages adapter is unavailable). Will not guess.
@@ -62,10 +68,11 @@ None. Every write the agent made is accounted for by a claim.
 7. `verdict` call-edge-message-log-outage-c1 (AppointmentBooked): VERIFIED
 8. `verdict` call-edge-message-log-outage-c2 (ConfirmationSent): UNVERIFIABLE
 9. `reconcile` messages: unclaimed-write check skipped, a claim that may own these writes could not be verified
-10. `verdict` Outcome: INCONCLUSIVE
+10. `coverage` messages unavailable: 1 claim(s) capped at UNVERIFIABLE
+11. `verdict` Outcome: INCONCLUSIVE
 
 ## Seal
 
-- content `0610c0506209c8f67c4f4f7d40a0b8e0fde67d8b25dc5d25884586b0b2af0481`
-- chain `8e1bd7ee738639fcef95354cdf87c55733c72f38f7686710f99ec23acf443481` (prev `0000000000000000...`)
+- content `3728255880242d43a5404d18781c39a5fd0155f655596f82a9d9b95c00cea487`
+- chain `c6baf3bf2e5a4d9632d56104c699a87adfbcf4638761c2754f02a71cfcc73acb` (prev `0000000000000000...`)
 - signed (key `6508b98a7ace`)
