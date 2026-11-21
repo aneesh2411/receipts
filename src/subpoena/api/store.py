@@ -6,7 +6,7 @@ import sqlite3
 import threading
 from collections.abc import Callable, Iterator
 
-from subpoena.api import review_store
+from subpoena.api import review_store, revisions
 from subpoena.api.review import Receipt, TransitionRequest
 from subpoena.api.webhook import SCHEMA as WEBHOOK_SCHEMA
 from subpoena.api.webhook import write_transaction
@@ -30,7 +30,9 @@ class AuditStore:
         self._conn = sqlite3.connect(path, check_same_thread=False, isolation_level=None)
         self._lock = threading.RLock()
         with self._lock:
-            self._conn.executescript(_SCHEMA + review_store.REVIEW_SCHEMA + WEBHOOK_SCHEMA)
+            self._conn.executescript(
+                _SCHEMA + review_store.REVIEW_SCHEMA + revisions.REVISION_SCHEMA + WEBHOOK_SCHEMA
+            )
 
     def close(self) -> None:
         with self._lock:
@@ -69,11 +71,20 @@ class AuditStore:
         sealer: Sealer,
         *,
         enqueue: Callable[[sqlite3.Connection, AuditReport], None] | None = None,
+        revision_key: bytes | None = None,
     ) -> AuditReport:
-        """Seal ``report`` onto the end of the ledger and store it, atomically."""
+        """Seal ``report`` onto the end of the ledger and store it, atomically.
+
+        A re-audit of an already-audited call also records one verdict
+        revision per claim whose verdict changed, in the same transaction.
+        """
         with self._lock, write_transaction(self._conn):
             sealed = sealer.seal(report, self.head())
             assert sealed.seal is not None
+            prior = self._conn.execute(
+                "SELECT body FROM audits WHERE call_id = ? ORDER BY seq DESC LIMIT 1",
+                (sealed.call.call_id,),
+            ).fetchone()
             self._conn.execute(
                 "INSERT INTO audits(audit_id, call_id, chain_hash, body) VALUES (?, ?, ?, ?)",
                 (
@@ -83,6 +94,13 @@ class AuditStore:
                     sealed.model_dump_json(),
                 ),
             )
+            if prior is not None:
+                revisions.record_reaudit_revisions(
+                    self._conn,
+                    revision_key,
+                    old=AuditReport.model_validate_json(prior[0]),
+                    new=sealed,
+                )
             if enqueue is not None:
                 enqueue(self._conn, sealed)
         return sealed
@@ -104,6 +122,10 @@ class AuditStore:
             rows = self._conn.execute(sql, params).fetchall()
         for (body,) in rows:
             yield AuditReport.model_validate_json(body)
+
+    def list_revisions(self, key: bytes | None) -> dict:
+        with self._lock:
+            return revisions.list_revisions(self._conn, key)
 
     def list_reviews(self, key: bytes | None, checkpoint: str | None = None) -> dict:
         with self._lock:

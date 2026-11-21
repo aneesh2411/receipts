@@ -152,7 +152,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     def append_report(report: AuditReport) -> AuditReport:
         return store().append(
-            report, app.state.sealer, enqueue=webhook.enqueue if webhook is not None else None
+            report,
+            app.state.sealer,
+            enqueue=webhook.enqueue if webhook is not None else None,
+            revision_key=settings.signing_key,
         )
 
     def require_key(x_api_key: Annotated[str | None, Header()] = None) -> None:
@@ -280,6 +283,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         except ReviewError as exc:
             return _fail(str(exc), exc.status)
         return _ok(receipt.model_dump(mode="json"))
+
+    @app.get("/revisions", dependencies=guarded)
+    def list_revisions() -> JSONResponse:
+        try:
+            return _ok(store().list_revisions(settings.signing_key))
+        except ReviewError as exc:
+            return _fail(str(exc), exc.status)
 
     @app.get("/scorecard", dependencies=guarded)
     def scorecard() -> JSONResponse:
